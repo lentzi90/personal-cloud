@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: lennart.jern@gmail.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    # Enable HTTP01 validations
+    solvers:
+      # An empty selector will 'match' all Certificate resources that
+      # reference this Issuer.
+      - selector: {}
+        http01:
+          ingress:
+            class: nginx
