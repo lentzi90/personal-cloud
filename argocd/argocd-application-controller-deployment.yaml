@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-application-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: argocd-application-controller
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "70Mi"

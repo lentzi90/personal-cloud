@@ -6,5 +6,12 @@ namespace: argocd
 bases:
   - github.com/argoproj/argo-cd//manifests/cluster-install?ref=v1.3.6
 
+patchesStrategicMerge:
+  - argocd-server-deployment.yaml
+  - argocd-application-controller-deployment.yaml
+  - argocd-dex-server-deployment.yaml
+  - argocd-redis-deployment.yaml
+  - argocd-repo-server-deployment.yaml
+
 resources:
   - ingress.yaml
