@@ -9,3 +9,4 @@ resources:
   - gitea-app.yaml
   - nextcloud-app.yaml
   - nginx-ingress-app.yaml
+  - cert-manager-app.yaml
