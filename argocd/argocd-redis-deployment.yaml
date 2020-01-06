@@ -10,4 +10,4 @@ spec:
         resources:
           requests:
             cpu: "5m"
-            memory: "5Mi"
+            memory: "10Mi"
