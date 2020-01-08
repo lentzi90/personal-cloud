@@ -12,6 +12,7 @@ patchesStrategicMerge:
   - argocd-dex-server-deployment.yaml
   - argocd-redis-deployment.yaml
   - argocd-repo-server-deployment.yaml
+  - argocd-ssh-known-hosts-cm.yaml
 
 resources:
   - ingress.yaml
