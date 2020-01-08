@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: blog
-          image: lennartj/jern.me
+          image: lennartj/jern.me:v0.1.0
           ports:
             - name: http
               containerPort: 80
