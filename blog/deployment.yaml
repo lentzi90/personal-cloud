@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: blog
 spec:
-  replicas: 2
+  replicas: 1
   template:
     spec:
       containers:
@@ -24,4 +24,4 @@ spec:
           resources:
             requests:
               cpu: 25m
-              memory: 10Mi
+              memory: 5Mi
