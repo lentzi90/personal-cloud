@@ -9,7 +9,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:17.0.2-apache
+        image: nextcloud:18.0.0-apache
         env:
         - name: SQLITE_DATABASE
           value: nextcloud
