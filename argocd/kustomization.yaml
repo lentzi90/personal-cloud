@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: argocd
 
 bases:
-  - github.com/argoproj/argo-cd//manifests/cluster-install?ref=v1.4.1
+  - github.com/argoproj/argo-cd//manifests/cluster-install?ref=release-1.4
 
 patchesStrategicMerge:
   - argocd-server-deployment.yaml
