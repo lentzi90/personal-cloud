@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+# https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.28.0/deploy/static/mandatory.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -218,7 +218,7 @@ spec:
         kubernetes.io/os: linux
       containers:
         - name: nginx-ingress-controller
-          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.28.0
           args:
             - /nginx-ingress-controller
             - --configmap=$(POD_NAMESPACE)/nginx-configuration
@@ -233,8 +233,8 @@ spec:
                 - ALL
               add:
                 - NET_BIND_SERVICE
-            # www-data -> 33
-            runAsUser: 33
+            # www-data -> 101
+            runAsUser: 101
           env:
             - name: POD_NAME
               valueFrom:
@@ -247,8 +247,10 @@ spec:
           ports:
             - name: http
               containerPort: 80
+              protocol: TCP
             - name: https
               containerPort: 443
+              protocol: TCP
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -275,3 +277,19 @@ spec:
                   - /wait-shutdown
 
 ---
+
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+spec:
+  limits:
+  - default:
+    min:
+      memory: 90Mi
+      cpu: 100m
+    type: Container

@@ -1,4 +1,4 @@
-# https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
+# https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.28.0/deploy/static/provider/cloud-generic.yaml
 kind: Service
 apiVersion: v1
 metadata:
@@ -16,9 +16,11 @@ spec:
   ports:
     - name: http
       port: 80
+      protocol: TCP
       targetPort: http
     - name: https
       port: 443
+      protocol: TCP
       targetPort: https
 
 ---
