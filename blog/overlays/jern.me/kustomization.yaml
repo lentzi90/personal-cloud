@@ -14,4 +14,3 @@ patchesStrategicMerge:
 
 resources:
 - namespace.yaml
-- ingress.yaml
