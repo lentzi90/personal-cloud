@@ -3,8 +3,11 @@ kind: Kustomization
 
 namespace: argocd
 
+commonLabels:
+  environment: jern.me
+
 bases:
-  - github.com/argoproj/argo-cd//manifests/cluster-install?ref=release-1.4
+  - ../../base
 
 patchesStrategicMerge:
   - argocd-server-deployment.yaml
