@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: nextcloud
+spec:
+  tls:
+    - secretName: nextcloud-cert
+      hosts:
+        - nextcloud.example.com
+  rules:
+    - host: nextcloud.example.com
+      http:
+        paths:
+          - backend:
+              serviceName: nextcloud
+              servicePort: http
