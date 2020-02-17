@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: gitea
-        image: gitea/gitea:1.11.0
+        image: gitea/gitea:1.11.1
         env:
           # See https://docs.gitea.io/en-us/customizing-gitea/
           - name: DOMAIN
