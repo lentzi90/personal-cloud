@@ -9,16 +9,3 @@ spec:
       port: 80
       targetPort: http
       protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gitea-ssh
-spec:
-  type: LoadBalancer
-  loadBalancerIP: 35.228.96.198
-  ports:
-    - name: ssh
-      port: 22
-      targetPort: ssh
-      protocol: TCP

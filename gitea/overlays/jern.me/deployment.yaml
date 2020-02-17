@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+spec:
+  template:
+    spec:
+      containers:
+      - name: gitea
+        env:
+          # See https://docs.gitea.io/en-us/customizing-gitea/
+          - name: DOMAIN
+            value: gitea.jern.me
+          - name: ROOT_URL
+            value: https://gitea.jern.me/
+          - name: SSH_DOMAIN
+            value: gitea.jern.me
+          - name: DB_TYPE
+            value: sqlite3
+          - name: DISABLE_GRAVATAR
+            value: "true"
+          - name: DELIVER_TIMEOUT
+            value: "15"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 250Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
