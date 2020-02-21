@@ -18,4 +18,5 @@ patchesStrategicMerge:
   - argocd-ssh-known-hosts-cm.yaml
 
 resources:
+  - argocd-app.yaml
   - ingress.yaml
