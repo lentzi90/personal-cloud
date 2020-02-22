@@ -25,7 +25,3 @@ spec:
           requests:
             cpu: 50m
             memory: 250Mi
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
