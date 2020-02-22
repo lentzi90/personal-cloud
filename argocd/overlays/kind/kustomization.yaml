@@ -12,3 +12,4 @@ bases:
 resources:
   - namespace.yaml
   - argocd-app.yaml
+  - ingress.yaml
