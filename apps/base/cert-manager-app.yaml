@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apps
+  name: cert-manager
 spec:
   destination:
-    namespace: argocd
+    namespace: cert-manager
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: apps/overlays/jern.me
+    path: cert-manager/base
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:

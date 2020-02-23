@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apps
+  name: nextcloud
 spec:
   destination:
-    namespace: argocd
+    namespace: nextcloud
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: apps/overlays/jern.me
+    path: nextcloud/base
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
