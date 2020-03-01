@@ -6,3 +6,4 @@ metadata:
 spec:
   externalIPs:
     - 172.17.0.2
+  type: ClusterIP
