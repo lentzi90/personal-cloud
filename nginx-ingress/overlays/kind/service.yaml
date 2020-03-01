@@ -4,4 +4,5 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
 spec:
-  type: NodePort
+  externalIPs:
+    - 172.17.0.2
