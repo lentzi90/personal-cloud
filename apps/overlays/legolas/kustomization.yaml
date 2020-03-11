@@ -7,4 +7,5 @@ bases:
   - ../kind
 
 patchesStrategicMerge:
+  - apps-app.yaml
   - nginx-ingress-app.yaml
