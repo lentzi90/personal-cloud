@@ -15,4 +15,3 @@ patchesStrategicMerge:
 
 resources:
 - namespace.yaml
-- ssh-service.yaml
