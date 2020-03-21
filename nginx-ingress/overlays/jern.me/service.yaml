@@ -4,6 +4,6 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
 spec:
-  loadBalancerIP: 35.228.96.198
+  type: NodePort
   externalIPs:
     - 35.228.225.50
