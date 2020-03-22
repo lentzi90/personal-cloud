@@ -5,5 +5,3 @@ metadata:
   namespace: ingress-nginx
 spec:
   type: NodePort
-  externalIPs:
-    - 35.228.225.50
