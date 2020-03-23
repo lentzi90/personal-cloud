@@ -24,6 +24,9 @@ spec:
           - name: DELIVER_TIMEOUT
             value: "15"
         ports:
+          # The merge key is `containerPort` so in order to change the ssh port
+          # it is necessary to replace the port list.
+          - $patch: replace
           - name: http
             containerPort: 3000
           - name: ssh
