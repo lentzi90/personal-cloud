@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ddclient
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            # ddclient user is 994
+            fsGroup: 994
+          restartPolicy: Never
+          containers:
+          - image: lennartj/ddclient
+            name: ddclient
+            resources: {}
+            volumeMounts:
+              - name: ddclient-config
+                mountPath: /ddclient/config/
+                readOnly: true
+          volumes:
+            - name: ddclient-config
+              secret:
+                secretName: ddclient-config
+                # Note: This does not work since it is impossible to set the owner
+                # to any other user than root. Instead, kubernetes makes the volume
+                # readable by the fsGroup.
+                # This results in a warning from ddclient.
+                defaultMode: 0600
