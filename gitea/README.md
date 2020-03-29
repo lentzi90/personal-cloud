@@ -18,8 +18,14 @@ kubectl -n gitea cp ${POD_NAME}:/tmp/gitea-dump.zip gitea-dump.zip
 Restore:
 ```shell
 unzip gitea-dump.zip
-unzip gitea-repo-zip
+# gitea-dump.zip contains a zip of repos
+unzip gitea-repo.zip
+POD_NAME=$(kubectl -n gitea get pod -l app.kubernetes.io/name=gitea -o jsonpath="{.items[0].metadata.name}")
 kubectl -n gitea cp repositories ${POD_NAME}:/data/git/
 kubectl -n gitea exec -it ${POD_NAME} -- chown --recursive git:git /data/git
+# NOTE: If the database already exists, you may need to first delete it
+# kubectl -n gitea exec -it ${POD_NAME} -- mv /data/gitea/gitea.db /data/gitea/gitea.db.bak
 cat gitea-db.sql | kubectl -n gitea exec -it ${POD_NAME} -- sqlite3 /data/gitea/gitea.db
+# If you moved the old database, remove it like this:
+# kubectl -n gitea exec -it ${POD_NAME} -- rm /data/gitea/gitea.db.bak
 ```
