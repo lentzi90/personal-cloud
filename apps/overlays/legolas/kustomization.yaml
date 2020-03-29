@@ -9,3 +9,4 @@ bases:
 patchesStrategicMerge:
   - apps-app.yaml
   - nginx-ingress-app.yaml
+  - gitea-app.yaml
