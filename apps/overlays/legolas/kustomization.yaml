@@ -10,3 +10,4 @@ patchesStrategicMerge:
   - apps-app.yaml
   - nginx-ingress-app.yaml
   - gitea-app.yaml
+  - nextcloud-app.yaml
