@@ -4,22 +4,10 @@ metadata:
   name: nginx-ingress-controller
   namespace: ingress-nginx
 spec:
-  strategy:
-    # Use recreate to make sure the hostPorts are available
-    type: Recreate
   template:
     spec:
       containers:
       - name: nginx-ingress-controller
-        ports:
-          - name: http
-            containerPort: 80
-            hostPort: 80
-            protocol: TCP
-          - name: https
-            containerPort: 443
-            hostPort: 443
-            protocol: TCP
         resources:
           requests:
             cpu: "100m"
