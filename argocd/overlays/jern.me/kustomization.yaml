@@ -20,3 +20,4 @@ patchesStrategicMerge:
 resources:
   - argocd-app.yaml
   - ingress.yaml
+  - namespace.yaml
