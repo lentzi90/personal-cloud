@@ -8,6 +8,7 @@ bases:
 
 patchesStrategicMerge:
   - apps-app.yaml
+  - argocd-app.yaml
   - gitea-app.yaml
   - cert-manager-app.yaml
   - nextcloud-app.yaml
