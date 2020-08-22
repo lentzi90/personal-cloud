@@ -9,6 +9,9 @@ spec:
       volumes:
         - name: custom-tools
           emptyDir: {}
+        - name: argocd-gpg-private-key
+          secret:
+            secretName: argocd-gpg-private-key
       # 2. Use an init container to download/copy custom binaries into the emptyDir
       initContainers:
         - name: download-tools
