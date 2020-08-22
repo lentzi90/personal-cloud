@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+spec:
+  template:
+    spec:
+      # 1. Define an emptyDir volume which will hold the custom binaries
+      volumes:
+        - name: custom-tools
+          emptyDir: {}
+        - name: argocd-gpg-private-key
+          secret:
+            secretName: argocd-gpg-private-key
+            # defaultMode: 0600
+      # 2. Use an init container to download/copy custom binaries into the emptyDir
+      initContainers:
+        - name: download-tools
+          image: alpine:3.8
+          command: [sh, -c]
+          args:
+            - wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/v3.5.0/sops-v3.5.0.linux &&
+              chmod +x /custom-tools/sops &&
+              wget -qO /custom-tools/yq https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64 &&
+              chmod +x /custom-tools/yq
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+      containers:
+        - name: argocd-repo-server
+          command:
+            - uid_entrypoint.sh
+            - argocd-repo-server
+            - --redis
+            - argocd-redis:6379
+            - --loglevel=debug
+          # 3. Volume mount the custom binary to the bin directory
+          volumeMounts:
+            - name: custom-tools
+              mountPath: /usr/local/bin/sops
+              subPath: sops
+            - name: argocd-gpg-private-key
+              mountPath: /gpg-keys

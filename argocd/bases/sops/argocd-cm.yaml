@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  configManagementPlugins: |
+    - name: sops
+      ## Optional command to initialize application source directory
+      init:
+        command: ["/bin/bash", "-c"]
+        # TODO: Add passphrase?
+        args:
+          - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
+
+      ## Command to generate manifests YAML
+      generate:
+        command: ["/bin/bash", "-c"]
+        args:
+          - >
+            sops -d -i ddclient.conf;
+            kustomize build;
+
+#for file in $(yq read kustomization.yaml secretGenerator[*].files[*]);
+#do
+#    echo "Decrypting ${file}";
+#    sops -d -i $file;
+#done;
+#echo "Secret generators: $(yq read kustomization.yaml secretGenerator)";
