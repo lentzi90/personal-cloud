@@ -7,7 +7,7 @@ commonLabels:
   environment: kind
 
 bases:
-  - ../../base
+  - ../../bases/upstream
 
 resources:
   - namespace.yaml

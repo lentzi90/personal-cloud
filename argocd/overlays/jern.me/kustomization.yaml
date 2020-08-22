@@ -7,7 +7,7 @@ commonLabels:
   environment: jern.me
 
 bases:
-  - ../../base
+  - ../../bases/upstream
 
 patchesStrategicMerge:
   - argocd-server-deployment.yaml
