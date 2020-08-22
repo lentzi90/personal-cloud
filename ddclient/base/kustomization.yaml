@@ -5,11 +5,11 @@ commonLabels:
   app.kubernetes.io/name: ddclient
 
 resources:
-- cronjob.yaml
+  - namespace.yaml
 
 ## Create a secret with the ddclient.conf using a secretGenerator like this
 ## in you overlay.
-# secretGenerator:
-#   - name: ddclient-config
-#     files:
-#       - ddclient.conf
+secretGenerator:
+  - name: ddclient-config
+    files:
+      - ddclient.conf
