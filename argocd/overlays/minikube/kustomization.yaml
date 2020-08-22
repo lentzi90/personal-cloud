@@ -7,9 +7,8 @@ commonLabels:
   environment: kind
 
 bases:
-  - ../../bases/upstream
+  - ../../bases/sops
 
 resources:
   - namespace.yaml
   - argocd-app.yaml
-  - ingress.yaml
