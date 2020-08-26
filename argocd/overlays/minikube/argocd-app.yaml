@@ -11,5 +11,3 @@ spec:
     path: argocd/overlays/minikube
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
-  syncPolicy:
-    automated: {}
