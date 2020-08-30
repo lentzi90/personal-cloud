@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+spec:
+  template:
+    spec:
+      containers:
+      - name: registry
+        ports:
+          - name: http
+            containerPort: 5000
+            hostPort: 5000

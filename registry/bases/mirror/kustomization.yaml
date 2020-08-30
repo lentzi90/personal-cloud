@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/name: registry
+
+bases:
+  - ../simple
+
+## Create a configmap with the config.yml for the registry
+configMapGenerator:
+  - name: config
+    files:
+      - config.yml

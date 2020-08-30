@@ -1,0 +1,25 @@
+# From /etc/docker/registry/config.yml in registry image
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+  # Allow cleanup of old data
+  delete:
+    enabled: false
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+# Turn on proxy to mirror docker hub as a pull through cache
+proxy:
+  remoteurl: https://registry-1.docker.io

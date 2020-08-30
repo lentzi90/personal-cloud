@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+      - name: registry
+        image: registry:2.7
+        ports:
+          - name: http
+            containerPort: 5000
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/registry
+          - name: config
+            mountPath: /etc/docker/registry/config.yml
+            subPath: config.yml
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: registry-data
+        - name: config
+          configMap:
+            name: config
