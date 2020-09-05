@@ -10,7 +10,7 @@ storage:
     rootdirectory: /var/lib/registry
   # Allow cleanup of old data
   delete:
-    enabled: false
+    enabled: true
 http:
   addr: :5000
   headers:
