@@ -16,3 +16,4 @@ patchesStrategicMerge:
 
 resources:
   - blog-app.yaml
+  - registry.yaml
