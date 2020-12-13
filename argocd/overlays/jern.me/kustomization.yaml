@@ -11,7 +11,7 @@ bases:
 
 patchesStrategicMerge:
   - argocd-server-deployment.yaml
-  - argocd-application-controller-deployment.yaml
+  - argocd-application-controller-statefulset.yaml
   - argocd-dex-server-deployment.yaml
   - argocd-redis-deployment.yaml
   - argocd-repo-server-deployment.yaml
