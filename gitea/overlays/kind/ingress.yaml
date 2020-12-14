@@ -15,5 +15,9 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: gitea
-              servicePort: http
+              service:
+                name: gitea
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
