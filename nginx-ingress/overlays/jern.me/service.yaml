@@ -1,0 +1,8 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  externalIPs:
+    - 192.168.1.172
