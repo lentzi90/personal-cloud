@@ -8,10 +8,10 @@ bases:
 
 patchesStrategicMerge:
   - apps-app.yaml
-  - gitea-app.yaml
   - cert-manager-app.yaml
   - nextcloud-app.yaml
   - nginx-ingress-app.yaml
 
 resources:
   - blog-app.yaml
+  - gitea-app.yaml

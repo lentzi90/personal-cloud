@@ -3,5 +3,13 @@ kind: Application
 metadata:
   name: gitea
 spec:
+  destination:
+    namespace: gitea
+    server: https://kubernetes.default.svc
+  project: default
   source:
     path: gitea/overlays/kind
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}
