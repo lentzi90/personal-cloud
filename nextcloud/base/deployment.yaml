@@ -9,12 +9,12 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:20.0.4-apache
+        image: nextcloud:20.0.5-apache
         env:
-        - name: SQLITE_DATABASE
-          value: nextcloud
         - name: NC_overwriteprotocol
           value: https
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: nextcloud.jern.me
         ports:
         - name: http
           containerPort: 80
