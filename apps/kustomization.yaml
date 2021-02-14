@@ -6,7 +6,7 @@ namespace: argocd
 resources:
   - apps-app.yaml
   - argocd-app.yaml
-  # - nextcloud-app.yaml
+  - nextcloud-app.yaml
   # - registry-app.yaml
   - nginx-ingress-app.yaml
   - cert-manager-app.yaml
