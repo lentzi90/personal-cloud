@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: postgres
+
+commonLabels:
+  environment: jern.me
+
+bases:
+  - ../../bases/plain
+
+patchesStrategicMerge:
+  - statefulset.yaml
+
+resources:
+  - namespace.yaml
+  - backup-cronjob.yaml
+  - backup-pvc.yaml
+  - backup-pv.yaml
+  # - failover-statefulset.yaml
+  # - failover-service.yaml
+  # - restore-job.yaml
+
+secretGenerator:
+  - name: postgres-credentials
+    envs:
+      - postgres-credentials.env
+  - name: pg-dump-credentials
+    envs:
+      - pg-dump-credentials.env

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  volumeClaimTemplates: []
+  template:
+    spec:
+      nodeName: pippin
+      containers:
+      - name: postgres
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+      volumes:
+        - name: data
+          hostPath:
+            path: /media/PiDrive/postgres
+            type: DirectoryOrCreate

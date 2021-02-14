@@ -1,0 +1,30 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup
+spec:
+  schedule: "@daily"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: backup
+            image: postgres:13.1
+            command:
+            - /bin/bash
+            args:
+            - -c
+            - pg_dumpall --verbose --file=/backup/postgres-dump-$(date --iso-8601=minutes).sql
+            envFrom:
+              - secretRef:
+                  name: pg-dump-credentials
+            resources: {}
+            volumeMounts:
+            - name: postgres-backup
+              mountPath: /backup
+          volumes:
+          - name: postgres-backup
+            persistentVolumeClaim:
+              claimName: postgres-backup
