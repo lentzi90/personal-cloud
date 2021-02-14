@@ -3,10 +3,19 @@ kind: Deployment
 metadata:
   name: nextcloud
 spec:
+  strategy:
+    type: RollingUpdate
   template:
     spec:
       containers:
       - name: nextcloud
+        envFrom:
+          - secretRef:
+              name: postgres-credentials
+          - secretRef:
+              name: nextcloud-admin
+          - configMapRef:
+              name: postgres-env
         livenessProbe:
           httpGet:
             path: /status.php
@@ -14,7 +23,7 @@ spec:
             httpHeaders:
             - name: Host
               value: nextcloud.jern.me
-          initialDelaySeconds: 30
+          initialDelaySeconds: 300
           timeoutSeconds: 10
           failureThreshold: 6
         readinessProbe:
@@ -30,4 +39,4 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 300Mi
+            memory: 400Mi

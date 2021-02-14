@@ -12,6 +12,22 @@ bases:
 patchesStrategicMerge:
   - deployment.yaml
   - ingress.yaml
+  - nextcloud-data-pvc.yaml
 
 resources:
   - namespace.yaml
+  - nextcloud-pv.yaml
+
+configMapGenerator:
+  - name: postgres-env
+    literals:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=postgres.postgres
+secretGenerator:
+  - name: postgres-credentials
+    envs:
+      - postgres-credentials.env
+  - name: nextcloud-admin
+    envs:
+      - nextcloud-admin.env
