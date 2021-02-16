@@ -13,6 +13,7 @@ patchesStrategicMerge:
   - deployment.yaml
   - ingress.yaml
   - nextcloud-data-pvc.yaml
+  - cronjob.yaml
 
 resources:
   - namespace.yaml
