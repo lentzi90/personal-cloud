@@ -21,4 +21,8 @@ data:
             do
                sops -d -i $file;
             done;
+            for file in $(yq read kustomization.yaml secretGenerator[*].envs[*]);
+            do
+               sops -d -i $file;
+            done;
             kustomize build;
