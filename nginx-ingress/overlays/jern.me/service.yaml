@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ingress-nginx-controller
+  name: ingress-nginx
   namespace: ingress-nginx
 spec:
   externalIPs:
