@@ -5,4 +5,4 @@ metadata:
   namespace: ingress-nginx
 spec:
   externalIPs:
-    - 192.168.1.10
+    - 192.168.10.20
