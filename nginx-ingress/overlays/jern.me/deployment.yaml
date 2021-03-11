@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-ingress-controller
+  name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
   template:
     spec:
       containers:
-      - name: nginx-ingress-controller
+      - name: controller
         resources:
           requests:
             cpu: "100m"

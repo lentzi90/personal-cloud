@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-resources:
-- upstream-base.yaml
-- upstream-generic.yaml
+bases:
+  - https://github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud?ref=controller-v0.44.0
