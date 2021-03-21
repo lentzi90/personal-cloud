@@ -12,3 +12,4 @@ resources:
   - ingress-nginx-app.yaml
   - cert-manager-app.yaml
   - blog-app.yaml
+  - metallb-app.yaml

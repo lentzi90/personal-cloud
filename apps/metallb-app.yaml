@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+spec:
+  destination:
+    namespace: metallb-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: metallb/overlays/jern.me
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD
+    plugin:
+      name: sops
+  syncPolicy:
+    automated: {}
