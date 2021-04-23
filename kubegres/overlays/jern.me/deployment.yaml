@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubegres-controller-manager
+  namespace: kubegres-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: manager
+        image: lennartj/kubegres:v1.1
