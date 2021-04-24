@@ -9,3 +9,5 @@ spec:
       containers:
       - name: manager
         image: lennartj/kubegres:v1.1
+      - name: kube-rbac-proxy
+        image: lennartj/kube-rbac-proxy:v0.8.0
