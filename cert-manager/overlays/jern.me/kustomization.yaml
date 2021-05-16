@@ -5,6 +5,7 @@ bases:
   - ../../base
 
 patchesStrategicMerge:
+  - cert-manager-deployment.yaml
   - cainjector-deployment.yaml
   - webhook-deployment.yaml
 

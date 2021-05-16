@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cert-manager-cainjector
+  name: cert-manager
   namespace: cert-manager
 spec:
   template:
@@ -11,4 +11,4 @@ spec:
         resources:
           requests:
             cpu: "10m"
-            memory: "60Mi"
+            memory: "40Mi"
