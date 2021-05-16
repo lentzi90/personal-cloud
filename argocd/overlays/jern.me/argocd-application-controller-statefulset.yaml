@@ -11,5 +11,5 @@ spec:
       - name: argocd-application-controller
         resources:
           requests:
-            cpu: "10m"
-            memory: "90Mi"
+            cpu: "100m"
+            memory: "170Mi"
