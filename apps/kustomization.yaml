@@ -15,3 +15,4 @@ resources:
   - metallb-app.yaml
   - kubegres-app.yaml
   - prometheus-operator-app.yaml
+  - prometheus-app.yaml
