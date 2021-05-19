@@ -1,0 +1,9 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus
+spec:
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 100m
