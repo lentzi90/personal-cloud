@@ -16,3 +16,4 @@ resources:
   - kubegres-app.yaml
   - prometheus-operator-app.yaml
   - prometheus-app.yaml
+  - grafana-app.yaml
