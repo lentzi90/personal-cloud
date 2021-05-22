@@ -9,7 +9,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:21.0.1-apache
+        image: nextcloud:21.0.2-apache
         env:
         - name: NC_overwriteprotocol
           value: https
