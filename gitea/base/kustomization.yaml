@@ -4,6 +4,10 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/name: gitea
 
+images:
+  - name: gitea
+    newTag: 1.13.0
+
 resources:
 - deployment.yaml
 - service.yaml
