@@ -1,5 +1,14 @@
 {
   "extends": [
     "config:base"
+  ],
+  "hostRules": [
+    {
+      "hostType": "docker",
+      "username": "lennartj",
+      "encrypted": {
+        "password": "HmDPEIirtiHqYW2lYSMvkpY+FItozmLVsJVU88xgPK7TrhrR0TlVtfb8CtAOd/oW5L1o4Cvd/x1AyLah/JcI+A/u0+toEMO/SPFtOl3/0PKMbAwWzYMfeOXGcKDOE5ECqdYSzCt+hdBXaimZw8y4IH7ImnhebyH7FZ36Y/oTnEEVaWW+nJ8lzDbGH+uhQ8Nri+Ci4srfhCXVdrcGc/eOogz0xOjeGK5e8qqZNNMuXIEMfyh35syeubNAMWQFTz1ozqzaPxfKdJstrwTb4eCq80LTen7V9/fuHQYwMD7YTJM2Ibe0TGYMzRlFXtvJztAnhEb2SoVgrAgZn1qHTA/dfw=="
+      }
+    }
   ]
 }
