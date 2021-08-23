@@ -4,10 +4,6 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/name: postgres
 
-images:
-  - name: postgres
-    newTag: "13.1"
-
 resources:
 - statefulset.yaml
 - service.yaml
