@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+spec:
+  template:
+    spec:
+      volumes:
+        - name: custom-tools
+          emptyDir: {}
+        - name: argocd-gpg-private-key
+          secret:
+            secretName: argocd-gpg-private-key
+      initContainers:
+        - name: install-goaboutsops
+          image: alpine:3.11.3
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo "Installing goabout kustomize sops...";
+              set -e;
+              set -x;
+              wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/v${VERSION}/SopsSecretGenerator_${VERSION}_${PLATFORM}_${ARCH};
+              chmod -v +x /custom-tools/SopsSecretGenerator;
+              echo "Done"
+              echo "Installing sops...";
+              wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/v3.5.0/sops-v3.5.0.linux;
+              chmod +x /custom-tools/sops;
+              echo "Done"
+              echo "Setting up GPG"
+              apk add gnupg
+              gpg --homedir /app/config/gpg/keys --import /gpg-keys/argocd-gpg-private-key.gpg
+              set +x;
+              echo "Done.";
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+            - mountPath: /app/config/gpg/keys
+              name: gpg-keyring
+          env:
+            - name: VERSION
+              value: 1.4.0
+            - name: PLATFORM
+              value: linux
+            - name: ARCH
+              value: amd64
+      containers:
+        - name: argocd-repo-server
+          volumeMounts:
+            - mountPath: /.config/kustomize/plugin/goabout.com/v1beta1/sopssecretgenerator/SopsSecretGenerator
+              name: custom-tools
+              subPath: SopsSecretGenerator
+            - name: custom-tools
+              mountPath: /usr/local/bin/sops
+              subPath: sops
+            # Mount a secret with the secret gpg key used by sops.
+            # NOTE: You need to manually create this secret before the
+            # repo-server can start.
+            - name: argocd-gpg-private-key
+              mountPath: /gpg-keys
+          env:
+            - name: XDG_CONFIG_HOME
+              value: /.config

@@ -25,10 +25,7 @@ configMapGenerator:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
       - POSTGRES_HOST=postgres.postgres
-secretGenerator:
-  - name: postgres-credentials
-    envs:
-      - postgres-credentials.env
-  - name: nextcloud-admin
-    envs:
-      - nextcloud-admin.env
+
+generators:
+  - postgres-credentials-generator.yaml
+  - nextcloud-admin-generator.yaml
