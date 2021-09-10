@@ -20,7 +20,5 @@ configMapGenerator:
       - GF_DATABASE_NAME=grafana
       - GF_DATABASE_USER=grafana
       - GF_SERVER_ENABLE_GZIP=true
-secretGenerator:
-  - name: grafana-credentials
-    envs:
-      - grafana-credentials.env
+generators:
+  - grafana-credentials-generator.yaml
