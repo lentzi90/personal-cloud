@@ -17,4 +17,4 @@ data:
       generate:
         command: ["/bin/bash", "-c"]
         args:
-          - kustomize build --enable-alpha-plugins;
+          - kustomize build --enable-alpha-plugins .;
