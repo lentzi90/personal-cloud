@@ -390,8 +390,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -682,8 +716,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -958,8 +1026,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -1349,8 +1451,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -1634,8 +1770,42 @@ spec:
                           httpConfig:
                             description: The HTTP client's configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -1863,8 +2033,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -2142,8 +2346,42 @@ spec:
                           httpConfig:
                             description: HTTP client configuration.
                             properties:
+                              authorization:
+                                description: Authorization header configuration for
+                                  the client. This is mutually exclusive with BasicAuth
+                                  and is only available starting from Alertmanager
+                                  v0.22+.
+                                properties:
+                                  credentials:
+                                    description: The secret's key that contains the
+                                      credentials of the request
+                                    properties:
+                                      key:
+                                        description: The key of the secret to select
+                                          from.  Must be a valid secret key.
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          TODO: Add other useful fields. apiVersion,
+                                          kind, uid?'
+                                        type: string
+                                      optional:
+                                        description: Specify whether the Secret or
+                                          its key must be defined
+                                        type: boolean
+                                    required:
+                                    - key
+                                    type: object
+                                  type:
+                                    description: Set the authentication type. Defaults
+                                      to Bearer, Basic will cause an error
+                                    type: string
+                                type: object
                               basicAuth:
-                                description: BasicAuth for the client.
+                                description: BasicAuth for the client. This is mutually
+                                  exclusive with Authorization. If both are defined,
+                                  BasicAuth takes precedence.
                                 properties:
                                   password:
                                     description: The secret in the service monitor
@@ -5389,6 +5627,14 @@ spec:
               logLevel:
                 description: Log level for Alertmanager to be configured with.
                 type: string
+              minReadySeconds:
+                description: Minimum number of seconds for which a newly created pod
+                  should be ready without any of its container crashing for it to
+                  be considered available. Defaults to 0 (pod will be considered available
+                  as soon as it is ready) This is an alpha field and requires enabling
+                  StatefulSetMinReadySeconds feature gate.
+                format: int32
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string
@@ -8075,6 +8321,50 @@ spec:
                   and newer.
                 format: int64
                 type: integer
+              metricRelabelings:
+                description: MetricRelabelConfigs to apply to samples before ingestion.
+                items:
+                  description: 'RelabelConfig allows dynamic rewriting of the label
+                    set, being applied to samples before ingestion. It defines `<metric_relabel_configs>`-section
+                    of Prometheus configuration. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs'
+                  properties:
+                    action:
+                      description: Action to perform based on regex matching. Default
+                        is 'replace'
+                      type: string
+                    modulus:
+                      description: Modulus to take of the hash of the source label
+                        values.
+                      format: int64
+                      type: integer
+                    regex:
+                      description: Regular expression against which the extracted
+                        value is matched. Default is '(.*)'
+                      type: string
+                    replacement:
+                      description: Replacement value against which a regex replace
+                        is performed if the regular expression matches. Regex capture
+                        groups are available. Default is '$1'
+                      type: string
+                    separator:
+                      description: Separator placed between concatenated source label
+                        values. default is ';'.
+                      type: string
+                    sourceLabels:
+                      description: The source labels select values from existing labels.
+                        Their content is concatenated using the configured separator
+                        and matched against the configured regular expression for
+                        the replace, keep, and drop actions.
+                      items:
+                        type: string
+                      type: array
+                    targetLabel:
+                      description: Label to which the resulting value is written in
+                        a replace action. It is mandatory for replace actions. Regex
+                        capture groups are available.
+                      type: string
+                  type: object
+                type: array
               module:
                 description: 'The module to use for probing specifying how to probe
                   the target. Example module configuring in the blackbox exporter:
@@ -10764,6 +11054,15 @@ spec:
                 items:
                   type: string
                 type: array
+              enforcedBodySizeLimit:
+                description: 'EnforcedBodySizeLimit defines the maximum size of uncompressed
+                  response body that will be accepted by Prometheus. Targets responding
+                  with a body larger than this many bytes will cause the scrape to
+                  fail. Example: 100MB. If defined, the limit will apply to all service/pod
+                  monitors and probes. This is an experimental feature, this behaviour
+                  could change or be removed in the future. Only valid in Prometheus
+                  versions 2.28.0 and newer.'
+                type: string
               enforcedLabelLimit:
                 description: Per-scrape limit on number of labels that will be accepted
                   for a sample. If more than this number of labels are present post
@@ -11935,6 +12234,14 @@ spec:
               logLevel:
                 description: Log level for Prometheus to be configured with.
                 type: string
+              minReadySeconds:
+                description: Minimum number of seconds for which a newly created pod
+                  should be ready without any of its container crashing for it to
+                  be considered available. Defaults to 0 (pod will be considered available
+                  as soon as it is ready) This is an alpha field and requires enabling
+                  StatefulSetMinReadySeconds feature gate.
+                format: int32
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string
@@ -13936,6 +14243,49 @@ spec:
                   version:
                     description: Version describes the version of Thanos to use.
                     type: string
+                  volumeMounts:
+                    description: VolumeMounts allows configuration of additional VolumeMounts
+                      on the output StatefulSet definition. VolumeMounts specified
+                      will be appended to other VolumeMounts in the thanos-sidecar
+                      container.
+                    items:
+                      description: VolumeMount describes a mounting of a Volume within
+                        a container.
+                      properties:
+                        mountPath:
+                          description: Path within the container at which the volume
+                            should be mounted.  Must not contain ':'.
+                          type: string
+                        mountPropagation:
+                          description: mountPropagation determines how mounts are
+                            propagated from the host to container and the other way
+                            around. When not set, MountPropagationNone is used. This
+                            field is beta in 1.10.
+                          type: string
+                        name:
+                          description: This must match the Name of a Volume.
+                          type: string
+                        readOnly:
+                          description: Mounted read-only if true, read-write otherwise
+                            (false or unspecified). Defaults to false.
+                          type: boolean
+                        subPath:
+                          description: Path within the volume from which the container's
+                            volume should be mounted. Defaults to "" (volume's root).
+                          type: string
+                        subPathExpr:
+                          description: Expanded path within the volume from which
+                            the container's volume should be mounted. Behaves similarly
+                            to SubPath but environment variable references $(VAR_NAME)
+                            are expanded using the container's environment. Defaults
+                            to "" (volume's root). SubPathExpr and SubPath are mutually
+                            exclusive.
+                          type: string
+                      required:
+                      - mountPath
+                      - name
+                      type: object
+                    type: array
                 type: object
               tolerations:
                 description: If specified, the pod's tolerations.
@@ -19222,6 +19572,14 @@ spec:
               logLevel:
                 description: Log level for ThanosRuler to be configured with.
                 type: string
+              minReadySeconds:
+                description: Minimum number of seconds for which a newly created pod
+                  should be ready without any of its container crashing for it to
+                  be considered available. Defaults to 0 (pod will be considered available
+                  as soon as it is ready) This is an alpha field and requires enabling
+                  StatefulSetMinReadySeconds feature gate.
+                format: int32
+                type: integer
               nodeSelector:
                 additionalProperties:
                   type: string
@@ -21285,7 +21643,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
-    app.kubernetes.io/version: 0.50.0
+    app.kubernetes.io/version: 0.51.1
   name: prometheus-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -21302,7 +21660,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
-    app.kubernetes.io/version: 0.50.0
+    app.kubernetes.io/version: 0.51.1
   name: prometheus-operator
 rules:
 - apiGroups:
@@ -21382,7 +21740,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
-    app.kubernetes.io/version: 0.50.0
+    app.kubernetes.io/version: 0.51.1
   name: prometheus-operator
   namespace: default
 spec:
@@ -21398,13 +21756,13 @@ spec:
       labels:
         app.kubernetes.io/component: controller
         app.kubernetes.io/name: prometheus-operator
-        app.kubernetes.io/version: 0.50.0
+        app.kubernetes.io/version: 0.51.1
     spec:
       containers:
       - args:
         - --kubelet-service=kube-system/kubelet
-        - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.50.0
-        image: quay.io/prometheus-operator/prometheus-operator:v0.50.0
+        - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.51.1
+        image: quay.io/prometheus-operator/prometheus-operator:v0.51.1
         name: prometheus-operator
         ports:
         - containerPort: 8080
@@ -21431,7 +21789,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
-    app.kubernetes.io/version: 0.50.0
+    app.kubernetes.io/version: 0.51.1
   name: prometheus-operator
   namespace: default
 ---
@@ -21441,7 +21799,7 @@ metadata:
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/name: prometheus-operator
-    app.kubernetes.io/version: 0.50.0
+    app.kubernetes.io/version: 0.51.1
   name: prometheus-operator
   namespace: default
 spec:
