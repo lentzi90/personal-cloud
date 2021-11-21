@@ -26,30 +26,31 @@ spec:
 # Nextcloud recommends rewriting /.wellknown/carddav and /.wellknown/caldav
 # to /remote.php/dav since some clients have trouble with this.
 # See https://docs.nextcloud.com/server/21/admin_manual/issues/general_troubleshooting.html#service-discovery
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nextcloud-service-discovery-rewrite
-spec:
-  tls:
-    - secretName: nextcloud-cert
-      hosts:
-        - nextcloud.jern.me
-  rules:
-    - host: nextcloud.jern.me
-      http:
-        paths:
-          - backend:
-              service:
-                name: nextcloud
-                port:
-                  name: http
-            path: /.wellknown/carddav
-            pathType: Exact
-          - backend:
-              service:
-                name: nextcloud
-                port:
-                  name: http
-            path: /.wellknown/caldav
-            pathType: Exact
+# This does not seem to work
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: nextcloud-service-discovery-rewrite
+# spec:
+#   tls:
+#     - secretName: nextcloud-cert
+#       hosts:
+#         - nextcloud.jern.me
+#   rules:
+#     - host: nextcloud.jern.me
+#       http:
+#         paths:
+#           - backend:
+#               service:
+#                 name: nextcloud
+#                 port:
+#                   name: http
+#             path: /.wellknown/carddav
+#             pathType: Exact
+#           - backend:
+#               service:
+#                 name: nextcloud
+#                 port:
+#                   name: http
+#             path: /.wellknown/caldav
+#             pathType: Exact
