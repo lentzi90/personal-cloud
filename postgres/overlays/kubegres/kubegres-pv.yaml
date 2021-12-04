@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    path: "/media/PiDrive/postgres"
+    path: "/media/PiDrive/kubegres"
   nodeAffinity:
     required:
       nodeSelectorTerms:
