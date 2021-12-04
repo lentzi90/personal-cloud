@@ -14,6 +14,7 @@ resources:
   - blog-app.yaml
   - metallb-app.yaml
   - kubegres-app.yaml
+  - kubegres-instance-app.yaml
   - prometheus-operator-app.yaml
   - prometheus-app.yaml
   - grafana-app.yaml
