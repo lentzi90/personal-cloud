@@ -24,7 +24,7 @@ configMapGenerator:
     literals:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_HOST=postgres.postgres
+      - POSTGRES_HOST=kubegres.kubegres
 
 generators:
   - postgres-credentials-generator.yaml
