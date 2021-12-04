@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/name: kubegres
+
+resources:
+- kubegres.yaml
+
+# This secret will be used to set the env for postgres.
+# Create it in your overlay
+# secretGenerator:
+#   - name: postgres-credentials
+#     literals:
+#       - POSTGRES_PASSWORD=replaceme
+
+configurations:
+  # Make kustomize understand that the Kubegres object references the secret
+  - name-reference.yaml

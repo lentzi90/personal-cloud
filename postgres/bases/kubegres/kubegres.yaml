@@ -1,0 +1,22 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: kubegres
+spec:
+   replicas: 1
+   image: postgres:14.1
+   database:
+      size: 200Mi
+      storageClassName: local-storage
+   env:
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: postgres-credentials
+              key: POSTGRES_PASSWORD
+
+      - name: POSTGRES_REPLICATION_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: postgres-credentials
+              key: POSTGRES_REPLICATION_PASSWORD
