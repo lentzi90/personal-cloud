@@ -7,7 +7,6 @@ resources:
   - apps-app.yaml
   - argocd-app.yaml
   - nextcloud-app.yaml
-  - postgres-app.yaml
   # - registry-app.yaml
   - ingress-nginx-app.yaml
   - cert-manager-app.yaml
