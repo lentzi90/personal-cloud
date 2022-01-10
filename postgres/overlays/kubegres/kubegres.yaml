@@ -1,0 +1,6 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: kubegres
+spec:
+   replicas: 2
