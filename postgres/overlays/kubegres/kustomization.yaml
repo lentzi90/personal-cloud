@@ -14,5 +14,8 @@ resources:
   - kubegres-pv.yaml
   - local-storageclass.yaml
 
+patchesStrategicMerge:
+  - kubegres.yaml
+
 generators:
   - postgres-credentials-generator.yaml

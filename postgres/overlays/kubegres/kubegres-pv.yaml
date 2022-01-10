@@ -18,3 +18,24 @@ spec:
               operator: In
               values:
                 - pippin
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kubegres-merry
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/media/Data/kubegres"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - merry
