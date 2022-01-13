@@ -16,7 +16,7 @@ configMapGenerator:
   - name: grafana-env
     literals:
       - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=postgres.postgres
+      - GF_DATABASE_HOST=kubegres.kubegres
       - GF_DATABASE_NAME=grafana
       - GF_DATABASE_USER=grafana
       - GF_SERVER_ENABLE_GZIP=true
