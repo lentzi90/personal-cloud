@@ -6,7 +6,7 @@ namespace: monitoring
 commonLabels:
   environment: jern.me
 
-bases:
+resources:
   - ../../base
 
 patchesStrategicMerge:
