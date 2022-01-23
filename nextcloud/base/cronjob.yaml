@@ -2,12 +2,17 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: nextcloud-cron
+  labels:
+    app.kubernetes.io/component: cronjob
 spec:
   schedule: "*/5 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: nextcloud
         spec:
           restartPolicy: Never
           containers:

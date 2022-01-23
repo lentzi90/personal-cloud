@@ -2,10 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud
+  labels:
+    app.kubernetes.io/component: nextcloud
 spec:
   strategy:
     type: Recreate
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: nextcloud
     spec:
       containers:
       - name: nextcloud
