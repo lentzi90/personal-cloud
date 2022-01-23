@@ -6,7 +6,7 @@ commonLabels:
 
 images:
   - name: postgres
-    newTag: "13.1"
+    newTag: "13.5"
 
 resources:
 - statefulset.yaml
