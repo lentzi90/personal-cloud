@@ -13,6 +13,8 @@ resources:
   - namespace.yaml
   - kubegres-pv.yaml
   - local-storageclass.yaml
+  - backup-pv.yaml
+  - backup-pvc.yaml
 
 patchesStrategicMerge:
   - kubegres.yaml

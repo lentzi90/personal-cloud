@@ -4,3 +4,7 @@ metadata:
   name: kubegres
 spec:
    replicas: 2
+   backup:
+    schedule: "@daily"
+    pvcName: my-backup-pvc
+    volumeMount: /var/lib/backup
