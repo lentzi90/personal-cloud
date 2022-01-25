@@ -9,7 +9,7 @@ See https://docs.nextcloud.com/server/stable/admin_manual/maintenance/backup.htm
 Backup:
 
 ```bash
-POD_NAME=$(kubectl -n nextcloud get pod -l app.kubernetes.io/name=nextcloud -o jsonpath="{.items[0].metadata.name}")
+POD_NAME=$(kubectl -n nextcloud get pod -l app.kubernetes.io/component=nextcloud -o jsonpath="{.items[0].metadata.name}")
 # Enable login shell for www-data user
 kubectl -n nextcloud exec -it ${POD_NAME} -- chsh -s /bin/bash www-data
 # Enable maintenance mode
@@ -17,10 +17,6 @@ kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ maintenance
 
 # Backup data and config
 kubectl -n nextcloud exec ${POD_NAME} -- tar cf - /var/www/html | tar xf - -C nextcloud-backup
-# Backup database
-kubectl -n nextcloud exec -it ${POD_NAME} -- apt-get update; apt-get install -y sqlite3
-kubectl -n nextcloud exec ${POD_NAME} -- sqlite3 data/nextcloud.db .dump > /tmp/nextcloud-db.sql
-kubectl -n nextcloud cp ${POD_NAME}:/tmp/nextcloud-db.sql nextcloud-db.sql
 
 # Disable maintenance mode
 kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ maintenance:mode --off"
@@ -39,10 +35,6 @@ kubectl -n nextcloud scale deployment nextcloud --replicas=0
 kubectl -n nextcloud apply -f restore-pod.yaml
 # Copy the data to the volume
 tar cf - nextcloud-backup/var/www/html | kubectl -n nextcloud exec -i restore -- tar xf - --strip-components 4 -C /var/www/html
-
-# Restore the database
-kubectl -n nextcloud exec -it restore -- mv /var/www/html/data/nextcloud.db /var/www/html/data/nextcloud.db.bak
-cat nextcloud-backup.db | kubectl exec -i -n nextcloud restore -- sqlite3 /var/www/html/data/nextcloud.db
 
 # Correct the user and group
 kubectl -n nextcloud exec -i restore -- chown --recursive www-data:www-data /var/www/html
