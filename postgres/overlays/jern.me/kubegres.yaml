@@ -5,6 +5,6 @@ metadata:
 spec:
    replicas: 2
    backup:
-    schedule: "@daily"
+    schedule: "0 1 * * *"
     pvcName: my-backup-pvc
     volumeMount: /var/lib/backup
