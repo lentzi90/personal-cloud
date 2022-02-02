@@ -6,5 +6,5 @@ spec:
    replicas: 2
    backup:
     schedule: "0 1 * * *"
-    pvcName: my-backup-pvc
+    pvcName: kubegres-backup
     volumeMount: /var/lib/backup
