@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: nextcloud
 spec:
-  strategy:
-    type: RollingUpdate
   template:
     spec:
       containers:
