@@ -4,6 +4,8 @@ metadata:
   name: kubegres
 spec:
    replicas: 2
+   failover:
+     isDisabled: true
    backup:
     schedule: "0 1 * * *"
     pvcName: kubegres-backup
