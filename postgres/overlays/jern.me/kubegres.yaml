@@ -6,7 +6,6 @@ spec:
    replicas: 2
    failover:
      isDisabled: true
-     promotePod: kubegres-7-0
    backup:
     schedule: "0 1 * * *"
     pvcName: kubegres-backup
