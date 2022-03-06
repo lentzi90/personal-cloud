@@ -4,9 +4,11 @@ metadata:
   name: kubegres
 spec:
    replicas: 2
-   failover:
-     isDisabled: true
    backup:
     schedule: "0 1 * * *"
     pvcName: kubegres-backup
     volumeMount: /var/lib/backup
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "800m"
