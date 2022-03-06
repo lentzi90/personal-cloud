@@ -3,8 +3,8 @@ kind: Kubegres
 metadata:
   name: kubegres
 spec:
-   replicas: 2
-   backup:
+  replicas: 2
+  backup:
     schedule: "0 1 * * *"
     pvcName: kubegres-backup
     volumeMount: /var/lib/backup
