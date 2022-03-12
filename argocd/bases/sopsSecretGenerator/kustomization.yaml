@@ -4,6 +4,10 @@ kind: Kustomization
 bases:
   - ../upstream
 
+images:
+  - name: alpine
+    newTag: 3.11.3
+
 patchesStrategicMerge:
   - argocd-repo-server-deployment.yaml
   - argocd-cm.yaml

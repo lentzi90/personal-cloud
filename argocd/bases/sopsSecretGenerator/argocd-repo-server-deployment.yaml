@@ -19,11 +19,11 @@ spec:
             - echo "Installing goabout kustomize sops...";
               set -e;
               set -x;
-              wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/v${VERSION}/SopsSecretGenerator_${VERSION}_${PLATFORM}_${ARCH};
+              wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/v${SOPS_SECRET_GENERATOR_VERSION}/SopsSecretGenerator_${SOPS_SECRET_GENERATOR_VERSION}_${PLATFORM}_${ARCH};
               chmod -v +x /custom-tools/SopsSecretGenerator;
               echo "Done"
               echo "Installing sops...";
-              wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/v3.5.0/sops-v3.5.0.linux;
+              wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.${PLATFORM};
               chmod +x /custom-tools/sops;
               echo "Done";
               set +x;
@@ -39,8 +39,10 @@ spec:
             - name: argocd-gpg-private-key
               mountPath: /gpg-keys
           env:
-            - name: VERSION
-              value: 1.4.0
+            - name: SOPS_SECRET_GENERATOR_VERSION
+              value: 1.4.1
+            - name: SOPS_VERSION
+              value: v3.7.2
             - name: PLATFORM
               value: linux
             - name: ARCH
