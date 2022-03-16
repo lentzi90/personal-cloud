@@ -38,15 +38,9 @@ spec:
             # repo-server can start.
             - name: argocd-gpg-private-key
               mountPath: /gpg-keys
-          env:
-            - name: SOPS_SECRET_GENERATOR_VERSION
-              value: 1.4.1
-            - name: SOPS_VERSION
-              value: v3.7.2
-            - name: PLATFORM
-              value: linux
-            - name: ARCH
-              value: amd64
+          envFrom:
+            - configMapRef:
+                name: sops-secret-generator-env
       containers:
         - name: argocd-repo-server
           volumeMounts:

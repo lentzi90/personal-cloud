@@ -11,3 +11,11 @@ images:
 patchesStrategicMerge:
   - argocd-repo-server-deployment.yaml
   - argocd-cm.yaml
+
+configMapGenerator:
+  - name: sops-secret-generator-env
+    literals:
+      - SOPS_SECRET_GENERATOR_VERSION=1.4.1
+      - SOPS_VERSION=v3.7.2
+      - PLATFORM=linux
+      - ARCH=amd64
