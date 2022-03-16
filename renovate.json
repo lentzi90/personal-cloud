@@ -10,5 +10,19 @@
         "token": "wcFMA/xDdHCJBTolAQ//bMJPXwNTPiQQudFSLawfYiUMVixbdlz60WRZxMal4G36Kjrv9Ha/xaSwB4xZUHHlwijf8Qm7YJwehWwuG6L5qScF0mXf2/zaR1j2kvlxo9WfKmsYTvxyIdSJevlbCLZB6R45LKPPtSal7hHuD0MiR5wQCSQ2BmjQ3nq+s15I1/AlrVAteCVQXARlpKkMp7O/UDvKc7AFOHFiNqud/OncjB8a5oT0hihayu7UUu1q4fPElVeLqD1T+iwipUca9p53a8I8Op0T4paOWeJ28lgUUPzHzSwIpEWUE6boJMoaExGdQw5I71qt+zLYefKuVUipI2PetmpEQo6+v2xQfNezSoTQfvCfA79ddFJBszijE58xITSDDficQAM6CYQg3ld8S4y9s1xBQLKduM079z9rZPtjRRphevevp49Q57JGjiiTVtX+AaBy8x1Baww/JcIIdcUbrYIkK63dDkNxbRAaTV+kibnGbPBTHC8lvvS7vJqYv5i3mZEzr6ItvkCR1PLFARJkNfyZ7B9iqZQaFXtH10AVQK2gUQ/TI7YPB8hNnQQHwswMhjzNL4SdI+VBb9np5qqOpyahigxsApxWwJKpecEpL61ZgjOalbvl/NYNiEKhV1wRxjKZ2EZDcp4I2CrIhw+URz2H9t1iwhMv9i4sHOF2ZsgmgulLB7E6osIMDJ7SgQFCuWqWDv3GE/CUEjFkqMjHT0LVcIwv5U6TAfbpMJ62bzo5rXmW4jMda9yzbPxNxXOddk6uI7sIDUWOBFAorQIVKJfdkMcwu78LYvyUO+n8rE1LOAnBBAb8WfmjG5FOLZEWJqlxvhHvLff+TI12bPwgyhS3eydhkmhHyGvLNgwt1w"
       }
     }
+  ],
+  "regexManagers": [
+     {
+       "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+       "matchStrings": ["SOPS_SECRET_GENERATOR_VERSION=(?<currentValue>.*?)"],
+       "depNameTemplate": "goabout/kustomize-sopssecretgenerator",
+       "datasourceTemplate": "github-releases"
+     },
+     {
+       "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+       "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)"],
+       "depNameTemplate": "mozilla/sops",
+       "datasourceTemplate": "github-releases"
+     }
   ]
 }
