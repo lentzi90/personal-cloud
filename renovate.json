@@ -14,13 +14,13 @@
   "regexManagers": [
      {
        "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
-       "matchStrings": ["SOPS_SECRET_GENERATOR_VERSION=(?<currentValue>.*?)"],
+       "matchStrings": ["SOPS_SECRET_GENERATOR_VERSION=(?<currentValue>.*?)\\n"],
        "depNameTemplate": "goabout/kustomize-sopssecretgenerator",
        "datasourceTemplate": "github-releases"
      },
      {
        "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
-       "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)"],
+       "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)\\n"],
        "depNameTemplate": "mozilla/sops",
        "datasourceTemplate": "github-releases"
      }
