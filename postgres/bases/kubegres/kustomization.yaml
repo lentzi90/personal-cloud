@@ -17,3 +17,7 @@ resources:
 configurations:
   # Make kustomize understand that the Kubegres object references the secret
   - name-reference.yaml
+
+images:
+  - name: postgres
+    newTag: 14.1
