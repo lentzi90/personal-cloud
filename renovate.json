@@ -23,6 +23,12 @@
        "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)\\n"],
        "depNameTemplate": "mozilla/sops",
        "datasourceTemplate": "github-releases"
+     },
+     {
+       "fileMatch": ["^nginx-ingress/base/kustomization.yaml$"],
+       "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
+       "depNameTemplate": "kubernetes/ingress-nginx",
+       "datasourceTemplate": "github-releases"
      }
   ]
 }
