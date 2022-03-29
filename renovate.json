@@ -35,6 +35,12 @@
        "matchStrings": ["download\\/(?<currentValue>.*?)\\/cert-manager.yaml\\n"],
        "depNameTemplate": "cert-manager/cert-manager",
        "datasourceTemplate": "github-releases"
+     },
+     {
+       "fileMatch": ["^prometheus/base/prometheus.yaml$"],
+       "matchStrings": ["version: (?<currentValue>.*?)\\n"],
+       "depNameTemplate": "prometheus/prometheus",
+       "datasourceTemplate": "github-releases"
      }
   ]
 }
