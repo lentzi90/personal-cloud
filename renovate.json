@@ -29,6 +29,12 @@
        "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
        "depNameTemplate": "kubernetes/ingress-nginx",
        "datasourceTemplate": "github-releases"
+     },
+     {
+       "fileMatch": ["^cert-manager/base/kustomization.yaml$"],
+       "matchStrings": ["download\\/(?<currentValue>.*?)\\/cert-manager.yaml\\n"],
+       "depNameTemplate": "cert-manager/cert-manager",
+       "datasourceTemplate": "github-releases"
      }
   ]
 }
