@@ -41,6 +41,12 @@
        "matchStrings": ["version: (?<currentValue>.*?)\\n"],
        "depNameTemplate": "prometheus/prometheus",
        "datasourceTemplate": "github-releases"
+     },
+     {
+       "fileMatch": ["^kubegres/base/kustomization.yaml$"],
+       "matchStrings": ["kubegres\\/(?<currentValue>.*?)\\/kubegres.yaml\\n"],
+       "depNameTemplate": "reactive-tech/kubegres",
+       "datasourceTemplate": "github-releases"
      }
   ]
 }
