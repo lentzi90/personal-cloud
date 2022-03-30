@@ -15,9 +15,8 @@ resources:
 #       - POSTGRES_PASSWORD=replaceme
 
 configurations:
-  # Make kustomize understand that the Kubegres object references the secret
-  - name-reference.yaml
+  - kustomizeconfig/kubegres.yaml
 
 images:
   - name: postgres
-    newTag: 14.1
+    newTag: "14.1"
