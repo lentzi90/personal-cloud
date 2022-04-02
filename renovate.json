@@ -28,7 +28,8 @@
        "fileMatch": ["^nginx-ingress/base/kustomization.yaml$"],
        "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
        "depNameTemplate": "kubernetes/ingress-nginx",
-       "datasourceTemplate": "github-releases"
+       "datasourceTemplate": "github-releases",
+       "extractVersionTemplate": "^controller-(?<version>.*?)$"
      },
      {
        "fileMatch": ["^cert-manager/base/kustomization.yaml$"],
