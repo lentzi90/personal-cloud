@@ -3,6 +3,9 @@
   "docker": {
     "enabled": false
   },
+  "kustomize": {
+    "ignorePaths": ["**/nginx-ingress/**"]
+  },
   "hostRules": [
     {
       "matchHost": "index.docker.io",
