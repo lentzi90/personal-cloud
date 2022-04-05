@@ -6,7 +6,7 @@ bases:
 
 images:
   - name: alpine
-    newTag: 3.15.3
+    newTag: 3.15.4
 
 patchesStrategicMerge:
   - argocd-repo-server-deployment.yaml
