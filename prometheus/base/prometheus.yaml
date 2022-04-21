@@ -3,7 +3,7 @@ kind: Prometheus
 metadata:
   name: prometheus
 spec:
-  version: 2.34.0
+  version: v2.35.0
   serviceAccountName: prometheus
   serviceMonitorSelector:
     matchLabels: {}
