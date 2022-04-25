@@ -6,7 +6,7 @@ namespace: argocd
 commonLabels:
   environment: kind
 
-bases:
+resources:
   - ../../bases/upstream
 
 resources:

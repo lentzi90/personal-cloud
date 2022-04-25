@@ -6,9 +6,7 @@ namespace: argocd
 commonLabels:
   environment: minikube
 
-bases:
-  - ../../bases/sops
-
 resources:
+  - ../../bases/sops
   - namespace.yaml
   - argocd-app.yaml

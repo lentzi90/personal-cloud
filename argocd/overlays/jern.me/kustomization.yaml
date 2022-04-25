@@ -6,8 +6,10 @@ namespace: argocd
 commonLabels:
   environment: jern.me
 
-bases:
+resources:
   - ../../bases/sopsSecretGenerator
+  - ingress.yaml
+  - namespace.yaml
 
 patchesStrategicMerge:
   - argocd-server-deployment.yaml
@@ -15,8 +17,5 @@ patchesStrategicMerge:
   - argocd-dex-server-deployment.yaml
   - argocd-redis-deployment.yaml
   - argocd-repo-server-deployment.yaml
+  - argocd-notifications-deployment.yaml
   - argocd-ssh-known-hosts-cm.yaml
-
-resources:
-  - ingress.yaml
-  - namespace.yaml
