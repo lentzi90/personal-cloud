@@ -11,6 +11,7 @@ resources:
 
 patchesStrategicMerge:
   - daemonset.yaml
+  - deployment.yaml
 
 configMapGenerator:
 - name: config
