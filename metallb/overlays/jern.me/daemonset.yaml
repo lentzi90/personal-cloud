@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        ingress: true
+        ingress: "true"
       containers:
         - name: speaker
           resources:
