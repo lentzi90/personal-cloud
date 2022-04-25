@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: speaker
+  namespace: metallb-system
+spec:
+  template:
+    spec:
+      nodeSelector:
+        ingress: true
+      containers:
+        - name: speaker
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "25Mi"

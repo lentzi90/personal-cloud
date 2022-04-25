@@ -6,8 +6,11 @@ namespace: metallb-system
 commonLabels:
   environment: jern.me
 
-bases:
+resources:
   - ../../bases/upstream
+
+patchesStrategicMerge:
+  - daemonset.yaml
 
 configMapGenerator:
 - name: config
