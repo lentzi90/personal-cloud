@@ -16,5 +16,5 @@ configMapGenerator:
   - name: sops-secret-generator-env
     literals:
       - SOPS_SECRET_GENERATOR_VERSION=1.4.1
-      - SOPS_VERSION=v3.7.2
+      - SOPS_VERSION=v3.7.3
       - PLATFORM=linux
