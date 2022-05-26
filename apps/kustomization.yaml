@@ -11,6 +11,7 @@ resources:
   - ingress-nginx-app.yaml
   - cert-manager-app.yaml
   - blog-app.yaml
+  - personal-blog-app.yaml
   - metallb-app.yaml
   - kubegres-app.yaml
   - kubegres-instance-app.yaml

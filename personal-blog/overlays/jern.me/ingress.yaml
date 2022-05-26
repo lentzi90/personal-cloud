@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: personal-blog
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - secretName: personal-blog-certs
+      hosts:
+        - lennart.jern.me
+  rules:
+    - host: lennart.jern.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: personal-blog
+                port:
+                  name: http

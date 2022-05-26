@@ -1,0 +1,6 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: personal-blog
+spec:
+  minAvailable: 1
