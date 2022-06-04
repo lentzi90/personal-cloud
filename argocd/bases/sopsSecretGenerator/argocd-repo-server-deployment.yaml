@@ -28,7 +28,7 @@ spec:
               *)
                 echo "Unsupported ARCH=$ARCH"; exit 1;;
               esac;
-              wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/v${SOPS_SECRET_GENERATOR_VERSION}/SopsSecretGenerator_${SOPS_SECRET_GENERATOR_VERSION}_${PLATFORM}_${ARCH};
+              wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/${SOPS_SECRET_GENERATOR_VERSION}/SopsSecretGenerator_${SOPS_SECRET_GENERATOR_VERSION}_${PLATFORM}_${ARCH};
               chmod -v +x /custom-tools/SopsSecretGenerator;
               echo "Done"
               echo "Installing sops...";
