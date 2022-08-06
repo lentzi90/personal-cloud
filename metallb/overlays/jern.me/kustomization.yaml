@@ -16,3 +16,8 @@ patchesStrategicMerge:
 
 generatorOptions:
   disableNameSuffixHash: true
+
+secretGenerator:
+- name: memberlist
+  files:
+    - secretkey
