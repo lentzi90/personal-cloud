@@ -8,20 +8,11 @@ commonLabels:
 
 resources:
   - ../../bases/upstream
+  - ippool.yaml
 
 patchesStrategicMerge:
   - daemonset.yaml
   - deployment.yaml
-
-configMapGenerator:
-- name: config
-  files:
-    - config=config.yaml
-
-secretGenerator:
-- name: memberlist
-  files:
-    - secretkey
 
 generatorOptions:
   disableNameSuffixHash: true
