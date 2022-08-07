@@ -6,12 +6,23 @@ See https://docs.nextcloud.com/server/stable/admin_manual/maintenance/backup.htm
 
 ### Snippets
 
-Backup:
+Exec into pod:
 
 ```bash
 POD_NAME=$(kubectl -n nextcloud get pod -l app.kubernetes.io/component=nextcloud -o jsonpath="{.items[0].metadata.name}")
 # Enable login shell for www-data user
 kubectl -n nextcloud exec -it ${POD_NAME} -- chsh -s /bin/bash www-data
+```
+
+Add missing indices:
+
+```bash
+kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ db:add-missing-indices"
+```
+
+Backup:
+
+```bash
 # Enable maintenance mode
 kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ maintenance:mode --on"
 
