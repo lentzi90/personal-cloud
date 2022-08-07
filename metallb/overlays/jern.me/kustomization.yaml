@@ -9,7 +9,7 @@ commonLabels:
 resources:
   - ../../bases/upstream
   - ippool.yaml
-  - l2advertisement
+  - l2advertisement.yaml
 
 patchesStrategicMerge:
   - daemonset.yaml
