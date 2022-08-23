@@ -20,6 +20,12 @@ Add missing indices:
 kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ db:add-missing-indices"
 ```
 
+Scan files:
+
+```bash
+kubectl -n nextcloud exec -it ${POD_NAME} -- su www-data -c "php occ files:scan --all"
+```
+
 Backup:
 
 ```bash
