@@ -15,6 +15,6 @@ patchesStrategicMerge:
 configMapGenerator:
   - name: sops-secret-generator-env
     literals:
-      - SOPS_SECRET_GENERATOR_VERSION=v1.5.1
+      - SOPS_SECRET_GENERATOR_VERSION=v1.6.0
       - SOPS_VERSION=v3.7.3
       - PLATFORM=linux
