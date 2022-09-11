@@ -6,6 +6,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        ingress: "true"
       containers:
       - name: controller
         resources:
