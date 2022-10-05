@@ -13,5 +13,3 @@ spec:
     targetRevision: HEAD
     plugin:
       name: sops
-  syncPolicy:
-    automated: {}
