@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-      - name: cert-manager
+      - name: cert-manager-controller
         resources:
           requests:
             cpu: "10m"
