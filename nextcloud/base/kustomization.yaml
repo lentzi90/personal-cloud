@@ -8,7 +8,7 @@ commonLabels:
 
 images:
   - name: nextcloud
-    newTag: 25.0.0-apache
+    newTag: 25.0.1-apache
 
 resources:
   - deployment.yaml
