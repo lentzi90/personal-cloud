@@ -51,8 +51,21 @@ spec:
             - configMapRef:
                 name: sops-secret-generator-env
       containers:
-        - name: argocd-repo-server
+        # Add CMP container
+        - name: cmp
+          command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+          image: alpine:3.11.3
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
           volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+            - mountPath: /home/argocd/cmp-server/plugins
+              name: plugins
+            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+              subPath: plugin.yaml
+              name: cmp-plugin
             - mountPath: /.config/kustomize/plugin/goabout.com/v1beta1/sopssecretgenerator/SopsSecretGenerator
               name: custom-tools
               subPath: SopsSecretGenerator
@@ -64,6 +77,3 @@ spec:
             # repo-server can start.
             - name: argocd-gpg-private-key
               mountPath: /gpg-keys
-          env:
-            - name: XDG_CONFIG_HOME
-              value: /.config

@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ConfigManagementPlugin
+metadata:
+  name: sops-secret-generator
+spec:
+  version: v1.0
+  init:
+    command: ["/bin/bash", "-c"]
+    args:
+      - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
+  ## Command to generate manifests YAML
+  generate:
+    command: ["/bin/bash", "-c"]
+    args:
+     - kustomize build --enable-alpha-plugins .;
+  discover:
+    fileName: "./*.sops.yaml"
