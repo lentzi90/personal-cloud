@@ -11,6 +11,9 @@ spec:
         - name: argocd-gpg-private-key
           secret:
             secretName: argocd-gpg-private-key
+        - name: cmp-plugin
+          configMap:
+            name: cmp-plugin
       initContainers:
         - name: install-goaboutsops
           image: alpine:3.11.3

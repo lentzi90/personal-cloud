@@ -11,7 +11,5 @@ spec:
     path: grafana/overlays/jern.me
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
-    plugin:
-      name: sops
   syncPolicy:
     automated: {}
