@@ -11,9 +11,9 @@ spec:
         - name: argocd-gpg-private-key
           secret:
             secretName: argocd-gpg-private-key
-        - name: cmp-plugin
+        - name: sops-secret-generator-cmp
           configMap:
-            name: cmp-plugin
+            name: sops-secret-generator-cmp
       initContainers:
         - name: install-goaboutsops
           image: alpine:3.11.3
@@ -68,7 +68,7 @@ spec:
               name: plugins
             - mountPath: /home/argocd/cmp-server/config/plugin.yaml
               subPath: plugin.yaml
-              name: cmp-plugin
+              name: sops-secret-generator-cmp
             - mountPath: /.config/kustomize/plugin/goabout.com/v1beta1/sopssecretgenerator/SopsSecretGenerator
               name: custom-tools
               subPath: SopsSecretGenerator
