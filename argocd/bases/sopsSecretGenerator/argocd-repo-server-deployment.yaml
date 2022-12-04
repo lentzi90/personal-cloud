@@ -31,7 +31,7 @@ spec:
               esac;
               echo "Installing kustomize";
               wget -O /custom-tools/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_${PLATFORM}_${ARCH}.tar.gz;
-              tar -xz /custom-tools/kustomize.tar.gz -C /custom-tools;
+              tar -xf /custom-tools/kustomize.tar.gz -C /custom-tools;
               echo "Done";
               echo "Installing goabout kustomize sops...";
               wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/${SOPS_SECRET_GENERATOR_VERSION}/SopsSecretGenerator_${SOPS_SECRET_GENERATOR_VERSION#v}_${PLATFORM}_${ARCH};
