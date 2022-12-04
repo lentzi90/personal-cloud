@@ -7,7 +7,9 @@ spec:
   init:
     command: ["/bin/sh", "-c"]
     args:
-      - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
+      - apk update;
+        apk add gpg;
+        gpg --import /gpg-keys/argocd-gpg-private-key.gpg
   ## Command to generate manifests YAML
   generate:
     command: ["/bin/sh", "-c"]
