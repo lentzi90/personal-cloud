@@ -83,6 +83,9 @@ spec:
             - name: custom-tools
               mountPath: /usr/local/bin/sops
               subPath: sops
+            - name: custom-tools
+              mountPath: /custom-tools/.gnupg
+              subPath: .gnupg
             # Mount a secret with the secret gpg key used by sops.
             # NOTE: You need to manually create this secret before the
             # repo-server can start.
