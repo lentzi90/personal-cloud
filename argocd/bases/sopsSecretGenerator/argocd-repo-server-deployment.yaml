@@ -57,7 +57,7 @@ spec:
         # Add CMP container
         - name: cmp
           command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-          image: fedora:37
+          image: registry.fedoraproject.org/fedora-minimal:37
           securityContext:
             runAsNonRoot: true
             runAsUser: 999
