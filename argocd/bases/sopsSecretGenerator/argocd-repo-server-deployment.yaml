@@ -19,9 +19,7 @@ spec:
           image: alpine:3.11.3
           command: ["/bin/sh", "-c"]
           args:
-            - echo "Installing goabout kustomize sops...";
-              set -e;
-              set -x;
+            - set -e;              
               arch_out="$(arch)";
               case ${arch_out} in
               x86_64)
@@ -31,6 +29,11 @@ spec:
               *)
                 echo "Unsupported ARCH=$ARCH"; exit 1;;
               esac;
+              echo "Installing kustomize";
+              wget -O /custom-tools/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_${PLATFORM}_${ARCH}.tar.gz;
+              tar -xz /custom-tools/kustomize.tar.gz -C /custom-tools;
+              echo "Done";
+              echo "Installing goabout kustomize sops...";
               wget -O /custom-tools/SopsSecretGenerator https://github.com/goabout/kustomize-sopssecretgenerator/releases/download/${SOPS_SECRET_GENERATOR_VERSION}/SopsSecretGenerator_${SOPS_SECRET_GENERATOR_VERSION#v}_${PLATFORM}_${ARCH};
               chmod -v +x /custom-tools/SopsSecretGenerator;
               echo "Done"
@@ -43,7 +46,6 @@ spec:
               chown 999:999 /custom-tools/.gnupg;
               chmod o=rwx,g=,o= /custom-tools/.gnupg;
               echo "Done";
-              set +x;
               echo "Done.";
           volumeMounts:
             - mountPath: /custom-tools
@@ -83,6 +85,9 @@ spec:
             - name: custom-tools
               mountPath: /usr/local/bin/sops
               subPath: sops
+            - name: custom-tools
+              mountPath: /usr/local/bin/kustomize
+              subPath: kustomize
             - name: custom-tools
               mountPath: /custom-tools/.gnupg
               subPath: .gnupg
