@@ -5,12 +5,12 @@ metadata:
 spec:
   version: v1.0
   init:
-    command: ["/bin/bash", "-c"]
+    command: ["/bin/sh", "-c"]
     args:
       - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
   ## Command to generate manifests YAML
   generate:
-    command: ["/bin/bash", "-c"]
+    command: ["/bin/sh", "-c"]
     args:
      - kustomize build --enable-alpha-plugins .;
   discover:
