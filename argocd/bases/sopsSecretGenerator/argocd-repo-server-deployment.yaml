@@ -38,6 +38,11 @@ spec:
               wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.${PLATFORM};
               chmod +x /custom-tools/sops;
               echo "Done";
+              echo "Configuring GPG";
+              mkdir -p /custom-tools/.gnupg;
+              chown 999:999 /custom-tools/.gnupg;
+              chmod o=rwx,g=,o= /custom-tools/.gnupg;
+              echo "Done";
               set +x;
               echo "Done.";
           volumeMounts:
@@ -61,6 +66,9 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 999
+          env:
+            - name: GNUPGHOME
+              value: /custom-tools/.gnupg
           volumeMounts:
             - mountPath: /var/run/argocd
               name: var-files
