@@ -7,6 +7,8 @@ resources:
 images:
   - name: alpine
     newTag: 3.17.0
+  - name: fedora
+    newTag: 37
 
 patchesStrategicMerge:
   - argocd-repo-server-deployment.yaml
