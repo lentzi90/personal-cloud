@@ -27,8 +27,10 @@ btrfs filesystem df --human-readable .
 ## Testing with KinD
 
 ```bash
-kind create cluster
-kubectl apply -k cert-manager/overlays/kind
+sudo kind create cluster --config=kind-config.yaml
+sudo kind get kubeconfig > kubeconfig.yaml
+export KUBECONFIG=kubeconfig.yaml
+
 kubectl apply -k argocd/overlays/kind
 
 ## Note: These commands need manual input!
