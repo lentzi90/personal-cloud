@@ -15,10 +15,5 @@ patchesStrategicMerge:
   - daemonset.yaml
   - deployment.yaml
 
-generatorOptions:
-  disableNameSuffixHash: true
-
-secretGenerator:
-- name: memberlist
-  files:
-    - secretkey
+generators:
+  - secretkey-generator.yaml
