@@ -5,3 +5,5 @@ metadata:
   namespace: ingress-nginx
 spec:
   loadBalancerIP: 192.168.1.150
+  externalIPs:
+    - 192.168.1.200
