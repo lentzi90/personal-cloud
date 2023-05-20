@@ -5,8 +5,4 @@ commonLabels:
   environment: kind
 
 bases:
-  - ../../base
-
-patchesStrategicMerge:
-  - service.yaml
-  - deployment.yaml
+  - ../../bases/kind

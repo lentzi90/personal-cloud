@@ -1,12 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: argocd
+namespace: kubegres-system
 
 commonLabels:
   environment: kind
 
-resources:
-  - ../../bases/sopsSecretGenerator
-  - namespace.yaml
-  - ingress.yaml
+bases:
+  - ../../base
