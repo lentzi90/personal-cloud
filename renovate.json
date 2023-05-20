@@ -28,7 +28,7 @@
        "datasourceTemplate": "github-releases"
      },
      {
-       "fileMatch": ["^nginx-ingress/base/kustomization.yaml$"],
+       "fileMatch": ["^nginx-ingress/bases/cloud/kustomization.yaml$", "^nginx-ingress/bases/kind/kustomization.yaml$"],
        "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
        "depNameTemplate": "kubernetes/ingress-nginx",
        "datasourceTemplate": "github-releases",
