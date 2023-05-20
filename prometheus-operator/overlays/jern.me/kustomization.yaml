@@ -4,8 +4,6 @@ kind: Kustomization
 # Override the namespace (default is "default")
 namespace: monitoring
 
-bases:
-  - ../../base
-
 resources:
+  - ../../base
   - namespace.yaml

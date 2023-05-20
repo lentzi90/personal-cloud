@@ -6,12 +6,10 @@ namespace: nextcloud
 commonLabels:
   environment: kind
 
-bases:
-  - ../../base
-
-patchesStrategicMerge:
-  - deployment.yaml
-  - ingress.yaml
-
 resources:
+  - ../../base
   - namespace.yaml
+
+patches:
+  - path: deployment.yaml
+  - path: ingress.yaml

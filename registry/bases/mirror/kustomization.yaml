@@ -4,7 +4,7 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/name: registry
 
-bases:
+resources:
   - ../simple
 
 ## Create a configmap with the config.yml for the registry

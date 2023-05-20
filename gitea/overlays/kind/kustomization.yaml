@@ -6,12 +6,10 @@ namespace: gitea
 commonLabels:
   environment: kind
 
-bases:
-  - ../../base
-
-patchesStrategicMerge:
-- deployment.yaml
-- ingress.yaml
-
 resources:
-- namespace.yaml
+  - ../../base
+  - namespace.yaml
+
+patches:
+  - path: deployment.yaml
+  - path: ingress.yaml

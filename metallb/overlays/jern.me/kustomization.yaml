@@ -11,9 +11,9 @@ resources:
   - ippool.yaml
   - l2advertisement.yaml
 
-patchesStrategicMerge:
-  - daemonset.yaml
-  - deployment.yaml
+patches:
+  - path: daemonset.yaml
+  - path: deployment.yaml
 
 generators:
   - secretkey-generator.yaml

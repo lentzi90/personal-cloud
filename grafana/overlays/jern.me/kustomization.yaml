@@ -9,8 +9,8 @@ commonLabels:
 resources:
   - ../../base
 
-patchesStrategicMerge:
-  - deployment.yaml
+patches:
+  - path: deployment.yaml
 
 configMapGenerator:
   - name: grafana-env

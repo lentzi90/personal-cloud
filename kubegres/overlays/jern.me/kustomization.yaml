@@ -6,5 +6,5 @@ namespace: kubegres-system
 commonLabels:
   environment: jern.me
 
-bases:
+resources:
   - ../../base

@@ -6,11 +6,9 @@ namespace: blog
 commonLabels:
   environment: jern.me
 
-bases:
-  - ../../base
-
-patchesStrategicMerge:
-- ingress.yaml
-
 resources:
-- namespace.yaml
+  - ../../base
+  - namespace.yaml
+
+patches:
+- path: ingress.yaml
