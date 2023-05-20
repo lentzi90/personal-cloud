@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+  labels:
+    app.kubernetes.io/component: collabora
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: collabora
+    spec:
+      containers:
+      - name: collabora
+        image: collabora/code:22.05.7.3.1
+        ports:
+        - name: http
+          containerPort: 9980
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+            # httpHeaders:
+            # - name: Host
+            #   value: collabora.jern.me
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+            # httpHeaders:
+            # - name: Host
+            #   value: collabora.jern.me
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: 50m
+            memory: 300Mi
+      #   volumeMounts:
+      #   - name: collabora-data
+      #     mountPath: /var/www/html/
+      #     subPath: root
+      # volumes:
+      # - name: collabora-data
+      #   persistentVolumeClaim:
+      #     claimName: collabora-data
