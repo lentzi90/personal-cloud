@@ -6,18 +6,16 @@ namespace: nextcloud
 commonLabels:
   environment: jern.me
 
-bases:
-  - ../../base
-
-patchesStrategicMerge:
-  - deployment.yaml
-  - ingress.yaml
-  - nextcloud-data-pvc.yaml
-  - cronjob.yaml
-
 resources:
+  - ../../base
   - namespace.yaml
   - nextcloud-pv.yaml
+
+patches:
+  - path: deployment.yaml
+  - path: ingress.yaml
+  - path: nextcloud-data-pvc.yaml
+  - path: cronjob.yaml
 
 configMapGenerator:
   - name: postgres-env

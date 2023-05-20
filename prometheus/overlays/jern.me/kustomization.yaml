@@ -5,10 +5,10 @@ kind: Kustomization
 # Note: This is expected to already exist, since the operator runs in it as well.
 namespace: monitoring
 
-bases:
+resources:
   - ../../base
 
 # resources:
 #   - namespace.yaml
-patchesStrategicMerge:
-  - prometheus.yaml
+patches:
+  - path: prometheus.yaml

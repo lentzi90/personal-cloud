@@ -10,8 +10,8 @@ images:
   - name: fedora-minimal
     newTag: "37"
 
-patchesStrategicMerge:
-  - argocd-repo-server-deployment.yaml
+patches:
+  - path: argocd-repo-server-deployment.yaml
 
 configMapGenerator:
   - name: sops-secret-generator-env
