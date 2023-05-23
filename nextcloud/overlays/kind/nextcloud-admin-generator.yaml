@@ -1,0 +1,7 @@
+apiVersion: goabout.com/v1beta1
+kind: SopsSecretGenerator
+metadata:
+  name: nextcloud-admin
+envs:
+  - nextcloud-admin.env
+type: Opaque

@@ -6,18 +6,16 @@ namespace: kubegres
 commonLabels:
   environment: jern.me
 
-bases:
-  - ../../bases/kubegres
-
 resources:
+  - ../../bases/kubegres
   - namespace.yaml
   - kubegres-pv.yaml
   - local-storageclass.yaml
   - backup-pv.yaml
   - backup-pvc.yaml
 
-patchesStrategicMerge:
-  - kubegres.yaml
+patches:
+  - path: kubegres.yaml
 
 generators:
   - postgres-credentials-generator.yaml

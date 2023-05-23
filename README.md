@@ -16,6 +16,7 @@ rsync --archive --compress --progress --delete lennart@nasse.lan:/share/Public/k
 ```
 
 Make btrfs snapshots of the data.
+
 ```bash
 sudo btrfs subvolume snapshot -r . .snapshots/nasse-$(date +%Y-%m-%d)
 
@@ -51,6 +52,8 @@ argocd --port-forward --port-forward-namespace=argocd cluster list
 kubectl -n argocd apply -f apps/kind/argocd-app.yaml
 kubectl -n argocd apply -f apps/kind/cert-manager-app.yaml
 kubectl -n argocd apply -f apps/kind/ingress-nginx-app.yaml
+# Sync the ingress controller since it does not have auto sync enabled
+argocd --port-forward --port-forward-namespace=argocd app sync ingress-nginx
 ```
 
 At this point, we have a working ingress controller, argocd and cert-manager set up.
@@ -58,5 +61,29 @@ Add `127.0.0.1 argocd.local` to `/etc/hosts` and go to [argocd.local](https://ar
 Log in as `admin` with the password you get from this commands:
 
 ```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+  kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+### Deploying nextcloud
+
+First we need to set up the database.
+
+```bash
+kubectl -n argocd apply -f apps/kind/kubegres-operator-app.yaml
+kubectl -n argocd apply -f apps/kind/kubegres-app.yaml
+argocd --port-forward --port-forward-namespace=argocd app sync kubegres
+```
+
+This will deploy the Kubegres operator and an Postgres instance using Kubegres.
+Now we can deploy nextcloud:
+
+```bash
+kubectl -n argocd apply -f apps/kind/nextcloud-app.yaml
+argocd --port-forward --port-forward-namespace=argocd app sync nextcloud
+```
+
+Login at [nextcloud.local](https://nextcloud.local) as `admin` with the password
+
+```bash
+sops --decrypt --extract '["NEXTCLOUD_ADMIN_PASSWORD"]' nextcloud/overlays/kind/nextcloud-admin.env
 ```
