@@ -8,5 +8,5 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: nasse.lan
-    path: "/Public/kubegres"
+    server: "192.168.0.205"
+    path: "/media/data/Public/kubegres"
