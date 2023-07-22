@@ -11,5 +11,4 @@ spec:
     path: prometheus/overlays/jern.me
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
-  syncPolicy:
-    automated: {}
+  syncPolicy: {}
