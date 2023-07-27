@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: nextcloud-cron
 spec:
-  suspend: true
+  suspend: false
   jobTemplate:
     spec:
       template:
