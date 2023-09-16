@@ -38,7 +38,7 @@ spec:
               chmod -v +x /custom-tools/SopsSecretGenerator;
               echo "Done"
               echo "Installing sops...";
-              wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.${PLATFORM};
+              wget -qO /custom-tools/sops https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.${PLATFORM}.${ARCH};
               chmod +x /custom-tools/sops;
               echo "Done";
               echo "Configuring GPG";
