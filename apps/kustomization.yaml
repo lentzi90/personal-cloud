@@ -13,6 +13,7 @@ resources:
   - blog-app.yaml
   - personal-blog-app.yaml
   # - metallb-app.yaml
+  - cloudnative-pg-app.yaml
   - kubegres-app.yaml
   - kubegres-instance-app.yaml
   - prometheus-operator-app.yaml
