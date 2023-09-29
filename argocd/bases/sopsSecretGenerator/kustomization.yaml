@@ -6,7 +6,7 @@ resources:
 
 images:
   - name: alpine
-    newTag: 3.18.3
+    newTag: 3.18.4
   - name: fedora-minimal
     newTag: "37"
 
