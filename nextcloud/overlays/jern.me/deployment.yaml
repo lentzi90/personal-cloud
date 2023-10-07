@@ -21,7 +21,7 @@ spec:
             httpHeaders:
             - name: Host
               value: nextcloud.jern.me
-          initialDelaySeconds: 300
+          initialDelaySeconds: 900
           timeoutSeconds: 10
           failureThreshold: 6
         readinessProbe:
@@ -31,7 +31,7 @@ spec:
             httpHeaders:
             - name: Host
               value: nextcloud.jern.me
-          initialDelaySeconds: 30
+          initialDelaySeconds: 900
           timeoutSeconds: 3
           periodSeconds: 5
         resources:
