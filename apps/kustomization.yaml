@@ -12,7 +12,7 @@ resources:
   - cert-manager-app.yaml
   - blog-app.yaml
   - personal-blog-app.yaml
-  # - metallb-app.yaml
+  - metallb-app.yaml
   - cloudnative-pg-app.yaml
   - kubegres-app.yaml
   - kubegres-instance-app.yaml
