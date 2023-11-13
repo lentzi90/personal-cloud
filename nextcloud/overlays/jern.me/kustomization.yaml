@@ -7,7 +7,7 @@ commonLabels:
   environment: jern.me
 
 resources:
-  - ../../base
+  - ../../bases/basic
   - namespace.yaml
   - nextcloud-pv.yaml
 

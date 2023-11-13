@@ -7,7 +7,7 @@ commonLabels:
   environment: kind
 
 resources:
-  - ../../base
+  - ../../bases/basic
   - namespace.yaml
 
 patches:
