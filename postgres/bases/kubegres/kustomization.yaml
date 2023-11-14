@@ -19,4 +19,4 @@ configurations:
 
 images:
   - name: postgres
-    newTag: "14.9"
+    newTag: "14.10"
