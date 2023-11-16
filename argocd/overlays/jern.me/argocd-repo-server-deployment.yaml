@@ -11,5 +11,3 @@ spec:
           requests:
             cpu: "10m"
             memory: "120Mi"
-        securityContext:
-          readOnlyRootFilesystem: false

@@ -19,7 +19,7 @@ spec:
           image: alpine:3.11.3
           command: ["/bin/sh", "-c"]
           args:
-            - set -e;              
+            - set -e;
               arch_out="$(arch)";
               case ${arch_out} in
               x86_64)
@@ -96,3 +96,7 @@ spec:
             # repo-server can start.
             - name: argocd-gpg-private-key
               mountPath: /gpg-keys
+        - name: argocd-repo-server
+          # Need to alow write to root filesystem in order to import the PGP key
+          securityContext:
+            readOnlyRootFilesystem: false
