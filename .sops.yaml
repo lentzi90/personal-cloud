@@ -1,4 +1,12 @@
 creation_rules:
+    # Secrets in all kind overlays are for testing and as examples only.
+    # They should be encrypted for the test key and my personal key.
+    - path_regex: "overlays/kind/.*"
+      pgp: >-
+        3820F67B590431A8E2ECBBC88CC3ECACCE12D523,
+        058F52C0D6C27A337E7E65E1F9AAA4EEDF3ACD5E
+    # All other secrets should be encrypted for my personal key and
+    # ArgoCDs key in the jern.me environment.
     - pgp: >-
         3820F67B590431A8E2ECBBC88CC3ECACCE12D523,
         20F52DB0E83A93F7CC6A9B1CD88F6C094FDC0C2B

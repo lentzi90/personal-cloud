@@ -6,15 +6,13 @@ namespace: kubegres
 commonLabels:
   environment: kind
 
-bases:
-  - ../../bases/kubegres
-
 resources:
+  - ../../bases/kubegres
   - namespace.yaml
   - backup-pvc.yaml
 
-patchesStrategicMerge:
-  - kubegres.yaml
+patches:
+  - path: kubegres.yaml
 
 generators:
   - postgres-credentials-generator.yaml

@@ -13,3 +13,15 @@ resources:
 patches:
   - path: deployment.yaml
   - path: ingress.yaml
+  - path: cronjob.yaml
+
+configMapGenerator:
+  - name: postgres-env
+    literals:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=kubegres.kubegres
+
+generators:
+  - postgres-credentials-generator.yaml
+  - nextcloud-admin-generator.yaml
