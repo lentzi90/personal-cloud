@@ -2,24 +2,25 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../upstream
+- ../upstream
 
 images:
-  - name: alpine
-    newTag: 3.18.4
-  - name: fedora-minimal
-    newTag: "37"
+- name: alpine
+  newTag: 3.18.4
+- name: fedora-minimal
+  newTag: "37"
 
 patches:
-  - path: argocd-repo-server-deployment.yaml
+- path: argocd-repo-server-deployment.yaml
 
 configMapGenerator:
-  - name: sops-secret-generator-env
-    literals:
-      - KUSTOMIZE_VERSION=v4.5.7
-      - SOPS_SECRET_GENERATOR_VERSION=v1.6.0
-      - SOPS_VERSION=v3.8.1
-      - PLATFORM=linux
-  - name: sops-secret-generator-cmp
-    files:
-      - plugin.yaml
+- name: sops-secret-generator-env
+  literals:
+  - KUSTOMIZE_VERSION=v4.5.7
+  - SOPS_SECRET_GENERATOR_VERSION=v1.6.0
+  - SOPS_VERSION=v3.8.1
+  - YQ_VERSION=v4.34.1
+  - PLATFORM=linux
+- name: sops-secret-generator-cmp
+  files:
+  - plugin.yaml

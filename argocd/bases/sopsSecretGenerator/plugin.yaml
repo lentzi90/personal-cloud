@@ -7,11 +7,12 @@ spec:
   init:
     command: ["/bin/sh", "-c"]
     args:
-      - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
+    - gpg --import /gpg-keys/argocd-gpg-private-key.gpg
   ## Command to generate manifests YAML
   generate:
     command: ["/bin/sh", "-c"]
     args:
-     - kustomize build --enable-alpha-plugins .;
+    - kustomize build --enable-alpha-plugins .;
   discover:
-    fileName: "./*.sops.yaml"
+    find:
+      command: ["sh", "-c", "yq e '.generators[]' kustomization.yaml | xargs grep -l 'kind: SopsSecretGenerator'"]
