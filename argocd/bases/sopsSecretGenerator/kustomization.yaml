@@ -7,8 +7,8 @@ resources:
 images:
 - name: alpine
   newTag: 3.18.4
-- name: fedora-minimal
-  newTag: "37"
+- name: registry.fedoraproject.org/fedora
+  newTag: "39"
 
 patches:
 - path: argocd-repo-server-deployment.yaml
