@@ -28,6 +28,12 @@
        "datasourceTemplate": "github-releases"
      },
      {
+      "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+      "matchStrings": ["YQ_VERSION=(?<currentValue>.*?)\\n"],
+      "depNameTemplate": "mikefarah/yq",
+      "datasourceTemplate": "github-releases"
+    },
+     {
        "fileMatch": ["^nginx-ingress/bases/cloud/kustomization.yaml$", "^nginx-ingress/bases/kind/kustomization.yaml$"],
        "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
        "depNameTemplate": "kubernetes/ingress-nginx",
