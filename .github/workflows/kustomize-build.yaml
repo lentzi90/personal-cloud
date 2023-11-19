@@ -33,7 +33,7 @@ jobs:
       run: gpg -K
 
     - name: Install Sops
-      uses: mdgreenwald/mozilla-sops-action@v1.4.1
+      uses: mdgreenwald/mozilla-sops-action@v1.5.0
 
     - name: Install Kustomize
       uses: imranismail/setup-kustomize@v2
