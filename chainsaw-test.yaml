@@ -1,0 +1,42 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: kind-deploy
+spec:
+  steps:
+  - try:
+    # Apply cert-manager manifests
+    - script:
+        timeout: 1m
+        content: kubectl apply -k cert-manager/overlays/kind
+    - assert:
+        timeout: 2m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: cert-manager-webhook
+            namespace: cert-manager
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+  - try:
+    # Apply argocd manifests
+    - script:
+        timeout: 1m
+        content: kubectl apply -k argocd/overlays/kind
+    # Verify that the argocd-server deployment is ready
+    - assert:
+        timeout: 2m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: argocd-server
+            namespace: argocd
+          status:
+            # filter conditions array to keep elements where `type == 'Ready'`
+            # and assert there's a single element matching the filter
+            # and that this element status is `True`
+            (conditions[?type == 'Available']):
+            - status: 'True'
