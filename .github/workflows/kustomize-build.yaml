@@ -48,3 +48,12 @@ jobs:
 
     - name: Kustomize build
       run: kustomize build --enable-alpha-plugins ${{ matrix.path }}
+
+    - name: Install requirements for kind test
+      run: echo "install argoctl, kind, kubectl"
+
+    - name: Run test
+      run: |
+        kind create cluster --config=kind-config.yaml
+        kubectl apply -k argocd/overlays/kind
+        # Wait
