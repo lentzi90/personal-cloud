@@ -7,6 +7,9 @@ metadata:
 spec:
   strategy:
     type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: nextcloud
   template:
     metadata:
       labels:
@@ -20,6 +23,8 @@ spec:
           value: https
         - name: NEXTCLOUD_TRUSTED_DOMAINS
           value: nextcloud.jern.me
+        - name: REDIS_HOST
+          value: nextcloud-aio-redis
         ports:
         - name: http
           containerPort: 80

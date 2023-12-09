@@ -7,12 +7,14 @@ commonLabels:
   app.kubernetes.io/name: nextcloud
 
 images:
-  - name: nextcloud
-    newTag: 27.1.4-apache
+- name: nextcloud
+  newTag: 27.1.4-apache
 
 resources:
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
-  - nextcloud-data-pvc.yaml
-  - cronjob.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+- nextcloud-data-pvc.yaml
+- cronjob.yaml
+- redis/deployment.yaml
+- redis/service.yaml

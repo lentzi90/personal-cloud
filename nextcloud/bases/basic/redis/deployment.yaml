@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-aio-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      initContainers:
+      - name: init-volumes
+        image: alpine
+        command:
+        - chmod
+        - "777"
+        - /nextcloud-aio-redis
+        volumeMounts:
+        - name: nextcloud-aio-redis
+          mountPath: /nextcloud-aio-redis
+      containers:
+      - env:
+        - name: REDIS_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: REDIS_HOST_PASSWORD
+              name: nextcloud-admin
+        - name: TZ
+          value: "Europe/Helsinki"
+        image: nextcloud/aio-redis
+        name: nextcloud-aio-redis
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: nextcloud-aio-redis
+      volumes:
+      - name: nextcloud-aio-redis
+        emptyDir: {}
