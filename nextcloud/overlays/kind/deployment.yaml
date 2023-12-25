@@ -8,17 +8,27 @@ spec:
       containers:
       - name: nextcloud
         envFrom:
-          - secretRef:
-              name: postgres-credentials
-          - secretRef:
-              name: nextcloud-admin
-          - configMapRef:
-              name: postgres-env
+        - secretRef:
+            name: nextcloud-admin
+        - configMapRef:
+            name: postgres-env
         env:
         - name: NC_overwriteprotocol
           value: https
         - name: NEXTCLOUD_TRUSTED_DOMAINS
           value: nextcloud.local
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              # Created by cloudnative-pg
+              name: nextcloud-app
+              key: password
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              # Created by cloudnative-pg
+              name: nextcloud-app
+              key: username
         livenessProbe:
           httpGet:
             path: /status.php

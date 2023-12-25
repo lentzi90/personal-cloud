@@ -66,15 +66,12 @@ Log in as `admin` with the password you get from this commands:
 
 ### Deploying nextcloud
 
-First we need to set up the database.
+First we need to set up cloudnative-pg that will be used to manage the database.
 
 ```bash
-kubectl -n argocd apply -f apps/kind/kubegres-operator-app.yaml
-kubectl -n argocd apply -f apps/kind/kubegres-app.yaml
-argocd --port-forward --port-forward-namespace=argocd app sync kubegres
+kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
 ```
 
-This will deploy the Kubegres operator and an Postgres instance using Kubegres.
 Now we can deploy nextcloud:
 
 ```bash

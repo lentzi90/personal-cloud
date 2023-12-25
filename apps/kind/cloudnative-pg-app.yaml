@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudnative-pg
+spec:
+  destination:
+    namespace: cnpg-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cloudnative-pg/overlays/kind
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}
