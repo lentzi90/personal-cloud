@@ -11,8 +11,8 @@ The `apps` folder contains argocd Applications including an "app-of-apps".
 Use `rsync` to download all data from the NFS share.
 
 ```bash
-rsync --archive --compress --progress --delete lennart@nasse.lan:/share/Public/nextcloud ./
-rsync --archive --compress --progress --delete lennart@nasse.lan:/share/Public/kubegres ./
+rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/nextcloud ./
+rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/kubegres ./
 ```
 
 Make btrfs snapshots of the data.
