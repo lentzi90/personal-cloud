@@ -7,23 +7,25 @@ commonLabels:
   environment: jern.me
 
 resources:
-  - ../../bases/basic
-  - namespace.yaml
-  - nextcloud-pv.yaml
+- ../../bases/basic
+- namespace.yaml
+- nextcloud-pv.yaml
+- postgres.yaml
 
 patches:
-  - path: deployment.yaml
-  - path: ingress.yaml
-  - path: nextcloud-data-pvc.yaml
-  - path: cronjob.yaml
+- path: deployment.yaml
+- path: ingress.yaml
+- path: nextcloud-data-pvc.yaml
+- path: cronjob.yaml
 
 configMapGenerator:
-  - name: postgres-env
-    literals:
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_HOST=kubegres.kubegres
+- name: postgres-env
+  literals:
+  - POSTGRES_DB=nextcloud
+  - POSTGRES_HOST=nextcloud-database-rw
 
 generators:
-  - postgres-credentials-generator.yaml
-  - nextcloud-admin-generator.yaml
+- nextcloud-admin-generator.yaml
+
+configurations:
+- config/cloudnative-pg.yaml
