@@ -3,3 +3,8 @@ kind: Kustomization
 
 resources:
 - https://github.com/cloudnative-pg/cloudnative-pg/config/default?ref=v1.22.0
+
+images:
+- name: controller
+  newName: ghcr.io/cloudnative-pg/cloudnative-pg
+  newTag: 1.22.0
