@@ -23,5 +23,4 @@ configMapGenerator:
   - POSTGRES_HOST=nextcloud-rw
 
 generators:
-- postgres-credentials-generator.yaml
 - nextcloud-admin-generator.yaml

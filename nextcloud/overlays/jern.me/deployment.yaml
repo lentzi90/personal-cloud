@@ -7,9 +7,20 @@ spec:
     spec:
       containers:
       - name: nextcloud
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              # Created by cloudnative-pg
+              name: nextcloud-app
+              key: password
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              # Created by cloudnative-pg
+              name: nextcloud-app
+              key: username
         envFrom:
-        - secretRef:
-            name: postgres-credentials
         - secretRef:
             name: nextcloud-admin
         - configMapRef:
