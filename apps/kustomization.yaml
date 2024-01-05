@@ -14,7 +14,6 @@ resources:
 - personal-blog-app.yaml
 - metallb-app.yaml
 - cloudnative-pg-app.yaml
-- kubegres-app.yaml
 - prometheus-operator-app.yaml
 # - prometheus-app.yaml
 # - grafana-app.yaml
