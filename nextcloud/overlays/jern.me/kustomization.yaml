@@ -29,3 +29,7 @@ generators:
 
 configurations:
 - config/cloudnative-pg.yaml
+
+images:
+- name: ghcr.io/cloudnative-pg/postgresql
+  newTag: "16.1"
