@@ -4,18 +4,16 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - apps-app.yaml
-  - argocd-app.yaml
-  - nextcloud-app.yaml
-  # - registry-app.yaml
-  - ingress-nginx-app.yaml
-  - cert-manager-app.yaml
-  - blog-app.yaml
-  - personal-blog-app.yaml
-  - metallb-app.yaml
-  - cloudnative-pg-app.yaml
-  - kubegres-app.yaml
-  - kubegres-instance-app.yaml
-  - prometheus-operator-app.yaml
-  # - prometheus-app.yaml
-  # - grafana-app.yaml
+- apps-app.yaml
+- argocd-app.yaml
+- nextcloud-app.yaml
+# - registry-app.yaml
+- ingress-nginx-app.yaml
+- cert-manager-app.yaml
+- blog-app.yaml
+- personal-blog-app.yaml
+- metallb-app.yaml
+- cloudnative-pg-app.yaml
+- prometheus-operator-app.yaml
+# - prometheus-app.yaml
+# - grafana-app.yaml

@@ -4,6 +4,7 @@ metadata:
   name: nextcloud-database
 spec:
   instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql
   primaryUpdateStrategy: unsupervised
   bootstrap:
     initdb:
