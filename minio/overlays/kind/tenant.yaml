@@ -1,0 +1,33 @@
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: test
+spec:
+  configuration:
+    name: test-env-configuration
+  credsSecret:
+    name: test-secret
+  exposeServices:
+    console: false
+    minio: false
+  features: {}
+  # image: minio/minio:RELEASE.2024-01-13T07-53-03Z
+  mountPath: /export
+  pools:
+  - name: pool-0
+    resources: {}
+    servers: 2
+    volumeClaimTemplate:
+      metadata:
+        name: data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
+    volumesPerServer: 2
+  requestAutoCert: true
+  users:
+  - name: test-user-0

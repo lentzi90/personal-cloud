@@ -10,6 +10,7 @@ resources:
 - ../../bases/basic
 - namespace.yaml
 - postgres.yaml
+- minio-tenant.yaml
 
 patches:
 - path: deployment.yaml
