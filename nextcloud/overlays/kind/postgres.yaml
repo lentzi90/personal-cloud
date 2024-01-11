@@ -21,3 +21,18 @@ spec:
   # Require 1Gi of space
   storage:
     size: 1Gi
+
+  backup:
+    barmanObjectStore:
+      s3Credentials:
+        accessKeyId:
+          name: nextcloud-minio-user
+          key: CONSOLE_ACCESS_KEY
+        secretAccessKey:
+          name: nextcloud-minio-user
+          key: CONSOLE_SECRET_KEY
+      destinationPath: s3://nextcloud/database
+      serverName: minio
+      endpointCA:
+        name: nextcloud-tls
+        key:
