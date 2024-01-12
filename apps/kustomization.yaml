@@ -15,5 +15,6 @@ resources:
 - metallb-app.yaml
 - cloudnative-pg-app.yaml
 - prometheus-operator-app.yaml
+- pi-hole-app.yaml
 # - prometheus-app.yaml
 # - grafana-app.yaml
