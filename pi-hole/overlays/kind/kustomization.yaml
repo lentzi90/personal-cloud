@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: pi-hole
+
+resources:
+- namespace.yaml
+- ../../base
+
+patches:
+- path: service.yaml
+
+generators:
+- pi-hole-env-generator.yaml

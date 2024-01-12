@@ -17,6 +17,8 @@ jobs:
         - gitea/overlays/kind
         - nextcloud/overlays/kind
         - cloudnative-pg/overlays/kind
+        - pi-hole/overlays/kind
+        - metallb/overlays/kind
     env:
       KSS_VERSION: 1.6.0
     runs-on: ubuntu-latest
