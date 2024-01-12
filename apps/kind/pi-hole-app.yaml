@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pi-hole
+spec:
+  destination:
+    namespace: pi-hole
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: pi-hole/overlays/kind
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pi-hole
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+      - name: pi-hole
+        image: docker.io/pihole/pihole
+        ports:
+        - name: http
+          containerPort: 80
+        - name: dns-tcp
+          containerPort: 53
+          protocol: TCP
+        - name: dns-udp
+          containerPort: 53
+          protocol: UDP
+        envFrom:
+        - secretRef:
+            name: pi-hole-env
+        volumeMounts:
+        - name: pi-hole-config
+          mountPath: /etc/pihole
+          subPath: pihole
+        - name: pi-hole-config
+          mountPath: /etc/dnsmasq.d
+          subPath: dnsmasq
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+      volumes:
+      - name: pi-hole-config
+        persistentVolumeClaim:
+          claimName: pi-hole-config

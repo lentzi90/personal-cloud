@@ -84,3 +84,33 @@ Login at [nextcloud.local](https://nextcloud.local) as `admin` with the password
 ```bash
 sops --decrypt --extract '["NEXTCLOUD_ADMIN_PASSWORD"]' nextcloud/overlays/kind/nextcloud-admin.env
 ```
+
+### Deploying pi-hole
+
+Start with MetalLB:
+
+```bash
+kubectl -n argocd apply -f apps/kind/metallb-app.yaml
+argocd --port-forward --port-forward-namespace=argocd app sync metallb
+```
+
+Then deploy pi-hole:
+
+```bash
+kubectl -n argocd apply -f apps/kind/pi-hole-app.yaml
+argocd --port-forward --port-forward-namespace=argocd app sync pi-hole
+```
+
+Find the IP and password:
+
+```bash
+pi_hole_ip="$(kubectl -n pi-hole get svc pi-hole -o jsonpath="{.status.loadBalancer.ingress[].ip}")"
+sops -d pi-hole/overlays/kind/pi-hole.env
+echo "Login at http://${pi_hole_ip}/admin"
+```
+
+Test the nameserver like this:
+
+```bash
+host example.com "${pi_hole_ip}"
+```
