@@ -7,13 +7,10 @@ commonLabels:
   environment: jern.me
 
 resources:
-  - ../../bases/upstream
-  - ippool.yaml
-  - l2advertisement.yaml
+- ../../bases/upstream
+- ippool.yaml
+- l2advertisement.yaml
 
 patches:
-  - path: daemonset.yaml
-  - path: deployment.yaml
-
-generators:
-  - secretkey-generator.yaml
+- path: daemonset.yaml
+- path: deployment.yaml
