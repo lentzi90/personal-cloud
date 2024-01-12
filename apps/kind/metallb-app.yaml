@@ -11,3 +11,8 @@ spec:
     path: metallb/overlays/kind
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
