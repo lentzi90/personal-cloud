@@ -12,6 +12,7 @@ resources:
 
 patches:
 - path: service.yaml
+- path: deployment.yaml
 
 generators:
 - pi-hole-env-generator.yaml

@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pi-hole
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi-hole
+        env:
+        - name: FTLCONF_LOCAL_IPV4
+          value: 192.168.0.53
