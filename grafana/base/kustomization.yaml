@@ -6,7 +6,7 @@ commonLabels:
 
 images:
   - name: grafana/grafana
-    newTag: 10.2.3
+    newTag: 10.3.1
 
 # This is based on https://grafana.com/docs/grafana/latest/installation/kubernetes/
 resources:
