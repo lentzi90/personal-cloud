@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  project: default
+  source:
+    path: longhorn/overlays/jern.me
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD

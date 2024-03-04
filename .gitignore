@@ -1,2 +1,3 @@
 argocd-gpg-private-key.gpg
 kubeconfig.yaml
+.devcontainer
