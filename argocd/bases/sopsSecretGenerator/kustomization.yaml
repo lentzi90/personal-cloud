@@ -19,7 +19,7 @@ configMapGenerator:
   - KUSTOMIZE_VERSION=v4.5.7
   - SOPS_SECRET_GENERATOR_VERSION=v1.6.0
   - SOPS_VERSION=v3.8.1
-  - YQ_VERSION=v4.40.7
+  - YQ_VERSION=v4.42.1
   - PLATFORM=linux
 - name: sops-secret-generator-cmp
   files:
