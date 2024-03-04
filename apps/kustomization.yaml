@@ -10,6 +10,7 @@ resources:
 # - registry-app.yaml
 - ingress-nginx-app.yaml
 - cert-manager-app.yaml
+- longhorn-app.yaml
 - blog-app.yaml
 - personal-blog-app.yaml
 - metallb-app.yaml
