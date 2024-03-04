@@ -3,7 +3,10 @@ kind: Cluster
 metadata:
   name: nextcloud-database
 spec:
-  instances: 2
+  affinity:
+    nodeSelector:
+      local-storage: "true"
+  instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql
   primaryUpdateStrategy: unsupervised
   bootstrap:
@@ -12,10 +15,10 @@ spec:
       # owner: nextcloud
       import:
         databases:
-        - postgres
+        - nextcloud
         type: microservice
         source:
-          externalCluster: kubegres
+          externalCluster: postgres-restore
 
   externalClusters:
   - name: kubegres
@@ -26,11 +29,16 @@ spec:
     password:
       name: postgres-credentials
       key: POSTGRES_PASSWORD
+  - name: postgres-restore
+    connectionParameters:
+      host: postgres-restore
+      user: nextcloud
+      dbname: nextcloud
+    password:
+      name: postgres-restore
+      key: password
 
   storage:
     size: 1Gi
     pvcTemplate:
-      selector:
-        matchLabels:
-          local-storage: nextcloud-postgres
-      storageClassName: local-storage
+      storageClassName: longhorn
