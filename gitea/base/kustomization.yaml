@@ -6,7 +6,7 @@ commonLabels:
 
 images:
   - name: gitea/gitea
-    newTag: 1.21.6
+    newTag: 1.21.7
 
 resources:
 - deployment.yaml
