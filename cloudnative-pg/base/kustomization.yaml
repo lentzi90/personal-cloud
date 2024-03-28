@@ -7,4 +7,4 @@ resources:
 images:
 - name: controller
   newName: ghcr.io/cloudnative-pg/cloudnative-pg
-  newTag: 1.22.1
+  newTag: 1.22.2
