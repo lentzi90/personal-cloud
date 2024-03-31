@@ -6,7 +6,7 @@ commonLabels:
 
 images:
 - name: docker.io/pihole/pihole
-  newTag: 2024.02.2
+  newTag: 2024.03.1
 
 resources:
 - deployment.yaml
