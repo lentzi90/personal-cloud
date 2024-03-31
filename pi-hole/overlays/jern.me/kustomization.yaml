@@ -17,6 +17,7 @@ patches:
 configMapGenerator:
 - files:
   - custom.list
+  - 02-interface.conf
   - 05-custom-cname.conf
   name: custom
 
