@@ -11,6 +11,10 @@ spec:
       maxSurge: 1
   template:
     spec:
+      dnsConfig:
+        nameservers:
+        - 10.43.0.10
+        - 8.8.8.8
       containers:
       - name: pi-hole
         image: docker.io/pihole/pihole
