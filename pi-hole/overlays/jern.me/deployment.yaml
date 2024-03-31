@@ -10,3 +10,14 @@ spec:
         env:
         - name: FTLCONF_LOCAL_IPV4
           value: 192.168.0.53
+        volumeMounts:
+        - name: custom
+          mountPath: /etc/pihole/custom.list
+          subPath: custom.list
+        - name: custom
+          mountPath: /etc/dnsmasq.d/05-custom-cname.conf
+          subPath: 05-custom-cname.conf
+      volumes:
+      - name: custom
+        configMap:
+          name: custom

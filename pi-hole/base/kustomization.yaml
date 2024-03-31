@@ -11,4 +11,3 @@ images:
 resources:
 - deployment.yaml
 - service.yaml
-- pi-hole-config-pvc.yaml

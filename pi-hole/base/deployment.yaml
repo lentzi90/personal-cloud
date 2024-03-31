@@ -5,7 +5,10 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     spec:
       containers:
@@ -23,18 +26,3 @@ spec:
         envFrom:
         - secretRef:
             name: pi-hole-env
-        volumeMounts:
-        - name: pi-hole-config
-          mountPath: /etc/pihole
-          subPath: pihole
-        - name: pi-hole-config
-          mountPath: /etc/dnsmasq.d
-          subPath: dnsmasq
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-      volumes:
-      - name: pi-hole-config
-        persistentVolumeClaim:
-          claimName: pi-hole-config

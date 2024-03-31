@@ -14,5 +14,11 @@ patches:
 - path: service.yaml
 - path: deployment.yaml
 
+configMapGenerator:
+- files:
+  - custom.list
+  - 05-custom-cname.conf
+  name: custom
+
 generators:
 - pi-hole-env-generator.yaml
