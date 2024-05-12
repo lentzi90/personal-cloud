@@ -14,6 +14,7 @@ resources:
 - blog-app.yaml
 - personal-blog-app.yaml
 - metallb-app.yaml
+- minio-app.yaml
 - cloudnative-pg-app.yaml
 - prometheus-operator-app.yaml
 - pi-hole-app.yaml

@@ -1,0 +1,7 @@
+apiVersion: goabout.com/v1beta1
+kind: SopsSecretGenerator
+metadata:
+  name: minio-root-creds
+envs:
+- minio-root.env
+type: Opaque
