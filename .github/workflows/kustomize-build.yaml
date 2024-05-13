@@ -19,6 +19,7 @@ jobs:
         - cloudnative-pg/overlays/kind
         - pi-hole/overlays/kind
         - metallb/overlays/kind
+        - minio/overlays/kind
     env:
       KSS_VERSION: 1.6.0
     runs-on: ubuntu-latest
