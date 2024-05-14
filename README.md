@@ -66,9 +66,10 @@ Log in as `admin` with the password you get from this commands:
 
 ### Deploying nextcloud
 
-First we need to set up cloudnative-pg that will be used to manage the database.
+First we need to set up cloudnative-pg that will be used to manage the database, and minio that will be used for backup of the database.
 
 ```bash
+kubectl -n argocd apply -f apps/kind/minio-app.yaml
 kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
 ```
 
