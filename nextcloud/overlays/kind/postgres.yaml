@@ -24,8 +24,8 @@ spec:
 
   backup:
     barmanObjectStore:
-      endpointURL: minio.minio.cluster.local
-      destinationPath: "s3://nextcloud-database-backup"
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/database-backup"
       s3Credentials:
         accessKeyId:
           name: minio-creds
