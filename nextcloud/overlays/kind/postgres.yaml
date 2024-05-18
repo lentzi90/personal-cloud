@@ -24,15 +24,13 @@ spec:
 
   backup:
     barmanObjectStore:
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/database-backup"
       s3Credentials:
         accessKeyId:
-          name: nextcloud-minio-user
-          key: CONSOLE_ACCESS_KEY
+          name: minio-creds
+          key: USER
         secretAccessKey:
-          name: nextcloud-minio-user
-          key: CONSOLE_SECRET_KEY
-      destinationPath: s3://nextcloud/database
-      serverName: minio
-      endpointCA:
-        name: nextcloud-tls
-        key:
+          name: minio-creds
+          key: PASSWORD
+    retentionPolicy: "30d"

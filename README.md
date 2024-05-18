@@ -66,10 +66,23 @@ Log in as `admin` with the password you get from this commands:
 
 ### Deploying nextcloud
 
-First we need to set up cloudnative-pg that will be used to manage the database.
+First we need to set up cloudnative-pg that will be used to manage the database, and minio that will be used for backup of the database.
 
 ```bash
+kubectl -n argocd apply -f apps/kind/minio-app.yaml
 kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
+```
+
+Set up minio credentials:
+
+```bash
+minio_root_user="$(sops --decrypt --extract '["MINIO_ROOT_USER"]' minio/overlays/kind/minio-root.env)"
+minio_root_password="$(sops --decrypt --extract '["MINIO_ROOT_PASSWORD"]' minio/overlays/kind/minio-root.env)"
+minio_nextcloud_user="$(sops --decrypt --extract '["USER"]' nextcloud/overlays/kind/minio.env)"
+minio_nextcloud_password="$(sops --decrypt --extract '["PASSWORD"]' nextcloud/overlays/kind/minio.env)"
+kubectl -n minio exec -it deploy/minio -- mc alias set local http://localhost:9000 "${minio_root_user}" "${minio_root_password}"
+kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextcloud_user}" "${minio_nextcloud_password}"
+kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user nextcloud
 ```
 
 Now we can deploy nextcloud:

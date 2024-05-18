@@ -21,13 +21,13 @@ spec:
           valueFrom:
             secretKeyRef:
               # Created by cloudnative-pg
-              name: nextcloud-app
+              name: nextcloud-database-app
               key: password
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
               # Created by cloudnative-pg
-              name: nextcloud-app
+              name: nextcloud-database-app
               key: username
         livenessProbe:
           httpGet:

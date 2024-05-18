@@ -10,7 +10,6 @@ resources:
 - ../../bases/basic
 - namespace.yaml
 - postgres.yaml
-- minio-tenant.yaml
 
 patches:
 - path: deployment.yaml
@@ -25,3 +24,4 @@ configMapGenerator:
 
 generators:
 - nextcloud-admin-generator.yaml
+- minio-credentials-generator.yaml
