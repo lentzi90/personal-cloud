@@ -1,6 +1,0 @@
-k3s_version: v1.28.4+k3s2
-ansible_user: lennart
-systemd_dir: /etc/systemd/system
-master_ip: "{{ hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
-extra_server_args: "--disable=traefik --disable=servicelb --kubelet-arg system-reserved=cpu=200m,memory=200Mi --kubelet-arg kube-reserved=cpu=1000m,memory=1000Mi"
-extra_agent_args: "--kubelet-arg system-reserved=cpu=100m,memory=100Mi --kubelet-arg kube-reserved=cpu=200m,memory=100Mi"

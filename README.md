@@ -76,13 +76,14 @@ kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
 Set up minio credentials:
 
 ```bash
-minio_root_user="$(sops --decrypt --extract '["MINIO_ROOT_USER"]' minio/overlays/kind/minio-root.env)"
-minio_root_password="$(sops --decrypt --extract '["MINIO_ROOT_PASSWORD"]' minio/overlays/kind/minio-root.env)"
-minio_nextcloud_user="$(sops --decrypt --extract '["USER"]' nextcloud/overlays/kind/minio.env)"
-minio_nextcloud_password="$(sops --decrypt --extract '["PASSWORD"]' nextcloud/overlays/kind/minio.env)"
+OVERLAY=kind
+minio_root_user="$(sops --decrypt --extract '["MINIO_ROOT_USER"]' minio/overlays/${OVERLAY}/minio-root.env)"
+minio_root_password="$(sops --decrypt --extract '["MINIO_ROOT_PASSWORD"]' minio/overlays/${OVERLAY}/minio-root.env)"
+minio_nextcloud_user="$(sops --decrypt --extract '["USER"]' nextcloud/overlays/${OVERLAY}/minio.env)"
+minio_nextcloud_password="$(sops --decrypt --extract '["PASSWORD"]' nextcloud/overlays/${OVERLAY}/minio.env)"
 kubectl -n minio exec -it deploy/minio -- mc alias set local http://localhost:9000 "${minio_root_user}" "${minio_root_password}"
 kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextcloud_user}" "${minio_nextcloud_password}"
-kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user nextcloud
+kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user "${minio_nextcloud_user}"
 ```
 
 Now we can deploy nextcloud:

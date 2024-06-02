@@ -26,6 +26,7 @@ configMapGenerator:
 
 generators:
 - nextcloud-admin-generator.yaml
+- minio-credentials-generator.yaml
 
 configurations:
 - config/cloudnative-pg.yaml
