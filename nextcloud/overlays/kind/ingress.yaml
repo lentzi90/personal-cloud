@@ -3,7 +3,6 @@ kind: Ingress
 metadata:
   name: nextcloud
   annotations:
-    cert-manager.io/cluster-issuer: selfsigned
     nginx.ingress.kubernetes.io/proxy-body-size: 500m
 spec:
   ingressClassName: nginx
