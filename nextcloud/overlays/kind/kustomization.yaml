@@ -10,6 +10,7 @@ resources:
 - ../../bases/basic
 - namespace.yaml
 - postgres.yaml
+- scheduled-backup.yaml
 
 patches:
 - path: deployment.yaml

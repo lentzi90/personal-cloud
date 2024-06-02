@@ -3,7 +3,7 @@ name: Kustomize build kind overlays
 on:
   pull_request:
     branches:
-    - master
+    - main
 
 jobs:
   kustomize-sops-build:

@@ -11,6 +11,7 @@ resources:
 - namespace.yaml
 - nextcloud-pv.yaml
 - postgres.yaml
+- scheduled-backup.yaml
 
 patches:
 - path: deployment.yaml
