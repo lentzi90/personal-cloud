@@ -10,15 +10,8 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql
   primaryUpdateStrategy: unsupervised
   bootstrap:
-    initdb:
-      database: nextcloud
-      # owner: nextcloud
-      import:
-        databases:
-        - nextcloud
-        type: microservice
-        source:
-          externalCluster: postgres-restore
+    recovery:
+      source: objectstore
 
   backup:
     barmanObjectStore:
@@ -34,14 +27,17 @@ spec:
     retentionPolicy: "30d"
 
   externalClusters:
-  - name: kubegres
-    connectionParameters:
-      host: kubegres.kubegres
-      user: postgres
-      dbname: postgres
-    password:
-      name: postgres-credentials
-      key: POSTGRES_PASSWORD
+  - name: objectstore
+    barmanObjectStore:
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/database-backup"
+      s3Credentials:
+        accessKeyId:
+          name: minio-creds
+          key: USER
+        secretAccessKey:
+          name: minio-creds
+          key: PASSWORD
   - name: postgres-restore
     connectionParameters:
       host: postgres-restore

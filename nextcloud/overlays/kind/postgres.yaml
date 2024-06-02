@@ -13,10 +13,12 @@ spec:
   primaryUpdateStrategy: unsupervised
 
   bootstrap:
+    # Start from scratch
     initdb:
       database: nextcloud
-      # secret:
-      #   name: nextcloud-pg-credentials
+    # Start from existing backup defined in externalClusters
+    # restore:
+    #   source: objectstore
 
   # Require 1Gi of space
   storage:
@@ -34,3 +36,16 @@ spec:
           name: minio-creds
           key: PASSWORD
     retentionPolicy: "30d"
+
+  externalClusters:
+  - name: objectstore
+    barmanObjectStore:
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/database-backup"
+      s3Credentials:
+        accessKeyId:
+          name: minio-creds
+          key: USER
+        secretAccessKey:
+          name: minio-creds
+          key: PASSWORD
