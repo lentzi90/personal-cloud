@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: longhorn-system
 
-commonLabels:
-  environment: jern.me
+labels:
+- includeSelectors: true
+  pairs:
+    environment: jern.me
 
 resources:
 - ../../base

@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: registry
 
-commonLabels:
-  environment: minikube
+labels:
+- includeSelectors: true
+  pairs:
+    environment: minikube
 
 bases:
   - ../../bases/mirror
