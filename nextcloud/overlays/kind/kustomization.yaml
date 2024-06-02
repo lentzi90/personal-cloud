@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: nextcloud
 
-commonLabels:
-  environment: kind
+labels:
+- includeSelectors: true
+  pairs:
+    environment: kind
 
 resources:
 - ../../bases/basic

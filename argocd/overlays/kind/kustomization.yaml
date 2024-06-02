@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: argocd
 
-commonLabels:
-  environment: kind
+labels:
+- includeSelectors: true
+  pairs:
+    environment: kind
 
 resources:
   - ../../bases/sopsSecretGenerator

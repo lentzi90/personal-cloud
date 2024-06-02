@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: nextcloud
 
-commonLabels:
-  app.kubernetes.io/name: nextcloud
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/name: nextcloud
 
 images:
 - name: nextcloud

@@ -3,8 +3,10 @@ kind: Kustomization
 
 namespace: gitea
 
-commonLabels:
-  environment: kind
+labels:
+- includeSelectors: true
+  pairs:
+    environment: kind
 
 resources:
   - ../../base
