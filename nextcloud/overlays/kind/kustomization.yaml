@@ -13,6 +13,7 @@ resources:
 - namespace.yaml
 - postgres.yaml
 - scheduled-backup.yaml
+- certificate.yaml
 
 patches:
 - path: deployment.yaml
