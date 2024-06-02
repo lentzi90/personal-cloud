@@ -1,0 +1,33 @@
+---
+k3s_cluster:
+  children:
+    server:
+      hosts:
+        legolas:
+          ansible_host: 192.168.0.200
+    agent:
+      hosts:
+        pippin:
+          ansible_host: 192.168.0.201
+          extra_agent_args: "--kubelet-arg system-reserved=cpu=100m,memory=100Mi --kubelet-arg kube-reserved=cpu=200m,memory=100Mi --data-dir /media/PiDrive/k3s"
+        merry:
+          ansible_host: 192.168.0.204
+        bombur:
+          ansible_host: 192.168.0.205
+          extra_agent_args: "--kubelet-arg system-reserved=cpu=900m,memory=200Mi --kubelet-arg kube-reserved=cpu=100m,memory=100Mi"
+
+  # Required Vars
+  vars:
+    # ansible_port: 22
+    ansible_user: lennart
+    k3s_version: v1.29.5+k3s1
+    # ansible_ssh_common_args: '-J 172.16.1.1'
+    # The token should be a random string of reasonable length. You can generate
+    # one with the following commands:
+    # - openssl rand -base64 64
+    # - pwgen -s 64 1
+    # You can use ansible-vault to encrypt this value / keep it secret.
+    token: "K10e15b31f7d48c52f98df1cbdc5d89e4eae983259af12485c6685854e6e89da199::server:5acc7d5dbd5dcf42e2bfe2b5edd8a069"
+    api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
+    extra_server_args: "--disable=traefik --disable=servicelb --kubelet-arg system-reserved=cpu=200m,memory=200Mi --kubelet-arg kube-reserved=cpu=1000m,memory=1000Mi"
+    extra_agent_args: "--kubelet-arg system-reserved=cpu=100m,memory=100Mi --kubelet-arg kube-reserved=cpu=200m,memory=100Mi"
