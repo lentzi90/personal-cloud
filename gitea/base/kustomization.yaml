@@ -8,7 +8,7 @@ labels:
 
 images:
   - name: gitea/gitea
-    newTag: 1.22.1
+    newTag: 1.22.2
 
 resources:
 - deployment.yaml
