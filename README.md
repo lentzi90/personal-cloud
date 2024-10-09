@@ -12,7 +12,7 @@ Use `rsync` to download all data from the NFS share.
 
 ```bash
 rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/nextcloud ./
-rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/kubegres ./
+rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/minio ./
 ```
 
 Make btrfs snapshots of the data.
@@ -21,8 +21,8 @@ Make btrfs snapshots of the data.
 sudo btrfs subvolume snapshot -r . .snapshots/nasse-$(date +%Y-%m-%d)
 
 # Check disk usage
-btrfs filesystem du --human-readable --summarize .
 btrfs filesystem df --human-readable .
+btrfs filesystem du --human-readable --summarize .
 ```
 
 ## Testing with KinD
