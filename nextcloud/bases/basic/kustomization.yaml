@@ -10,7 +10,7 @@ labels:
 
 images:
 - name: nextcloud
-  newTag: 29.0.9-apache
+  newTag: 30.0.2-apache
 
 resources:
 - deployment.yaml
