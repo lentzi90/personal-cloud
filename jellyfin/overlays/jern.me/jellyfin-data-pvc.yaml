@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-data
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  volumeName: jellyfin-bombur
+  resources:
+    requests:
+      storage: 100Gi

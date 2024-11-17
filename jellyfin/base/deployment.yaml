@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  template:
+    spec:
+      containers:
+        - name: jellyfin
+          image: docker.io/jellyfin/jellyfin
+          ports:
+            - name: http
+              containerPort: 8096
+              protocol: TCP
+          volumeMounts:
+            - name: jellyfin-data
+              mountPath: /media
+            - name: cache
+              mountPath: /cache
+            - name: jellyfin-config
+              mountPath: /config
+      volumes:
+        - name: jellyfin-data
+          persistentVolumeClaim:
+            claimName: jellyfin-data
+        - name: jellyfin-config
+          persistentVolumeClaim:
+            claimName: jellyfin-config
+        - name: cache
+          emptyDir: {}
