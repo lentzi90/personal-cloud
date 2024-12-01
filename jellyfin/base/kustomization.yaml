@@ -4,12 +4,16 @@ kind: Kustomization
 namespace: jellyfin
 
 labels:
-  - includeSelectors: true
-    pairs:
-      app.kubernetes.io/name: jellyfin
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/name: jellyfin
 
 resources:
-  - deployment.yaml
-  - service.yaml
-  - jellyfin-data-pvc.yaml
-  - jellyfin-config-pvc.yaml
+- deployment.yaml
+- service.yaml
+- jellyfin-data-pvc.yaml
+- jellyfin-config-pvc.yaml
+
+images:
+- name: docker.io/jellyfin/jellyfin
+  newTag: 10.10.1

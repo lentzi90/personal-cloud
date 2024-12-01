@@ -6,11 +6,11 @@ spec:
   template:
     spec:
       containers:
-        - name: jellyfin
-          resources:
-            requests:
-              cpu: 200m
-              memory: 400Mi
-            limits:
-              cpu: 2500m
-              memory: 1Gi
+      - name: jellyfin
+        resources:
+          requests:
+            cpu: 200m
+            memory: 400Mi
+          limits:
+            cpu: 2500m
+            memory: 1Gi

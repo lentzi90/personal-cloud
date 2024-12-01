@@ -4,7 +4,7 @@ metadata:
   name: jellyfin-config
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi

@@ -5,7 +5,7 @@ metadata:
 spec:
   storageClassName: ""
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   volumeName: jellyfin-bombur
   resources:
     requests:

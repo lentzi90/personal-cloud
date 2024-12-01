@@ -4,22 +4,18 @@ kind: Kustomization
 namespace: jellyfin
 
 labels:
-  - includeSelectors: true
-    pairs:
-      environment: jern.me
+- includeSelectors: true
+  pairs:
+    environment: jern.me
 
 resources:
-  - ../../base
-  - namespace.yaml
-  - jellyfin-pv.yaml
-  - certificate.yaml
-  - ingress.yaml
+- ../../base
+- namespace.yaml
+- jellyfin-pv.yaml
+- certificate.yaml
+- ingress.yaml
 
 patches:
-  - path: deployment.yaml
-  - path: jellyfin-data-pvc.yaml
-  - path: jellyfin-config-pvc.yaml
-
-images:
-  - name: jellyfin
-    newTag: 10.10.1
+- path: deployment.yaml
+- path: jellyfin-data-pvc.yaml
+- path: jellyfin-config-pvc.yaml

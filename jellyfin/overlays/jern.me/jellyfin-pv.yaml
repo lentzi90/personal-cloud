@@ -6,7 +6,7 @@ spec:
   capacity:
     storage: 100Gi
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   nfs:
     server: "192.168.0.205"
     path: "/media/data/Multimedia"
