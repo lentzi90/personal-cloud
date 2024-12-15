@@ -27,24 +27,14 @@ spec:
             name: postgres-env
         livenessProbe:
           httpGet:
-            path: /status.php
-            port: http
             httpHeaders:
             - name: Host
               value: nextcloud.jern.me
-          initialDelaySeconds: 900
-          timeoutSeconds: 10
-          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /status.php
-            port: http
             httpHeaders:
             - name: Host
               value: nextcloud.jern.me
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
         resources:
           requests:
             cpu: 200m
