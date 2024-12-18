@@ -13,9 +13,17 @@ spec:
       name: letsencrypt-staging
     # Enable HTTP01 validations
     solvers:
-      # An empty selector will 'match' all Certificate resources that
-      # reference this Issuer.
-      - selector: {}
-        http01:
-          ingress:
-            class: nginx
+    # An empty selector will 'match' all Certificate resources that
+    # reference this Issuer.
+    - selector: {}
+      http01:
+        ingress:
+          class: nginx
+    - dns01:
+        webhook:
+          groupName: acme.jern.fi
+          solverName: hetzner
+          config:
+            secretName: hetzner-secret
+            zoneName: jern.fi
+            apiUrl: https://dns.hetzner.com/api/v1

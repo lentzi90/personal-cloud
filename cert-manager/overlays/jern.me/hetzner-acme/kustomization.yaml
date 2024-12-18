@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/name: cert-manager-webhook-hetzner
+
+images:
+- name: ghcr.io/vadimkim/cert-manager-webhook-hetzner
+  newTag: 1.3.0
+
+resources:
+- apiservice.yaml
+- rbac.yaml
+- deployment.yaml
+- service.yaml
+- webhook-pki.yaml
+# TODO: API key secret
