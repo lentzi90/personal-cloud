@@ -1,0 +1,37 @@
+# Generate a CA Certificate used to sign certificates for the webhook
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: external-secrets-webhook-ca
+spec:
+  secretName: external-secrets-webhook-ca
+  duration: 43800h0m0s # 5y
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+  commonName: ca.external-secrets-webhook.external-secrets
+  isCA: true
+---
+# Create an Issuer that uses the above generated CA certificate to issue certs
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: external-secrets-webhook-ca
+spec:
+  ca:
+    secretName: external-secrets-webhook-ca
+---
+# Finally, generate a serving certificate for the webhook to use
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: external-secrets-webhook
+spec:
+  duration: 2880h
+  secretName: external-secrets-webhook
+  issuerRef:
+    name: external-secrets-webhook-ca
+  dnsNames:
+  - external-secrets-webhook
+  - external-secrets-webhook.external-secrets
+  - external-secrets-webhook.external-secrets.svc

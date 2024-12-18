@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitwarden-sdk-server
+  labels:
+    app.kubernetes.io/name: bitwarden-sdk-server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9998
+    targetPort: http
+    name: http
+  selector:
+    app.kubernetes.io/name: bitwarden-sdk-server
