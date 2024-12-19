@@ -19,7 +19,10 @@ spec:
       http01:
         ingress:
           class: nginx
-    - dns01:
+    - selector:
+        dnsZones:
+        - jern.fi
+      dns01:
         webhook:
           groupName: acme.jern.fi
           solverName: hetzner
