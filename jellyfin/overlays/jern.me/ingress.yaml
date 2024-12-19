@@ -5,9 +5,11 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: jellyfin-cert
+  - secretName: jellyfin-me-cert
     hosts:
     - jellyfin.jern.me
+  - secretName: jellyfin-fi-cert
+    hosts:
     - jellyfin.jern.fi
   rules:
   - host: jellyfin.jern.me
