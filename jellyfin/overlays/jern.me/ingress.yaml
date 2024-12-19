@@ -8,8 +8,19 @@ spec:
   - secretName: jellyfin-cert
     hosts:
     - jellyfin.jern.me
+    - jellyfin.jern.fi
   rules:
   - host: jellyfin.jern.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: jellyfin
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+  - host: jellyfin.jern.fi
     http:
       paths:
       - backend:

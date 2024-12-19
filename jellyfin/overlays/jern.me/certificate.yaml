@@ -5,6 +5,7 @@ metadata:
 spec:
   dnsNames:
   - jellyfin.jern.me
+  - jellyfin.jern.fi
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
