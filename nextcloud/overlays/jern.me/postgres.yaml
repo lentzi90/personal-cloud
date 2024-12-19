@@ -38,14 +38,6 @@ spec:
         secretAccessKey:
           name: minio-creds
           key: PASSWORD
-  - name: postgres-restore
-    connectionParameters:
-      host: postgres-restore
-      user: nextcloud
-      dbname: nextcloud
-    password:
-      name: postgres-restore
-      key: password
 
   storage:
     size: 1Gi
