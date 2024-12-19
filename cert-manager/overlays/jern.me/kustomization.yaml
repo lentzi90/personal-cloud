@@ -8,6 +8,9 @@ resources:
 - letsencrypt-prod.yaml
 - externalsecret.yaml
 
+components:
+- ../../components/hetzner-acme
+
 patches:
 - path: cert-manager-deployment.yaml
 - path: cainjector-deployment.yaml

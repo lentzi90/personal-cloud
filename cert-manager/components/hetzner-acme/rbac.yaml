@@ -10,7 +10,7 @@ metadata:
   name: cert-manager-webhook-hetzner:domain-solver
 rules:
 - apiGroups:
-  - acme.jern.fi
+  - acme.hetzner.cert-manager.io
   resources:
   - '*'
   verbs:

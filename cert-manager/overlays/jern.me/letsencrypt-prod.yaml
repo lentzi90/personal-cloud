@@ -24,7 +24,7 @@ spec:
         - jern.fi
       dns01:
         webhook:
-          groupName: acme.jern.fi
+          groupName: acme.hetzner.cert-manager.io
           solverName: hetzner
           config:
             secretName: hetzner-secret

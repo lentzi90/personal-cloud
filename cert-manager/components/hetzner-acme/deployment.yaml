@@ -16,7 +16,7 @@ spec:
         - --secure-port=8443
         env:
         - name: GROUP_NAME
-          value: "acme.jern.fi"
+          value: "acme.hetzner.cert-manager.io"
         ports:
         - name: https
           containerPort: 8443
