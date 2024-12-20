@@ -14,4 +14,4 @@ spec:
             args:
             - "--fail"
             - "-L"
-            - "https://nextcloud.jern.me/cron.php"
+            - "https://nextcloud.jern.fi/cron.php"
