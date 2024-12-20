@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
-namespace: cert-manager
 labels:
 - includeSelectors: true
   pairs:
@@ -16,13 +15,3 @@ resources:
 - deployment.yaml
 - service.yaml
 - webhook-pki.yaml
-
-patches:
-# Override the namespace for the RoleBinding
-- target:
-    kind: RoleBinding
-    name: cert-manager-webhook-hetzner:webhook-authentication-reader
-  patch: |-
-    - op: replace
-      path: /metadata/namespace
-      value: kube-system

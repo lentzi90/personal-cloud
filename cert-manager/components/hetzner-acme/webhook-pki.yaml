@@ -3,6 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: cert-manager-webhook-hetzner-ca
+  namespace: cert-manager
 spec:
   secretName: cert-manager-webhook-hetzner-ca
   duration: 43800h0m0s # 5y
@@ -17,6 +18,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: cert-manager-webhook-hetzner-ca
+  namespace: cert-manager
 spec:
   ca:
     secretName: cert-manager-webhook-hetzner-ca
@@ -26,6 +28,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: cert-manager-webhook-hetzner-webhook-tls
+  namespace: cert-manager
 spec:
   secretName: cert-manager-webhook-hetzner-webhook-tls
   issuerRef:
