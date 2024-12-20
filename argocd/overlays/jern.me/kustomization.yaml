@@ -9,15 +9,15 @@ labels:
     environment: jern.me
 
 resources:
-  - ../../bases/sopsSecretGenerator
-  - ingress.yaml
-  - namespace.yaml
+- ../../bases/upstream
+- ingress.yaml
+- namespace.yaml
 
 patches:
-  - path: argocd-server-deployment.yaml
-  - path: argocd-application-controller-statefulset.yaml
-  - path: argocd-dex-server-deployment.yaml
-  - path: argocd-redis-deployment.yaml
-  - path: argocd-repo-server-deployment.yaml
-  - path: argocd-notifications-deployment.yaml
-  - path: argocd-ssh-known-hosts-cm.yaml
+- path: argocd-server-deployment.yaml
+- path: argocd-application-controller-statefulset.yaml
+- path: argocd-dex-server-deployment.yaml
+- path: argocd-redis-deployment.yaml
+- path: argocd-repo-server-deployment.yaml
+- path: argocd-notifications-deployment.yaml
+- path: argocd-ssh-known-hosts-cm.yaml

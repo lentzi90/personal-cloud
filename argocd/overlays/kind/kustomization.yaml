@@ -9,6 +9,6 @@ labels:
     environment: kind
 
 resources:
-  - ../../bases/sopsSecretGenerator
-  - namespace.yaml
-  - ingress.yaml
+- ../../bases/upstream
+- namespace.yaml
+- ingress.yaml
