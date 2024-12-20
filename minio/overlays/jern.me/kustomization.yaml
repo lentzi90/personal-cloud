@@ -12,9 +12,7 @@ resources:
 - ../../base
 - namespace.yaml
 - pv.yaml
+- externalsecret.yaml
 
 patches:
 - path: pvc.yaml
-
-generators:
-- minio-root-generator.yaml

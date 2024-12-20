@@ -22,6 +22,3 @@ configMapGenerator:
   - 02-interface.conf
   - 05-custom-cname.conf
   name: custom
-
-generators:
-- pi-hole-env-generator.yaml
