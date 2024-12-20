@@ -14,7 +14,6 @@ jobs:
         - argocd/overlays/kind
         - cert-manager/overlays/kind
         - nginx-ingress/overlays/kind
-        - gitea/overlays/kind
         - nextcloud/overlays/kind
         - cloudnative-pg/overlays/kind
         - pi-hole/overlays/kind
