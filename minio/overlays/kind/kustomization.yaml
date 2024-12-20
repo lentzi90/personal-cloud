@@ -11,6 +11,4 @@ labels:
 resources:
 - ../../base
 - namespace.yaml
-
-generators:
-- minio-root-generator.yaml
+- externalsecret.yaml

@@ -4,7 +4,7 @@ metadata:
   name: nextcloud-cert
 spec:
   dnsNames:
-    - nextcloud.jern.me
+  - nextcloud.local
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

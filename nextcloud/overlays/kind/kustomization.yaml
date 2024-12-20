@@ -14,6 +14,7 @@ resources:
 - postgres.yaml
 - scheduled-backup.yaml
 - certificate.yaml
+- externalsecret.yaml
 
 patches:
 - path: deployment.yaml
@@ -25,7 +26,3 @@ configMapGenerator:
   literals:
   - POSTGRES_DB=nextcloud
   - POSTGRES_HOST=nextcloud-rw
-
-generators:
-- nextcloud-admin-generator.yaml
-- minio-credentials-generator.yaml
