@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: nextcloud
-        image: nextcloud:22.2.2-apache
+        image: nextcloud
         env:
         - name: NC_overwriteprotocol
           value: https
@@ -35,7 +35,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: nextcloud.jern.me
+              value: nextcloud.example.com
           initialDelaySeconds: 2400
           timeoutSeconds: 10
           failureThreshold: 6
@@ -45,7 +45,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: nextcloud.jern.me
+              value: nextcloud.example.com
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5

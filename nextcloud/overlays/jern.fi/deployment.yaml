@@ -29,12 +29,12 @@ spec:
           httpGet:
             httpHeaders:
             - name: Host
-              value: nextcloud.jern.me
+              value: nextcloud.jern.fi
         readinessProbe:
           httpGet:
             httpHeaders:
             - name: Host
-              value: nextcloud.jern.me
+              value: nextcloud.jern.fi
         resources:
           requests:
             cpu: 200m

@@ -6,7 +6,7 @@ namespace: nextcloud
 labels:
 - includeSelectors: true
   pairs:
-    environment: jern.me
+    environment: jern.fi
 
 resources:
 - ../../bases/basic

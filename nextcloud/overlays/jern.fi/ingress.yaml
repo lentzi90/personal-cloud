@@ -7,21 +7,20 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - secretName: nextcloud-cert
-      hosts:
-        - nextcloud.jern.me
+  - secretName: nextcloud-cert
+    hosts:
+    - nextcloud.jern.fi
   rules:
-    - host: nextcloud.jern.me
-      http:
-        paths:
-          - backend:
-              service:
-                name: nextcloud
-                port:
-                  name: http
-            path: /
-            pathType: Prefix
----
+  - host: nextcloud.jern.fi
+    http:
+      paths:
+      - backend:
+          service:
+            name: nextcloud
+            port:
+              name: http
+        path: /
+        pathType: Prefix
 # Nextcloud recommends rewriting /.wellknown/carddav and /.wellknown/caldav
 # to /remote.php/dav since some clients have trouble with this.
 # See https://docs.nextcloud.com/server/21/admin_manual/issues/general_troubleshooting.html#service-discovery
@@ -34,9 +33,9 @@ spec:
 #   tls:
 #     - secretName: nextcloud-cert
 #       hosts:
-#         - nextcloud.jern.me
+#         - nextcloud.jern.fi
 #   rules:
-#     - host: nextcloud.jern.me
+#     - host: nextcloud.jern.fi
 #       http:
 #         paths:
 #           - backend:
@@ -53,3 +52,4 @@ spec:
 #                   name: http
 #             path: /.wellknown/caldav
 #             pathType: Exact
+---
