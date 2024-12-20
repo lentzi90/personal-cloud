@@ -11,6 +11,7 @@ labels:
 resources:
 - namespace.yaml
 - ../../base
+- externalsecret.yaml
 
 patches:
 - path: service.yaml
