@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-- apps-app.yaml
 - argocd-app.yaml
 - external-secrets-app.yaml
 - nextcloud-app.yaml
@@ -12,13 +11,9 @@ resources:
 - ingress-nginx-app.yaml
 - cert-manager-app.yaml
 - hetzner-acme-app.yaml
-- longhorn-app.yaml
-- blog-app.yaml
-- personal-blog-app.yaml
 - metallb-app.yaml
 - minio-app.yaml
 - cloudnative-pg-app.yaml
-- prometheus-operator-app.yaml
 - pi-hole-app.yaml
 - jellyfin-app.yaml
 # - prometheus-app.yaml

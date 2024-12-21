@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubegres-operator
+  name: hetzner-acme
 spec:
   destination:
-    namespace: kubegres-system
+    namespace: cert-manager
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: kubegres/overlays/kind
+    path: hetzner-acme/overlays/jern.fi
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:

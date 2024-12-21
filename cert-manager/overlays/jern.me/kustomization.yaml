@@ -6,10 +6,6 @@ resources:
 - selfsigned-issuer.yaml
 - letsencrypt-staging.yaml
 - letsencrypt-prod.yaml
-- externalsecret.yaml
-
-components:
-- ../../components/hetzner-acme
 
 patches:
 - path: cert-manager-deployment.yaml

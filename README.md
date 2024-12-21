@@ -34,15 +34,6 @@ export KUBECONFIG=kubeconfig.yaml
 
 kubectl apply -k argocd/overlays/kind
 
-## Note: These commands need manual input!
-# Generate PGP key for encrypting secrets
-gpg --full-generatekey
-# Export key to a file
-gpg --armor --export-secret-keys <id> > argocd-gpg-private-key.gpg
-
-# Create a secret with the secret key to be used by argocd
-kubectl -n argocd create secret generic argocd-gpg-private-key --from-file=argocd-gpg-private-key.gpg
-
 # Login and check that it is working
 password="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
 argocd login --port-forward --port-forward-namespace argocd --username=admin --password="${password}"
