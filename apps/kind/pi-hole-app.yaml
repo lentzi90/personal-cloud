@@ -11,3 +11,7 @@ spec:
     path: pi-hole/overlays/kind
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -16,3 +16,7 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
