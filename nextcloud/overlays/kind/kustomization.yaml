@@ -25,4 +25,4 @@ configMapGenerator:
 - name: postgres-env
   literals:
   - POSTGRES_DB=nextcloud
-  - POSTGRES_HOST=nextcloud-rw
+  - POSTGRES_HOST=nextcloud-database-rw
