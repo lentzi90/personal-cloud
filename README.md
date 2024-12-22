@@ -52,7 +52,15 @@ Add `127.0.0.1 argocd.local` to `/etc/hosts` and go to [argocd.local](https://ar
 Log in as `admin` with the password you get from this commands:
 
 ```bash
-  kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+Deploy external-secrets:
+
+```bash
+kubectl -n argocd apply -f apps/kind/external-secrets-app.yaml
+kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=...
+kubectl apply -f secret-store/test-secretstore.yaml
 ```
 
 ### Deploying nextcloud
@@ -64,19 +72,6 @@ kubectl -n argocd apply -f apps/kind/minio-app.yaml
 kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
 ```
 
-Set up minio credentials:
-
-```bash
-OVERLAY=kind
-minio_root_user="$(sops --decrypt --extract '["MINIO_ROOT_USER"]' minio/overlays/${OVERLAY}/minio-root.env)"
-minio_root_password="$(sops --decrypt --extract '["MINIO_ROOT_PASSWORD"]' minio/overlays/${OVERLAY}/minio-root.env)"
-minio_nextcloud_user="$(sops --decrypt --extract '["USER"]' nextcloud/overlays/${OVERLAY}/minio.env)"
-minio_nextcloud_password="$(sops --decrypt --extract '["PASSWORD"]' nextcloud/overlays/${OVERLAY}/minio.env)"
-kubectl -n minio exec -it deploy/minio -- mc alias set local http://localhost:9000 "${minio_root_user}" "${minio_root_password}"
-kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextcloud_user}" "${minio_nextcloud_password}"
-kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user "${minio_nextcloud_user}"
-```
-
 Now we can deploy nextcloud:
 
 ```bash
@@ -84,10 +79,22 @@ kubectl -n argocd apply -f apps/kind/nextcloud-app.yaml
 argocd --port-forward --port-forward-namespace=argocd app sync nextcloud
 ```
 
+Set up minio credentials:
+
+```bash
+minio_root_user="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_USER}" | base64 -d)"
+minio_root_password="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_PASSWORD}" | base64 -d)"
+minio_nextcloud_user="$(kubectl -n nextcloud get secret minio-creds -o jsonpath="{.data.USER}" | base64 -d)"
+minio_nextcloud_password="$(kubectl -n nextcloud get secret minio-creds -o jsonpath="{.data.PASSWORD}" | base64 -d)"
+kubectl -n minio exec -it deploy/minio -- mc alias set local http://localhost:9000 "${minio_root_user}" "${minio_root_password}"
+kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextcloud_user}" "${minio_nextcloud_password}"
+kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user "${minio_nextcloud_user}"
+```
+
 Login at [nextcloud.local](https://nextcloud.local) as `admin` with the password
 
 ```bash
-sops --decrypt --extract '["NEXTCLOUD_ADMIN_PASSWORD"]' nextcloud/overlays/kind/nextcloud-admin.env
+kubectl -n nextcloud get secret nextcloud-admin -o jsonpath="{.data.NEXTCLOUD_ADMIN_PASSWORD}" | base64 -d
 ```
 
 ### Deploying pi-hole
@@ -110,8 +117,8 @@ Find the IP and password:
 
 ```bash
 pi_hole_ip="$(kubectl -n pi-hole get svc pi-hole -o jsonpath="{.status.loadBalancer.ingress[].ip}")"
-sops -d pi-hole/overlays/kind/pi-hole.env
-echo "Login at http://${pi_hole_ip}/admin"
+pi_hole_password="$(kubectl -n pi-hole get secret pi-hole-env -o jsonpath="{.data.WEBPASSWORD}" | base64 -d)"
+echo "Login at http://${pi_hole_ip}/admin with the password ${pi_hole_password}"
 ```
 
 Test the nameserver like this:
