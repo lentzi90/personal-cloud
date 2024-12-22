@@ -11,4 +11,7 @@ spec:
     path: nginx-ingress/overlays/kind
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
-  syncPolicy: {}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

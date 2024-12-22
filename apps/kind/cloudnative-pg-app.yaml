@@ -12,6 +12,8 @@ spec:
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
-      - ServerSideApply=true
+    - ServerSideApply=true
