@@ -5,7 +5,7 @@ labels:
   pairs:
     app.kubernetes.io/name: external-secrets
 resources:
-- https://github.com/external-secrets/external-secrets/config/crds/bases?ref=v0.11.0
+- https://github.com/external-secrets/external-secrets/config/crds/bases?ref=v0.12.1
 - rbac.yaml
 - deployment.yaml
 - serviceaccounts.yaml
