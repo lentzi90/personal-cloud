@@ -39,49 +39,15 @@ password="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath
 argocd login --port-forward --port-forward-namespace argocd --username=admin --password="${password}"
 argocd --port-forward --port-forward-namespace=argocd cluster list
 
-# Add argocd, cert-manager and nginx-ingress to get a fully working argocd deployment
-kubectl -n argocd apply -f apps/kind/argocd-app.yaml
-kubectl -n argocd apply -f apps/kind/cert-manager-app.yaml
-kubectl -n argocd apply -f apps/kind/ingress-nginx-app.yaml
-# Sync the ingress controller since it does not have auto sync enabled
-argocd --port-forward --port-forward-namespace=argocd app sync ingress-nginx
-```
+# Apply the app of apps to install everything
+kubectl -n argocd apply -f apps/kind/apps-app.yaml
 
-At this point, we have a working ingress controller, argocd and cert-manager set up.
-Add `127.0.0.1 argocd.local` to `/etc/hosts` and go to [argocd.local](https://argocd.local) to see the dashboard.
-Log in as `admin` with the password you get from this commands:
-
-```bash
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-```
-
-Deploy external-secrets:
-
-```bash
-kubectl -n argocd apply -f apps/kind/external-secrets-app.yaml
+# Add ClusterSecretStore
 kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=...
 kubectl apply -f secret-store/test-secretstore.yaml
-```
 
-### Deploying nextcloud
-
-First we need to set up cloudnative-pg that will be used to manage the database, and minio that will be used for backup of the database.
-
-```bash
-kubectl -n argocd apply -f apps/kind/minio-app.yaml
-kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
-```
-
-Now we can deploy nextcloud:
-
-```bash
-kubectl -n argocd apply -f apps/kind/nextcloud-app.yaml
-argocd --port-forward --port-forward-namespace=argocd app sync nextcloud
-```
-
-Set up minio credentials:
-
-```bash
+# Finally set up minio credentials for nextcloud
+# This is needed for backups of the database
 minio_root_user="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_USER}" | base64 -d)"
 minio_root_password="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_PASSWORD}" | base64 -d)"
 minio_nextcloud_user="$(kubectl -n nextcloud get secret minio-creds -o jsonpath="{.data.USER}" | base64 -d)"
@@ -91,27 +57,36 @@ kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextc
 kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user "${minio_nextcloud_user}"
 ```
 
+## Accessing the apps
+
+Add the following to `/etc/hosts`:
+
+```
+127.0.0.1 argocd.local nextcloud.local jellyfin.local
+```
+
+### Argocd
+
+Go to [argocd.local](https://argocd.local) to see the dashboard.
+Log in as `admin` with the password you get from this commands:
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+### Nextcloud
+
 Login at [nextcloud.local](https://nextcloud.local) as `admin` with the password
 
 ```bash
 kubectl -n nextcloud get secret nextcloud-admin -o jsonpath="{.data.NEXTCLOUD_ADMIN_PASSWORD}" | base64 -d
 ```
 
-### Deploying pi-hole
+### Jellyfin
 
-Start with MetalLB:
+Setup at [jellyfin.local](https://jellyfin.local).
 
-```bash
-kubectl -n argocd apply -f apps/kind/metallb-app.yaml
-argocd --port-forward --port-forward-namespace=argocd app sync metallb
-```
-
-Then deploy pi-hole:
-
-```bash
-kubectl -n argocd apply -f apps/kind/pi-hole-app.yaml
-argocd --port-forward --port-forward-namespace=argocd app sync pi-hole
-```
+### Pi-hole
 
 Find the IP and password:
 
