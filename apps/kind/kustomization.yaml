@@ -4,10 +4,10 @@ kind: Kustomization
 namespace: argocd
 
 resources:
+- apps-app.yaml
 - argocd-app.yaml
 - external-secrets-app.yaml
 - nextcloud-app.yaml
-# - registry-app.yaml
 - ingress-nginx-app.yaml
 - cert-manager-app.yaml
 - hetzner-acme-app.yaml
@@ -16,5 +16,3 @@ resources:
 - cloudnative-pg-app.yaml
 - pi-hole-app.yaml
 - jellyfin-app.yaml
-# - prometheus-app.yaml
-# - grafana-app.yaml
