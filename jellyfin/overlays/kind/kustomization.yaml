@@ -11,3 +11,5 @@ labels:
 resources:
 - ../../base
 - namespace.yaml
+- certificate.yaml
+- ingress.yaml

@@ -1,16 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hetzner-acme
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
+  name: apps
 spec:
   destination:
-    namespace: cert-manager
+    namespace: argocd
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: hetzner-acme/overlays/kind
+    path: apps/kind
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
