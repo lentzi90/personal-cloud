@@ -10,3 +10,7 @@ resources:
 - deployment.yaml
 - service.yaml
 - pvc.yaml
+
+images:
+- name: minio/minio
+  newTag: RELEASE.2024-12-18T13-15-44Z
