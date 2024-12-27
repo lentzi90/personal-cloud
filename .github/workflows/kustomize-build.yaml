@@ -23,6 +23,7 @@ jobs:
         - nextcloud/overlays/kind
         - nginx-ingress/overlays/kind
         - pi-hole/overlays/kind
+        - wireguard/overlays/kind
     env:
       KSS_VERSION: 1.6.0
     runs-on: ubuntu-latest

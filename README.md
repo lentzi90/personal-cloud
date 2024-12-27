@@ -101,3 +101,25 @@ Test the nameserver like this:
 ```bash
 host example.com "${pi_hole_ip}"
 ```
+
+### Wireguard
+
+```bash
+POD_NAME=$(kubectl -n wireguard get pod -l app.kubernetes.io/name=wireguard -o jsonpath="{.items[0].metadata.name}")
+kubectl -n wireguard cp "${POD_NAME}":/config/peer1/peer1.conf /tmp/peer1.conf
+sudo nmcli con import type wireguard file /tmp/peer1.conf
+nmcli c up peer1
+# Check the connection by curling coredns
+curl 10.96.0.10:9153
+# This should give 404
+# Now disable the connection and check again
+nmcli c down peer1
+curl --connect-timeout 2 10.96.0.10:9153
+# This should timeout
+```
+
+Cleanup:
+
+```bash
+sudo nmcli c delete peer1
+```

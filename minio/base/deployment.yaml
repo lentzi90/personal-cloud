@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +16,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: "/data"
-        image: minio/minio:latest
+        image: minio/minio
         args:
         - server
         - /data

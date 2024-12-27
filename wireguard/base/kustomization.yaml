@@ -4,7 +4,7 @@ kind: Kustomization
 labels:
 - includeSelectors: true
   pairs:
-    app.kubernetes.io/name: minio
+    app.kubernetes.io/name: wireguard
 
 resources:
 - deployment.yaml
@@ -12,5 +12,5 @@ resources:
 - pvc.yaml
 
 images:
-- name: minio/minio
-  newTag: RELEASE.2024-12-18T13-15-44Z
+- name: lscr.io/linuxserver/wireguard
+  newTag: 1.0.20210914-r4-ls60
