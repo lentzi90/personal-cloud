@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard
+spec:
+  template:
+    spec:
+      containers:
+      - name: wireguard
+        env:
+        - name: TZ
+          value: "Europe/Helsinki"
+        - name: PEERS
+          value: "aragon,elrond,phone"
+        - name: SERVERURL
+          value: wireguard.jern.fi

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard
+spec:
+  template:
+    spec:
+      # securityContext:
+      #   sysctls:
+      #   - name: net.ipv4.conf.all.src_valid_mark
+      #     value: "1"
+      containers:
+      - name: wireguard
+        image: lscr.io/linuxserver/wireguard
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_MODULE
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "Etc/UTC"
+        ports:
+        - containerPort: 51820
+          protocol: UDP
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: modules
+          mountPath: /lib/modules
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
+      - name: modules
+        hostPath:
+          path: /lib/modules
+          type: Directory
