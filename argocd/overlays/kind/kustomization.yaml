@@ -12,3 +12,4 @@ resources:
 - ../../bases/upstream
 - namespace.yaml
 - ingress.yaml
+- certificate.yaml
