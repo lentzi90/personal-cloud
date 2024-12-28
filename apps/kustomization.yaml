@@ -8,7 +8,6 @@ resources:
 - argocd-app.yaml
 - external-secrets-app.yaml
 - nextcloud-app.yaml
-# - registry-app.yaml
 - ingress-nginx-app.yaml
 - cert-manager-app.yaml
 - hetzner-acme-app.yaml
@@ -21,5 +20,4 @@ resources:
 - prometheus-operator-app.yaml
 - pi-hole-app.yaml
 - jellyfin-app.yaml
-# - prometheus-app.yaml
-# - grafana-app.yaml
+- wireguard-app.yaml
