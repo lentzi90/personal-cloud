@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wireguard
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: wireguard
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: wireguard/overlays/kind
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

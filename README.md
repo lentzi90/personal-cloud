@@ -108,6 +108,10 @@ host example.com "${pi_hole_ip}"
 POD_NAME=$(kubectl -n wireguard get pod -l app.kubernetes.io/name=wireguard -o jsonpath="{.items[0].metadata.name}")
 kubectl -n wireguard cp "${POD_NAME}":/config/peer1/peer1.conf /tmp/peer1.conf
 sudo nmcli con import type wireguard file /tmp/peer1.conf
+# Remove DNS configuration from the connection
+nmcli con modify peer1 -ipv4.dns "10.13.13.1"
+nmcli con modify peer1 -ipv4.dns-search "~"
+
 nmcli c up peer1
 # Check the connection by curling coredns
 curl 10.96.0.10:9153

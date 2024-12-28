@@ -11,8 +11,8 @@ spec:
         - name: PEERS
           value: "1"
         - name: PEERDNS
-          value: "8.8.8.8"
+          value: "10.96.0.10"
         - name: ALLOWEDIPS
-          value: "10.244.0.0/16,10.96.0.0/12"
+          value: "10.244.0.0/16,10.96.0.0/12,10.13.13.0/24"
         - name: SERVERURL
           value: 10.89.0.250

@@ -6,13 +6,14 @@ namespace: argocd
 resources:
 - apps-app.yaml
 - argocd-app.yaml
-- external-secrets-app.yaml
-- nextcloud-app.yaml
-- ingress-nginx-app.yaml
 - cert-manager-app.yaml
+- cloudnative-pg-app.yaml
+- external-secrets-app.yaml
 - hetzner-acme-app.yaml
+- ingress-nginx-app.yaml
+- jellyfin-app.yaml
 - metallb-app.yaml
 - minio-app.yaml
-- cloudnative-pg-app.yaml
+- nextcloud-app.yaml
 - pi-hole-app.yaml
-- jellyfin-app.yaml
+- wireguard-app.yaml
