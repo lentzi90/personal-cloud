@@ -8,6 +8,6 @@ spec:
     namespace: longhorn-system
   project: default
   source:
-    path: longhorn/overlays/jern.me
+    path: longhorn/overlays/jern.fi
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD

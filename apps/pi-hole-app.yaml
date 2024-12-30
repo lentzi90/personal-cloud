@@ -8,6 +8,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: pi-hole/overlays/jern.me
+    path: pi-hole/overlays/jern.fi
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
