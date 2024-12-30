@@ -17,12 +17,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  ignoreDifferences:
-  - group: batch
-    kind: Job
-    namespace: ingress-nginx
-    name: ingress-nginx-admission-create
-  - group: batch
-    kind: Job
-    namespace: ingress-nginx
-    name: ingress-nginx-admission-patch
