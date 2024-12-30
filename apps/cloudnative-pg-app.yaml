@@ -8,10 +8,10 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: cloudnative-pg/overlays/jern.me
+    path: cloudnative-pg/overlays/jern.fi
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
     automated: {}
     syncOptions:
-      - ServerSideApply=true
+    - ServerSideApply=true
