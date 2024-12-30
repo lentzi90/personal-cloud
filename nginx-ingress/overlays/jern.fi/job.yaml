@@ -3,6 +3,8 @@ kind: Job
 metadata:
   name: ingress-nginx-admission-create
   namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 spec:
   ttlSecondsAfterFinished: 120
 ---
@@ -11,5 +13,7 @@ kind: Job
 metadata:
   name: ingress-nginx-admission-patch
   namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 spec:
   ttlSecondsAfterFinished: 120
