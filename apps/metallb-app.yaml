@@ -2,6 +2,8 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: metallb
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   destination:
     namespace: metallb-system
@@ -12,7 +14,9 @@ spec:
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
   ignoreDifferences:
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
