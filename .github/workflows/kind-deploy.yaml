@@ -18,3 +18,5 @@ jobs:
 
     - name: Chainsaw test
       run: chainsaw test
+      env:
+        BITWARDEN_ACCESS_TOKEN: ${{ secrets.BITWARDEN_ACCESS_TOKEN }}
