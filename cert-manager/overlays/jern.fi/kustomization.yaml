@@ -3,9 +3,6 @@ kind: Kustomization
 
 resources:
 - ../../base
-- selfsigned-issuer.yaml
-- letsencrypt-staging.yaml
-- letsencrypt-prod.yaml
 
 patches:
 - path: cert-manager-deployment.yaml
