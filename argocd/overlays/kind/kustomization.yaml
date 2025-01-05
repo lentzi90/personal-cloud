@@ -12,4 +12,5 @@ resources:
 - ../../bases/upstream
 - namespace.yaml
 - ingress.yaml
+- selfsigned-issuer.yaml
 - certificate.yaml

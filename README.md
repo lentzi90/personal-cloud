@@ -32,6 +32,7 @@ sudo kind create cluster --config=kind-config.yaml
 sudo kind get kubeconfig > kubeconfig.yaml
 export KUBECONFIG=kubeconfig.yaml
 
+kubectl apply -k cert-manager/overlays/kind
 kubectl apply -k argocd/overlays/kind
 
 # Login and check that it is working

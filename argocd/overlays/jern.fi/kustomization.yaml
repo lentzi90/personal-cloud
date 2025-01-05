@@ -11,6 +11,9 @@ labels:
 resources:
 - ../../bases/upstream
 - ingress.yaml
+- selfsigned-issuer.yaml
+- letsencrypt-staging.yaml
+- letsencrypt-prod.yaml
 - certificate.yaml
 - namespace.yaml
 
