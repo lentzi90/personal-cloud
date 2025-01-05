@@ -40,3 +40,52 @@ spec:
             # and that this element status is `True`
             (conditions[?type == 'Available']):
             - status: 'True'
+  - try:
+    # Apply the app of apps
+    - script:
+        timeout: 10s
+        content: kubectl apply -k apps/kind
+    # Ensure that the external-secrets are operational before continuing
+    - assert:
+        timeout: 2m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: external-secrets-webhook
+            namespace: external-secrets
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    # Create secret store and token secret
+    - script:
+        timeout: 10s
+        content: |
+          kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
+          kubectl apply -f secret-store/test-secretstore.yaml
+    # Verify that nextcloud becomes ready
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: nextcloud
+            namespace: nextcloud
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    # Verify app of apps
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: apps
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced

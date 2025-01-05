@@ -6,7 +6,7 @@ on:
     - main
 
 jobs:
-  kustomize-sops-build:
+  kustomize-build:
     strategy:
       matrix:
         path:
