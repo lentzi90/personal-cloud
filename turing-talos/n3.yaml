@@ -1,0 +1,21 @@
+machine:
+  kubelet:
+    nodeIP:
+      validSubnets:
+      - 192.168.0.212/32
+  network:
+    hostname: turing3
+    interfaces:
+    - deviceSelector:
+        physical: true # should select any hardware network device, if you have just one, it will be selected
+      dhcp: false
+      addresses:
+      - 192.168.0.212/24
+      routes:
+      - network: 0.0.0.0/0
+        gateway: 192.168.0.1
+    nameservers:
+    - 8.8.8.8
+    - 8.8.4.4
+  install:
+    disk: /dev/mcblk0
