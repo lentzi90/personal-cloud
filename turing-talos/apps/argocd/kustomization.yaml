@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+labels:
+- pairs:
+    environment: turing-talos
+
+resources:
+- ../../../argocd/bases/upstream
+- namespace.yaml
+- ingress.yaml
+- selfsigned-issuer.yaml
+- certificate.yaml
