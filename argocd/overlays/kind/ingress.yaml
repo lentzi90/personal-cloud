@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   name: argocd-server-ingress
   annotations:
-    cert-manager.io/cluster-issuer: selfsigned
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     # If you encounter a redirect loop or are getting a 307 response code
     # then you need to force the nginx ingress to connect to the backend using HTTPS.

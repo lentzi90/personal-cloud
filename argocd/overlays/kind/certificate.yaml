@@ -8,6 +8,6 @@ spec:
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
-    name: selfsigner
+    name: selfsigned
   secretName: argocd-secret
   revisionHistoryLimit: 5
