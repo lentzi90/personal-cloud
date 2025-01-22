@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin
+spec:
+  ingressClassName: nginx
+  tls:
+  - secretName: jellyfin-cert
+    hosts:
+    - &host jellyfin.local
+  rules:
+  - host: *host
+    http:
+      paths:
+      - backend:
+          service:
+            name: jellyfin
+            port:
+              name: http
+        path: /
+        pathType: Prefix
