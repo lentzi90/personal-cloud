@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pi-hole
+labels:
+- pairs:
+    environment: turing-talos
+resources:
+- namespace.yaml
+- ../../../pi-hole/base
+- externalsecret.yaml
+patches:
+- path: service.yaml
