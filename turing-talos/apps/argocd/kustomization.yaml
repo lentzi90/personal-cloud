@@ -12,4 +12,6 @@ resources:
 - namespace.yaml
 - ingress.yaml
 - selfsigned-issuer.yaml
+- letsencrypt-prod.yaml
+- letsencrypt-staging.yaml
 - certificate.yaml

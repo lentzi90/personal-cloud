@@ -19,5 +19,4 @@ resources:
 - cloudnative-pg-app.yaml
 - prometheus-operator-app.yaml
 - pi-hole-app.yaml
-- jellyfin-app.yaml
 - wireguard-app.yaml

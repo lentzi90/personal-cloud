@@ -7,7 +7,7 @@ spec:
   tls:
   - secretName: jellyfin-cert
     hosts:
-    - &host jellyfin.local
+    - &host jellyfin.jern.fi
   rules:
   - host: *host
     http:
