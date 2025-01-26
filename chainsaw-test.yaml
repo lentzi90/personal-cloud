@@ -61,7 +61,7 @@ spec:
     - script:
         timeout: 10s
         content: |
-          kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
+          kubectl -n external-secrets create secret generic bitwarden-access-token-test --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
           kubectl apply -f secret-store/test-secretstore.yaml
     # Verify that nextcloud becomes ready
     - assert:
