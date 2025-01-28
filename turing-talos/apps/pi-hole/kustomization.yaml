@@ -10,3 +10,9 @@ resources:
 - externalsecret.yaml
 patches:
 - path: service.yaml
+- path: deployment.yaml
+
+configMapGenerator:
+- files:
+  - 02-interface.conf
+  name: custom

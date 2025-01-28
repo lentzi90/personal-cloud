@@ -18,5 +18,4 @@ resources:
 - minio-app.yaml
 - cloudnative-pg-app.yaml
 - prometheus-operator-app.yaml
-- pi-hole-app.yaml
 - wireguard-app.yaml

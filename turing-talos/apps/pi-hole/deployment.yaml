@@ -12,12 +12,6 @@ spec:
           value: 192.168.0.53
         volumeMounts:
         - name: custom
-          mountPath: /etc/pihole/custom.list
-          subPath: custom.list
-        - name: custom
-          mountPath: /etc/dnsmasq.d/05-custom-cname.conf
-          subPath: 05-custom-cname.conf
-        - name: custom
           mountPath: /etc/dnsmasq.d/02-interface.conf
           subPath: 02-interface.conf
       volumes:
