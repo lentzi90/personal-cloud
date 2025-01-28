@@ -128,3 +128,12 @@ Cleanup:
 ```bash
 sudo nmcli c delete peer1
 ```
+ ## Chainsaw test
+
+ ```bash
+sudo kind create cluster --config=kind-config.yaml
+sudo kind get kubeconfig > kubeconfig.yaml
+export KUBECONFIG=kubeconfig.yaml
+export BITWARDEN_ACCESS_TOKEN=...
+chainsaw test
+ ```
