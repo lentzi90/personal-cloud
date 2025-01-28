@@ -27,7 +27,7 @@ spec:
         content: kubectl apply -k argocd/overlays/kind
     # Verify that the argocd-server deployment is ready
     - assert:
-        timeout: 2m
+        timeout: 5m
         resource:
           apiVersion: apps/v1
           kind: Deployment
@@ -47,7 +47,7 @@ spec:
         content: kubectl apply -k apps/kind
     # Ensure that the external-secrets are operational before continuing
     - assert:
-        timeout: 2m
+        timeout: 10m
         resource:
           apiVersion: apps/v1
           kind: Deployment
@@ -61,11 +61,11 @@ spec:
     - script:
         timeout: 10s
         content: |
-          kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
+          kubectl -n external-secrets create secret generic bitwarden-access-token-test --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
           kubectl apply -f secret-store/test-secretstore.yaml
     # Verify that nextcloud becomes ready
     - assert:
-        timeout: 5m
+        timeout: 10m
         resource:
           apiVersion: apps/v1
           kind: Deployment

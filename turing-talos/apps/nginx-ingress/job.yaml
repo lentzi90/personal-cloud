@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ingress-nginx-admission-create
+  namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/sync-options: Force=true,Replace=true
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ingress-nginx-admission-patch
+  namespace: ingress-nginx
+  annotations:
+    argocd.argoproj.io/sync-options: Force=true,Replace=true

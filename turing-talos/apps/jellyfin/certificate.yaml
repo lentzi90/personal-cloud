@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: jellyfin-fi-cert
+  name: jellyfin-cert
 spec:
   dnsNames:
   - jellyfin.jern.fi
@@ -9,5 +9,5 @@ spec:
     group: cert-manager.io
     kind: ClusterIssuer
     name: letsencrypt-prod
-  secretName: jellyfin-fi-cert
+  secretName: jellyfin-cert
   revisionHistoryLimit: 5
