@@ -28,7 +28,7 @@ NODE_3=192.168.0.212
 
 NODE_1=192.168.0.185
 NODE_2=192.168.0.123
-NODE_3=192.168.0.103
+NODE_3=192.168.0.102
 
 talosctl apply -f controlplane.yaml -p @n1.yaml --insecure -n ${NODE_1}
 talosctl bootstrap -n 192.168.0.210
@@ -62,4 +62,30 @@ Reset the whole cluster:
 
 ```bash
 talosctl reset --reboot --graceful=false --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL
+```
+
+## Upgrade
+
+Kubernetes upgrade:
+
+```bash
+# Download the new version of talosctl first, and
+# generate new configuration files and then apply them.
+# Alternatively, edit the configuration files so they have the new version.
+NODE_1=192.168.0.210
+NODE_2=192.168.0.211
+NODE_3=192.168.0.212
+
+talosctl apply -f controlplane.yaml -p @n1.yaml -n ${NODE_1}
+talosctl apply -f worker.yaml -p @n2.yaml -n ${NODE_2}
+talosctl apply -f worker.yaml -p @n3.yaml -n ${NODE_3}
+```
+
+Talos upgrade:
+
+```bash
+# Download the new version of talosctl first
+talosctl -n ${NODE_1} upgrade
+talosctl -n ${NODE_2} upgrade
+talosctl -n ${NODE_3} upgrade
 ```
