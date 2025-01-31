@@ -1,0 +1,6 @@
+- op: add
+  path: /spec/template/spec/tolerations
+  value:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

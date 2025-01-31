@@ -3,6 +3,14 @@ machine:
     nodeIP:
       validSubnets:
       - 192.168.0.212/32
+    extraMounts:
+    - destination: /var/lib/longhorn
+      type: bind
+      source: /var/lib/longhorn
+      options:
+      - bind
+      - rshared
+      - rw
   network:
     hostname: turing3
     interfaces:
@@ -19,3 +27,4 @@ machine:
     - 8.8.4.4
   install:
     disk: /dev/mcblk0
+    image: factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.9.3
