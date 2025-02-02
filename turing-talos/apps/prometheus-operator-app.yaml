@@ -12,7 +12,7 @@ spec:
   source:
     path: turing-talos/apps/prometheus-operator
     repoURL: https://github.com/lentzi90/personal-cloud.git
-    targetRevision: turing-talos
+    targetRevision: HEAD
   syncPolicy:
     automated:
       prune: true
