@@ -1,0 +1,10 @@
+# Make kustomize understand that the Cluster object references the secret
+nameReference:
+- kind: Secret
+  fieldSpecs:
+  - kind: Cluster
+    path: spec/externalClusters/password/name
+# Make kustomize understand the image ref.
+images:
+- kind: Cluster
+  path: spec/imageName

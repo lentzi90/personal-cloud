@@ -4,6 +4,7 @@ metadata:
   name: nextcloud-database
 spec:
   instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql
 
   # Example of rolling update strategy:
   # - unsupervised: automated update of the primary once all
@@ -13,13 +14,38 @@ spec:
   primaryUpdateStrategy: unsupervised
 
   bootstrap:
-    # Start from scratch
-    initdb:
-      database: nextcloud
-      # Start from existing backup defined in externalClusters
-      # restore:
-      #   source: objectstore
+    recovery:
+      source: objectstore
+
+  backup:
+    barmanObjectStore:
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/db-backup"
+      s3Credentials:
+        accessKeyId:
+          name: minio-creds
+          key: USER
+        secretAccessKey:
+          name: minio-creds
+          key: PASSWORD
+    retentionPolicy: "30d"
+
+  externalClusters:
+  - name: objectstore
+    barmanObjectStore:
+      serverName: nextcloud-database
+      endpointURL: http://minio.minio:9000
+      destinationPath: "s3://nextcloud/database-backup"
+      s3Credentials:
+        accessKeyId:
+          name: minio-creds
+          key: USER
+        secretAccessKey:
+          name: minio-creds
+          key: PASSWORD
 
   # Require 1Gi of space
   storage:
-    size: 1Gi
+    size: 5Gi
+    pvcTemplate:
+      storageClassName: longhorn

@@ -7,17 +7,17 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-    - secretName: nextcloud-cert
-      hosts:
-        - &host nextcloud.local
+  - secretName: nextcloud-cert
+    hosts:
+    - &host nextcloud.jern.fi
   rules:
-    - host: *host
-      http:
-        paths:
-          - backend:
-              service:
-                name: nextcloud
-                port:
-                  name: http
-            path: /
-            pathType: Prefix
+  - host: *host
+    http:
+      paths:
+      - backend:
+          service:
+            name: nextcloud
+            port:
+              name: http
+        path: /
+        pathType: Prefix
