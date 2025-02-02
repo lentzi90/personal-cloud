@@ -11,3 +11,7 @@ resources:
 - ../../../minio/base
 - namespace.yaml
 - externalsecret.yaml
+- pv.yaml
+
+patches:
+- path: pvc.yaml

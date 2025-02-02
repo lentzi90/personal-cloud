@@ -12,7 +12,7 @@ resources:
 - hetzner-acme-app.yaml
 - ingress-nginx-app.yaml
 - jellyfin-app.yaml
-- local-path-provisioner-app.yaml
+- longhorn-app.yaml
 - metallb-app.yaml
 - minio-app.yaml
 - nextcloud-app.yaml

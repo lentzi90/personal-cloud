@@ -13,6 +13,5 @@ spec:
             image: curlimages/curl:latest
             args:
             - "--fail"
-            - "-H"
-            - "Host: nextcloud.local"
-            - "http://nextcloud.nextcloud/cron.php"
+            - "-L"
+            - "https://nextcloud.jern.fi/cron.php"

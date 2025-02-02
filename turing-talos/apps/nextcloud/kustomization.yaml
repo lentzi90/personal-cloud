@@ -10,12 +10,14 @@ labels:
 resources:
 - ../../../nextcloud/bases/basic
 - namespace.yaml
+- nextcloud-pv.yaml
 - postgres.yaml
 - certificate.yaml
 - externalsecret.yaml
 
 patches:
 - path: deployment.yaml
+- path: nextcloud-data-pvc.yaml
 - path: ingress.yaml
 - path: cronjob.yaml
 
@@ -24,3 +26,10 @@ configMapGenerator:
   literals:
   - POSTGRES_DB=nextcloud
   - POSTGRES_HOST=nextcloud-database-rw
+
+configurations:
+- config/cloudnative-pg.yaml
+
+images:
+- name: ghcr.io/cloudnative-pg/postgresql
+  newTag: "16.4"

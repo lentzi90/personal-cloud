@@ -6,7 +6,7 @@ spec:
   capacity:
     storage: 10Gi
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   nfs:
     server: "192.168.0.205"
-    path: "/media/data/personal-cloud/minio"
+    path: "/media/data/personal-cloud/minio-data"

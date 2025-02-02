@@ -16,7 +16,7 @@ spec:
         - name: NC_overwriteprotocol
           value: https
         - name: NEXTCLOUD_TRUSTED_DOMAINS
-          value: nextcloud.local
+          value: nextcloud.jern.fi
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -35,7 +35,7 @@ spec:
             port: http
             httpHeaders: &headers
             - name: Host
-              value: nextcloud.local
+              value: nextcloud.jern.fi
           initialDelaySeconds: 30
           timeoutSeconds: 10
           failureThreshold: 6
@@ -49,5 +49,5 @@ spec:
           periodSeconds: 5
         resources:
           requests:
-            cpu: 50m
-            memory: 300Mi
+            cpu: 200m
+            memory: 400Mi

@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nextcloud
+  name: longhorn
   annotations:
-    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   destination:
-    namespace: nextcloud
+    namespace: longhorn-system
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: nextcloud/overlays/jern.fi
+    path: turing-talos/apps/longhorn
     repoURL: https://github.com/lentzi90/personal-cloud.git
-    targetRevision: HEAD
+    targetRevision: turing-talos
   syncPolicy:
     automated:
       prune: true
