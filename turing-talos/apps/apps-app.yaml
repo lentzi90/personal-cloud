@@ -10,7 +10,7 @@ spec:
   source:
     path: turing-talos/apps
     repoURL: https://github.com/lentzi90/personal-cloud.git
-    targetRevision: turing-talos
+    targetRevision: HEAD
   syncPolicy:
     automated:
       prune: true
