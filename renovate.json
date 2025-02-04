@@ -16,7 +16,7 @@
     {
       "fileMatch": ["^longhorn/base/kustomization.yaml$"],
       "matchStrings": [
-        "longhorn\\/(?<currentValue>.*?)\\/deploy\\/longhorn.yaml\\n"
+        "longhorn\\/longhorn\\/(?<currentValue>.*?)\\/deploy\\/longhorn.yaml\\n"
       ],
       "depNameTemplate": "longhorn/longhorn",
       "datasourceTemplate": "github-releases"
