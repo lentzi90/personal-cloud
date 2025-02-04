@@ -13,3 +13,6 @@ resources:
 - webhook-pki.yaml
 - webhook-service.yaml
 - webhookconfigurations.yaml
+images:
+- name: oci.external-secrets.io/external-secrets/external-secrets
+  newTag: v0.13.0
