@@ -12,4 +12,3 @@ resources:
 - hetzner-acme-app.yaml
 - longhorn-app.yaml
 - metallb-app.yaml
-- wireguard-app.yaml

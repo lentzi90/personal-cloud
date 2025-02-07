@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: wireguard/overlays/jern.fi
+    path: turing-talos/apps/wireguard
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:

@@ -21,3 +21,4 @@ resources:
 - personal-blog-app.yaml
 - pi-hole-app.yaml
 - prometheus-operator-app.yaml
+- wireguard-app.yaml
