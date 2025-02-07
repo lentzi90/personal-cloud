@@ -11,6 +11,7 @@ resources:
 - external-secrets-app.yaml
 - hetzner-acme-app.yaml
 - ingress-nginx-app.yaml
+- ingress-nginx-external-app.yaml
 - jellyfin-app.yaml
 - longhorn-app.yaml
 - metallb-app.yaml
