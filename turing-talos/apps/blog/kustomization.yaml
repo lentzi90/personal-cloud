@@ -1,14 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: personal-blog
+namespace: blog
 
 labels:
-- includeSelectors: true
-  pairs:
+- pairs:
     environment: jern.me
 
 resources:
-  - ../../base
-  - namespace.yaml
-  - ingress.yaml
+- ../../../blog/base
+- namespace.yaml
+
+patches:
+- path: ingress.yaml

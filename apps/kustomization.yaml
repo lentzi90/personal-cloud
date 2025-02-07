@@ -11,7 +11,5 @@ resources:
 - cert-manager-app.yaml
 - hetzner-acme-app.yaml
 - longhorn-app.yaml
-- blog-app.yaml
-- personal-blog-app.yaml
 - metallb-app.yaml
 - wireguard-app.yaml
