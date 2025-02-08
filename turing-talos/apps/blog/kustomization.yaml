@@ -1,15 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: longhorn-system
+namespace: blog
 
 labels:
-- includeSelectors: true
-  pairs:
+- pairs:
     environment: jern.me
 
 resources:
-- ../../base
+- ../../../blog/base
+- namespace.yaml
 
 patches:
-- path: daemonset.yaml
+- path: ingress.yaml

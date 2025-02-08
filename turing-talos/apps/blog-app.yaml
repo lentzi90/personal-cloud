@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: blog
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   destination:
-    namespace: argocd
+    namespace: blog
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: argocd/overlays/jern.fi
+    path: turing-talos/apps/blog-app.yaml
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:

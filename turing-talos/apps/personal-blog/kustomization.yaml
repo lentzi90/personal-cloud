@@ -4,11 +4,10 @@ kind: Kustomization
 namespace: personal-blog
 
 labels:
-- includeSelectors: true
-  pairs:
+- pairs:
     environment: jern.me
 
 resources:
-  - ../../base
-  - namespace.yaml
-  - ingress.yaml
+- ../../../personal-blog/base
+- namespace.yaml
+- ingress.yaml

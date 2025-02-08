@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         path:
-        - apps
         - apps/kind
         - argocd/overlays/kind
         - cert-manager/overlays/kind

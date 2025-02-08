@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: wireguard
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   destination:
-    namespace: cert-manager
+    namespace: wireguard
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: cert-manager/overlays/jern.fi
+    path: turing-talos/apps/wireguard
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: HEAD
   syncPolicy:
