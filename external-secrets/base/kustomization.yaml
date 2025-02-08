@@ -15,4 +15,4 @@ resources:
 - webhookconfigurations.yaml
 images:
 - name: oci.external-secrets.io/external-secrets/external-secrets
-  newTag: v0.13.0
+  newTag: v0.14.1
