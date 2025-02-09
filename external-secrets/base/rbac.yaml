@@ -42,6 +42,19 @@ rules:
 - apiGroups:
   - "generators.external-secrets.io"
   resources:
+  - "generatorstates"
+  verbs:
+  - "get"
+  - "list"
+  - "watch"
+  - "create"
+  - "update"
+  - "patch"
+  - "delete"
+  - "deletecollection"
+- apiGroups:
+  - "generators.external-secrets.io"
+  resources:
   - "acraccesstokens"
   - "clustergenerators"
   - "ecrauthorizationtokens"
@@ -53,6 +66,7 @@ rules:
   - "uuids"
   - "vaultdynamicsecrets"
   - "webhooks"
+  - "grafanas"
   verbs:
   - "get"
   - "list"
@@ -141,6 +155,8 @@ rules:
   - "passwords"
   - "vaultdynamicsecrets"
   - "webhooks"
+  - "grafanas"
+  - "generatorstates"
   verbs:
   - "get"
   - "watch"
@@ -180,6 +196,8 @@ rules:
   - "passwords"
   - "vaultdynamicsecrets"
   - "webhooks"
+  - "grafanas"
+  - "generatorstates"
   verbs:
   - "create"
   - "delete"
