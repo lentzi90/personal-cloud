@@ -5,14 +5,4 @@ labels:
   pairs:
     app.kubernetes.io/name: external-secrets
 resources:
-- https://github.com/external-secrets/external-secrets/config/crds/bases?ref=v0.14.1
-- rbac.yaml
-- deployment.yaml
-- serviceaccounts.yaml
-- webhook-deployment.yaml
-- webhook-pki.yaml
-- webhook-service.yaml
-- webhookconfigurations.yaml
-images:
-- name: oci.external-secrets.io/external-secrets/external-secrets
-  newTag: v0.14.1
+- https://github.com/external-secrets/external-secrets/releases/download/v0.14.1/external-secrets.yaml
