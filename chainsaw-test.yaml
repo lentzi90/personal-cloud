@@ -5,6 +5,12 @@ metadata:
 spec:
   steps:
   - try:
+    # Edit all apps to use the target revision instead of HEAD
+    - script:
+        timeout: 10s
+        content: |
+          sed -i "s/HEAD/${TARGET_REVISION}/g" apps/kind/*-app.yaml
+  - try:
     # Apply cert-manager manifests
     - script:
         timeout: 1m
@@ -41,48 +47,211 @@ spec:
             (conditions[?type == 'Available']):
             - status: 'True'
   - try:
-    # Apply the app of apps
     - script:
         timeout: 10s
-        content: kubectl apply -k apps/kind
-    # Ensure that the external-secrets are operational before continuing
+        content: kubectl -n argocd apply -f apps/kind/cert-manager-app.yaml
     - assert:
         timeout: 10m
-        resource:
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: external-secrets-webhook
-            namespace: external-secrets
-          status:
-            (conditions[?type == 'Available']):
-            - status: 'True'
-    # Create secret store and token secret
-    - script:
-        timeout: 10s
-        content: |
-          kubectl -n external-secrets create secret generic bitwarden-access-token-test --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
-          kubectl apply -f secret-store/test-secretstore.yaml
-    # Verify that nextcloud becomes ready
-    - assert:
-        timeout: 10m
-        resource:
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: nextcloud
-            namespace: nextcloud
-          status:
-            (conditions[?type == 'Available']):
-            - status: 'True'
-    # Verify app of apps
-    - assert:
-        timeout: 5m
         resource:
           apiVersion: argoproj.io/v1alpha1
           kind: Application
           metadata:
-            name: apps
+            name: cert-manager
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # metallb
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/metallb-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: metallb
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # ingress-nginx
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/ingress-nginx-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: ingress-nginx
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # argocd - Note: won't be ready until the ingress has an external IP
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/argocd-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: argocd
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/external-secrets-app.yaml
+    # Ensure that the external-secrets are operational before continuing
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: external-secrets
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # Create secret store and token secret
+    - script:
+        timeout: 30s
+        content: |
+          kubectl -n external-secrets create secret generic bitwarden-access-token-test --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
+          for i in {1..5}; do
+            kubectl apply -f secret-store/test-secretstore.yaml && break || sleep 5
+          done
+    # Cloudnatice-pg
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/cloudnative-pg-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: cloudnative-pg
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # hetzner-acme
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/hetzner-acme-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: hetzner-acme
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # pi-hole
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/pi-hole-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: pi-hole
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # minio
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/minio-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: minio
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # wireguard
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/wireguard-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: wireguard
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # jellyfin
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/jellyfin-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: jellyfin
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    # nextcloud
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/nextcloud-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: nextcloud
             namespace: argocd
           status:
             health:
