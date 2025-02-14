@@ -9,7 +9,7 @@ spec:
     - script:
         timeout: 10s
         content: |
-          sed -i "s/HEAD/${TARGET_REVISION}/g" apps/kind/*-app.yaml
+          sed -i "s HEAD ${TARGET_REVISION} g" apps/kind/*-app.yaml
   - try:
     # Apply cert-manager manifests
     - script:
