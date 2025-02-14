@@ -41,7 +41,7 @@ spec:
             name: argocd-server
             namespace: argocd
           status:
-            # filter conditions array to keep elements where `type == 'Ready'`
+            # filter conditions array to keep elements where `type == 'Available'`
             # and assert there's a single element matching the filter
             # and that this element status is `True`
             (conditions[?type == 'Available']):
@@ -216,12 +216,23 @@ spec:
   - try:
     # Create secret store and token secret
     - script:
-        timeout: 30s
+        timeout: 10s
         content: |
           kubectl -n external-secrets create secret generic bitwarden-access-token-test --from-literal=token=${BITWARDEN_ACCESS_TOKEN}
-          for i in {1..5}; do
-            kubectl apply -f secret-store/test-secretstore.yaml && break || sleep 5
-          done
+          kubectl apply -f secret-store/test-secretstore.yaml
+    - assert:
+        timeout: 10s
+        resource:
+          apiVersion: external-secrets.io/v1beta1
+          kind: ClusterSecretStore
+          metadata:
+            name: bitwarden-test
+          status:
+            # filter conditions array to keep elements where `type == 'Ready'`
+            # and assert there's a single element matching the filter
+            # and that this element status is `True`
+            (conditions[?type == 'Ready']):
+            - status: 'True'
   # Cloudnatice-pg
   - try:
     - script:
