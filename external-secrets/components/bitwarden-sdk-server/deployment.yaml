@@ -3,9 +3,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bitwarden-sdk-server
+  labels:
+    app.kubernetes.io/name: bitwarden-sdk-server
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bitwarden-sdk-server
   replicas: 1
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bitwarden-sdk-server
     spec:
       serviceAccountName: bitwarden-sdk-server
       securityContext: {}

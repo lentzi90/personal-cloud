@@ -15,8 +15,11 @@ jobs:
       uses: kyverno/action-install-chainsaw@v0.2.12
     - name: Create Kind Cluster
       uses: helm/kind-action@v1.12.0
+      with:
+        config: kind-config.yaml
 
     - name: Chainsaw test
       run: chainsaw test
       env:
         BITWARDEN_ACCESS_TOKEN: ${{ secrets.BITWARDEN_ACCESS_TOKEN }}
+        TARGET_REVISION: ${{ github.head_ref }}

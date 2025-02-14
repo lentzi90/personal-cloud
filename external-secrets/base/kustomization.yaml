@@ -1,8 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 labels:
-- includeSelectors: true
-  pairs:
+- pairs:
     app.kubernetes.io/name: external-secrets
 resources:
 - https://github.com/external-secrets/external-secrets/releases/download/v0.14.1/external-secrets.yaml
+- webhook-pki.yaml
+patches:
+- target:
+    version: v1
+    kind: Deployment
+    name: external-secrets-webhook
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/args/2
+      value: "--dns-name=external-secrets-webhook.external-secrets.svc"
+- target:
+    version: v1
+    kind: Deployment
+    name: external-secrets-cert-controller
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/args/3
+      value: "--service-namespace=external-secrets"
+    - op: replace
+      path: /spec/template/spec/containers/0/args/5
+      value: "--secret-namespace=external-secrets"
