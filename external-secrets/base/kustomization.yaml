@@ -7,6 +7,11 @@ resources:
 - https://github.com/external-secrets/external-secrets/releases/download/v0.14.1/external-secrets.yaml
 - webhook-pki.yaml
 patches:
+- path: cert-controller-delete-deploy.yaml
+- path: cert-controller-delete-secret.yaml
+- path: cert-controller-delete-serviceaccount.yaml
+- path: cert-controller-delete-clusterrole.yaml
+- path: cert-controller-delete-clusterrolebinding.yaml
 - target:
     version: v1
     kind: Deployment
@@ -17,12 +22,9 @@ patches:
       value: "--dns-name=external-secrets-webhook.external-secrets.svc"
 - target:
     version: v1
-    kind: Deployment
-    name: external-secrets-cert-controller
+    kind: ValidatingWebhookConfiguration
   patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/args/3
-      value: "--service-namespace=external-secrets"
-    - op: replace
-      path: /spec/template/spec/containers/0/args/5
-      value: "--secret-namespace=external-secrets"
+    - op: add
+      path: /metadata/annotations
+      value:
+        cert-manager.io/inject-ca-from: external-secrets/external-secrets-webhook-ca
