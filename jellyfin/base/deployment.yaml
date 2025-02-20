@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: jellyfin
 spec:
+  strategy:
+    type: Recreate
   template:
     spec:
       containers:
