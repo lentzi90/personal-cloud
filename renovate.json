@@ -62,6 +62,13 @@
       "matchStrings": ["version: (?<currentValue>.*?)\\n"],
       "depNameTemplate": "prometheus/prometheus",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^cloudnative-pg/base/kustomization.yaml$"],
+      "matchStrings": ["download\\/(?<currentValue>.*?)\\/cnpg-.*.yaml\\n"],
+      "autoReplaceStringTemplate": "download/{{{prettyNewVersion}}}/cnpg-{{{newVersion}}}.yaml\\n",
+      "depNameTemplate": "prometheus/prometheus",
+      "datasourceTemplate": "github-releases"
     }
   ]
 }
