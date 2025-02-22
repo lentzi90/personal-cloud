@@ -1,0 +1,19 @@
+#
+name: Validate renovate config
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  renovate-validate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Validate renovate config
+      uses: docker://ghcr.io/renovatebot/renovate:39
+      with:
+        entrypoint: renovate-config-validator
+        args: --strict renovate.json

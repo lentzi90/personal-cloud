@@ -1,19 +1,12 @@
 {
-  "extends": ["config:base"],
-  "docker": {
-    "enabled": false
-  },
-  "kustomize": {
-    "ignorePaths": ["**/nginx-ingress/**"]
-  },
+  "extends": ["config:recommended"],
+  "kustomize": { "ignorePaths": ["**/nginx-ingress/**"] },
   "hostRules": [
-    {
-      "matchHost": "index.docker.io",
-      "token": "{{ secrets.token }}"
-    }
+    { "matchHost": "index.docker.io", "token": "{{ secrets.token }}" }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "fileMatch": ["^longhorn/base/kustomization.yaml$"],
       "matchStrings": [
         "longhorn\\/longhorn\\/(?<currentValue>.*?)\\/deploy\\/longhorn.yaml\\n"
@@ -22,24 +15,28 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
       "matchStrings": ["SOPS_SECRET_GENERATOR_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "goabout/kustomize-sopssecretgenerator",
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
       "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "mozilla/sops",
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
       "matchStrings": ["YQ_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "mikefarah/yq",
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": [
         "^nginx-ingress/bases/cloud/kustomization.yaml$",
         "^nginx-ingress/bases/kind/kustomization.yaml$"
@@ -50,6 +47,7 @@
       "extractVersionTemplate": "^controller-(?<version>.*?)$"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^cert-manager/base/kustomization.yaml$"],
       "matchStrings": [
         "download\\/(?<currentValue>.*?)\\/cert-manager.yaml\\n"
@@ -58,17 +56,20 @@
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^prometheus/base/prometheus.yaml$"],
       "matchStrings": ["version: (?<currentValue>.*?)\\n"],
       "depNameTemplate": "prometheus/prometheus",
       "datasourceTemplate": "github-releases"
     },
     {
+      "customType": "regex",
       "fileMatch": ["^cloudnative-pg/base/kustomization.yaml$"],
       "matchStrings": ["download\\/(?<currentValue>.*?)\\/cnpg-.*.yaml\\n"],
       "autoReplaceStringTemplate": "download/{{{prettyNewVersion}}}/cnpg-{{{newVersion}}}.yaml\\n",
       "depNameTemplate": "prometheus/prometheus",
       "datasourceTemplate": "github-releases"
     }
-  ]
+  ],
+  "packageRules": [{ "matchCategories": ["docker"], "enabled": false }]
 }
