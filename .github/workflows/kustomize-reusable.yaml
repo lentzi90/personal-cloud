@@ -1,0 +1,29 @@
+name: Reusable Kustomize Build
+
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: 'The path(s) to the kustomization overlay, separated by space'
+        required: true
+        type: string
+
+jobs:
+  kustomize-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Kustomize
+      uses: imranismail/setup-kustomize@v2
+      with:
+        kustomize-version: '5.5.0'
+
+    - name: Kustomize build
+      run: |
+        for path in ${{ inputs.paths }}
+        do
+          echo "Building kustomization for $path"
+          kustomize build $path
+        done
