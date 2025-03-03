@@ -4,3 +4,5 @@ kubeconfig.yaml
 controlplane.yaml
 worker.yaml
 talosconfig
+
+vendor

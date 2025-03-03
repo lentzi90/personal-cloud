@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  destination:
+    namespace: kube-prometheus
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: turing-talos/apps/kube-prometheus
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: turing-talos-clean-monitoring
+    directory:
+      jsonnet: {}
+  syncPolicy: {}
