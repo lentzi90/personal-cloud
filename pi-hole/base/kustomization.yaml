@@ -8,7 +8,7 @@ labels:
 
 images:
 - name: docker.io/pihole/pihole
-  newTag: 2025.02.7
+  newTag: 2025.03.0
 
 resources:
 - deployment.yaml
