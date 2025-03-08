@@ -13,3 +13,7 @@ resources:
 - namespace.yaml
 - certificate.yaml
 - ingress.yaml
+
+patches:
+- path: jellyfin-data-pvc.yaml
+- path: jellyfin-config-pvc.yaml

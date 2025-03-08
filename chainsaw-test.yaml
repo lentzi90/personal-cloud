@@ -118,6 +118,54 @@ spec:
     - podLogs:
         name: speaker
         namespace: metallb-system
+  # longhorn
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/longhorn-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: longhorn
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: longhorn
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: longhorn-manager
+        namespace: longhorn-system
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: longhorn-driver-deployer
+        namespace: longhorn-system
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: longhorn-ui
+        namespace: longhorn-system
+    - podLogs:
+        name: longhorn-manager
+        namespace: longhorn-system
+    - podLogs:
+        name: longhorn-driver-deployer
+        namespace: longhorn-system
+    - podLogs:
+        name: longhorn-ui
+        namespace: longhorn-system
   # ingress-nginx
   - try:
     - script:
