@@ -19,9 +19,5 @@ data:
       dataLocality: "disabled"
 kind: ConfigMap
 metadata:
-  labels:
-    app.kubernetes.io/instance: longhorn
-    app.kubernetes.io/name: longhorn
-    app.kubernetes.io/version: v1.6.0
   name: longhorn-storageclass
   namespace: longhorn-system

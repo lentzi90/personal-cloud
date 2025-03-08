@@ -12,3 +12,6 @@ resources:
 - ../../base
 - namespace.yaml
 - externalsecret.yaml
+
+patches:
+- path: pvc.yaml

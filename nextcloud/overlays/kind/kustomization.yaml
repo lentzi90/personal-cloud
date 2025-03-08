@@ -20,6 +20,7 @@ patches:
 - path: deployment.yaml
 - path: ingress.yaml
 - path: cronjob.yaml
+- path: nextcloud-data-pvc.yaml
 
 configMapGenerator:
 - name: postgres-env

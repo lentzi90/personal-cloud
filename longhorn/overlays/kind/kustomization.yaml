@@ -4,8 +4,7 @@ kind: Kustomization
 namespace: longhorn-system
 
 labels:
-- includeSelectors: true
-  pairs:
+- pairs:
     environment: kind
 
 resources:
