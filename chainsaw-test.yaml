@@ -359,7 +359,6 @@ spec:
         name: minio
         namespace: minio
     - podLogs:
-        name: minio
         namespace: minio
   # wireguard
   - try:
