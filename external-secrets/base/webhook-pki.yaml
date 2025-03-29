@@ -27,7 +27,7 @@ kind: Certificate
 metadata:
   name: external-secrets-webhook
 spec:
-  duration: 2880h
+  duration: 8760h # 1 year
   secretName: external-secrets-webhook
   issuerRef:
     name: external-secrets-webhook-ca
