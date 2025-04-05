@@ -6,7 +6,3 @@ resources:
 labels:
 - pairs:
     environment: turing-talos
-images:
-- name: ghcr.io/vadimkim/cert-manager-webhook-hetzner
-  newName: ghcr.io/lentzi90/cert-manager-webhook-hetzner
-  newTag: test-arm64
