@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: opencloud
+labels:
+- pairs:
+    environment: turing-talos
+resources:
+- ../../../opencloud/base
+- namespace.yaml
+- certificate.yaml
+- ingress.yaml
+- opencloud-pv.yaml
+patches:
+- path: opencloud-data-pvc.yaml
+- path: deployment-patch.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: opencloud-env
+  envs:
+  - config.env

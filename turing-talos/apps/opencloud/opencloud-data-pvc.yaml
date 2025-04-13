@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: opencloud-data
+spec:
+  storageClassName: ""
+  accessModes:
+  - ReadWriteMany
+  volumeName: opencloud-bombur
+  resources:
+    requests:
+      storage: 100Gi

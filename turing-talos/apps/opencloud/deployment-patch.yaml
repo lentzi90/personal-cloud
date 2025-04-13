@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencloud
+spec:
+  template:
+    spec:
+      containers:
+      - name: opencloud
+        env:
+        - name: IDM_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: opencloud-admin
+              key: IDM_ADMIN_PASSWORD

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencloud
+spec:
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+      - name: opencloud
+        image: docker.io/opencloudeu/opencloud-rolling
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "opencloud init || true; opencloud server"
+        ports:
+        - name: http
+          containerPort: 9200
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: opencloud-env
+        volumeMounts:
+        - name: opencloud-data
+          mountPath: /var/lib/opencloud
+        - name: opencloud-config
+          mountPath: /etc/opencloud
+      volumes:
+      - name: opencloud-data
+        persistentVolumeClaim:
+          claimName: opencloud-data
+      - name: opencloud-config
+        persistentVolumeClaim:
+          claimName: opencloud-config
