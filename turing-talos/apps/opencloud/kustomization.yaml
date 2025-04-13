@@ -10,6 +10,7 @@ resources:
 - certificate.yaml
 - ingress.yaml
 - opencloud-pv.yaml
+- external-secret.yaml
 patches:
 - path: opencloud-data-pvc.yaml
 - path: deployment-patch.yaml
