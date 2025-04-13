@@ -12,7 +12,7 @@ spec:
   source:
     path: turing-talos/apps/nginx-ingress
     repoURL: https://github.com/lentzi90/personal-cloud.git
-    targetRevision: HEAD
+    targetRevision: main
   syncPolicy:
     automated:
       prune: true
