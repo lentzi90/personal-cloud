@@ -5,7 +5,7 @@ namespace: personal-blog
 
 labels:
 - pairs:
-    environment: jern.me
+    environment: jern.fi
 
 resources:
 - ../../../personal-blog/base

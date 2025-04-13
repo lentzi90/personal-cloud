@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: turing-talos/apps/personal-blog-app.yaml
+    path: turing-talos/apps/personal-blog
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: main
   syncPolicy:
