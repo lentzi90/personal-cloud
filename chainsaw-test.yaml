@@ -424,6 +424,38 @@ spec:
     - podLogs:
         name: jellyfin
         namespace: jellyfin
+  # opencloud
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/opencloud-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: opencloud
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: opencloud
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: opencloud
+        namespace: opencloud
+    - podLogs:
+        name: opencloud
+        namespace: opencloud
   # nextcloud
   - try:
     - script:

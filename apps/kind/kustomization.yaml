@@ -15,5 +15,6 @@ resources:
 - metallb-app.yaml
 - minio-app.yaml
 - nextcloud-app.yaml
+- opencloud-app.yaml
 - pi-hole-app.yaml
 - wireguard-app.yaml
