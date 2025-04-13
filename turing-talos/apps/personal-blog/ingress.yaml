@@ -9,9 +9,9 @@ spec:
   tls:
   - secretName: personal-blog-certs
     hosts:
-    - lennart.jern.me
+    - lennart.jern.fi
   rules:
-  - host: lennart.jern.me
+  - host: lennart.jern.fi
     http:
       paths:
       - path: /

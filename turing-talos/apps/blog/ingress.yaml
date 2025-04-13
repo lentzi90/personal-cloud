@@ -9,9 +9,9 @@ spec:
   tls:
   - secretName: blog-certs
     hosts:
-    - jern.me
+    - jern.fi
   rules:
-  - host: jern.me
+  - host: jern.fi
     http:
       paths:
       - path: /
