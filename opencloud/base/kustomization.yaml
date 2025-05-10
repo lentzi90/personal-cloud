@@ -11,3 +11,7 @@ resources:
 - service.yaml
 - data-pvc.yaml
 - config-pvc.yaml
+
+images:
+- name: docker.io/opencloudeu/opencloud-rolling
+  newTag: 2.2.0
