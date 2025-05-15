@@ -44,8 +44,7 @@ spec:
           name: minio-creds
           key: PASSWORD
 
-  # Require 1Gi of space
   storage:
-    size: 5Gi
+    size: 7Gi
     pvcTemplate:
       storageClassName: longhorn
