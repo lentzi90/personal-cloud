@@ -25,15 +25,13 @@ Then initialize the cluster like this:
 NODE_1=192.168.0.210
 NODE_2=192.168.0.211
 NODE_3=192.168.0.212
-
-NODE_1=192.168.0.185
-NODE_2=192.168.0.123
-NODE_3=192.168.0.102
+NODE_4=192.168.0.213
 
 talosctl apply -f controlplane.yaml -p @n1.yaml --insecure -n ${NODE_1}
 talosctl bootstrap -n 192.168.0.210
 talosctl apply -f worker.yaml -p @n2.yaml --insecure -n ${NODE_2}
 talosctl apply -f worker.yaml -p @n3.yaml --insecure -n ${NODE_3}
+talosctl apply -f worker.yaml -p @n4.yaml --insecure -n ${NODE_4}
 ```
 
 Get the kubeconfig:
@@ -45,7 +43,7 @@ talosctl kubeconfig -n ${NODE_1}
 Configure talosconfig:
 
 ```bash
-talosctl config nodes ${NODE_1} ${NODE_2} ${NODE_3}
+talosctl config nodes ${NODE_1} ${NODE_2} ${NODE_3} ${NODE_4}
 talosctl config endpoints ${NODE_1}
 ```
 
@@ -69,23 +67,50 @@ talosctl reset --reboot --graceful=false --system-labels-to-wipe STATE --system-
 Kubernetes upgrade:
 
 ```bash
-# Download the new version of talosctl first, and
-# generate new configuration files and then apply them.
-# Alternatively, edit the configuration files so they have the new version.
+VERSION=vX.Y.Z
 NODE_1=192.168.0.210
-NODE_2=192.168.0.211
-NODE_3=192.168.0.212
 
-talosctl apply -f controlplane.yaml -p @n1.yaml -n ${NODE_1}
-talosctl apply -f worker.yaml -p @n2.yaml -n ${NODE_2}
-talosctl apply -f worker.yaml -p @n3.yaml -n ${NODE_3}
+talosctl upgrade-k8s -n ${NODE_1} --to ${VERSION} --dry-run
 ```
 
 Talos upgrade:
 
 ```bash
-# Download the new version of talosctl first
-talosctl -n ${NODE_1} upgrade
-talosctl -n ${NODE_2} upgrade
-talosctl -n ${NODE_3} upgrade
+VERSION=vX.Y.Z
+# Image including iscsi-tools for turing RK1
+talosctl -n ${NODE_1} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
+talosctl -n ${NODE_2} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
+talosctl -n ${NODE_3} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
+# Image including iscsi-tools for turing Raspberry Pi 4
+talosctl -n ${NODE_4} upgrade --image factory.talos.dev/installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:${VERSION}
+```
+
+## Apply changes
+
+```bash
+talosctl apply -f controlplane.yaml -p @n1.yaml -n ${NODE_1}
+talosctl apply -f worker.yaml -p @n2.yaml -n ${NODE_2}
+talosctl apply -f worker.yaml -p @n3.yaml -n ${NODE_3}
+```
+
+## NAS setup
+
+```bash
+sudo apt install -y nfs-kernel-server btrfs-progs
+# New btrfs volume
+sudo fdisk /dev/sdX
+sudo mkfs.btrfs -f /dev/sdX
+# Existing btrfs volume
+sudo btrfs device scan
+sudo btrfs filesystem show # gives the UUID
+sudo mkdir -p /media/Data
+sudo mount UUID=... /media/Data
+# Add to /etc/fstab
+echo "UUID=... /media/Data btrfs defaults 0 0" | sudo tee -a /etc/fstab
+
+# Setup NFS
+sudo nano /etc/exports
+# /media/data *(rw,no_root_squash,insecure,async,no_subtree_check,anonuid=1000,anongid=1000)
+sudo exportfs -ar
+sudo systemctl restart nfs-kernel-server
 ```
