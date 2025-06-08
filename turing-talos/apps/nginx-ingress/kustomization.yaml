@@ -7,4 +7,3 @@ resources:
 - ../../../nginx-ingress/bases/cloud
 patches:
 - path: service.yaml
-- path: job.yaml
