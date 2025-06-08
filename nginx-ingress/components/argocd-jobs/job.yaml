@@ -4,7 +4,10 @@ metadata:
   name: ingress-nginx-admission-create
   namespace: ingress-nginx
   annotations:
+    # If the job already exists, replace it
     argocd.argoproj.io/sync-options: Force=true,Replace=true
+    # If the job is deleted by the TTL controller, ignore that it is missing
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
 ---
 apiVersion: batch/v1
 kind: Job
@@ -13,3 +16,4 @@ metadata:
   namespace: ingress-nginx
   annotations:
     argocd.argoproj.io/sync-options: Force=true,Replace=true
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
