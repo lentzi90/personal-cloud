@@ -7,4 +7,4 @@ labels:
     environment: kind
 
 resources:
-  - ../../bases/kind
+- ../../bases/kind

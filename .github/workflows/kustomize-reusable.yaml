@@ -15,11 +15,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install Kustomize
-      uses: imranismail/setup-kustomize@v2
-      with:
-        kustomize-version: '5.5.0'
-
     - name: Kustomize build
       run: |
         for path in ${{ inputs.paths }}
