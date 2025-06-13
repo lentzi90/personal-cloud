@@ -297,6 +297,38 @@ spec:
     - podLogs:
         name: cert-manager-webhook-hetzner
         namespace: cert-manager
+  # keycloak-operator
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/keycloak-operator-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: keycloak-operator
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: keycloak-operator
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: keycloak-operator
+        namespace: keycloak
+    - podLogs:
+        name: keycloak-operator
+        namespace: keycloak
   # pi-hole
   - try:
     - script:
