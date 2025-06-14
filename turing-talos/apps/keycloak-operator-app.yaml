@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  destination:
+    namespace: keycloak
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: turing-talos/apps/keycloak-operator
+    repoURL: https://github.com/lentzi90/personal-cloud.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
