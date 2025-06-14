@@ -12,6 +12,7 @@ resources:
 - hetzner-acme-app.yaml
 - ingress-nginx-app.yaml
 - jellyfin-app.yaml
+- keycloak-app.yaml
 - keycloak-operator-app.yaml
 - metallb-app.yaml
 - minio-app.yaml

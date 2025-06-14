@@ -329,6 +329,46 @@ spec:
     - podLogs:
         name: keycloak-operator
         namespace: keycloak
+  # keycloak
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/keycloak-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: keycloak
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: keycloak
+        namespace: argocd
+    - describe:
+        apiVersion: k8s.keycloak.org/v2alpha1
+        kind: Keycloak
+        name: keycloak
+        namespace: keycloak
+    - describe:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: keycloak-db
+        namespace: keycloak
+    - podLogs:
+        name: keycloak-0
+        namespace: keycloak
+    - podLogs:
+        name: keycloak-db-1
+        namespace: keycloak
   # pi-hole
   - try:
     - script:

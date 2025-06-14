@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/kustomize-reusable.yaml
     with:
       paths: >
-        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind external-secrets/overlays/kind hetzner-acme/overlays/kind keycloak-operator/overlays/kind jellyfin/overlays/kind metallb/overlays/kind minio/overlays/kind nextcloud/overlays/kind nginx-ingress/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind
+        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind external-secrets/overlays/kind hetzner-acme/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind jellyfin/overlays/kind metallb/overlays/kind minio/overlays/kind nextcloud/overlays/kind nginx-ingress/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind
   kind-deploy:
     needs: kustomize-build
     runs-on: ubuntu-latest

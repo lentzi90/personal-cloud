@@ -1,0 +1,28 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: keycloak-db-rw.keycloak.svc.cluster.local
+    port: 5432
+    database: keycloak
+    usernameSecret:
+      name: keycloak-db-app
+      key: username
+    passwordSecret:
+      name: keycloak-db-app
+      key: password
+  http:
+    tlsSecret: keycloak-cert
+  hostname:
+    hostname: keycloak.local
+  proxy:
+    headers: xforwarded
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"

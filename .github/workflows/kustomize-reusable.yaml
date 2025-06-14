@@ -20,5 +20,5 @@ jobs:
         for path in ${{ inputs.paths }}
         do
           echo "Building kustomization for $path"
-          kustomize build $path
+          kustomize build $path > /dev/null
         done
