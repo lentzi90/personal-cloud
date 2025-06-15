@@ -3,6 +3,8 @@ machine:
     nodeIP:
       validSubnets:
       - 192.168.0.210/32
+    extraArgs:
+      rotate-server-certificates: "true"
     extraMounts:
     - destination: /var/lib/longhorn
       type: bind
@@ -25,8 +27,8 @@ machine:
       - network: 0.0.0.0/0
         gateway: 192.168.0.1
     nameservers:
-    - 8.8.8.8
-    - 8.8.4.4
+    - 86.54.11.1
+    - 86.54.11.201
   install:
     disk: /dev/mcblk0
     image: factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.10.4
