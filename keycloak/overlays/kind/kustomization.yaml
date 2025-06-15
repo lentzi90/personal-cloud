@@ -7,6 +7,7 @@ labels:
 resources:
 - ../../base
 - certificate.yaml
+- ingress.yaml
 patches:
 - target:
     kind: Keycloak
@@ -15,8 +16,5 @@ patches:
     - op: add
       path: /spec/http/httpEnabled
       value: true
-    - op: replace
-      path: /spec/ingress/annotations/nginx.ingress.kubernetes.io~1backend-protocol
-      value: "HTTP"
     - op: remove
       path: /spec/http/tlsSecret

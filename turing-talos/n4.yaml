@@ -27,4 +27,4 @@ machine:
     - 8.8.4.4
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.10.1
+    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.10.4

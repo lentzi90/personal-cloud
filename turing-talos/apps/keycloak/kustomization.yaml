@@ -7,5 +7,6 @@ labels:
 resources:
 - ../../../keycloak/base
 - certificate.yaml
+- ingress.yaml
 patches:
 - path: keycloak.yaml
