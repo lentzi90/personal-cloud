@@ -22,7 +22,4 @@ spec:
   proxy:
     headers: xforwarded
   ingress:
-    enabled: true
-    className: nginx
-    annotations:
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    enabled: false
