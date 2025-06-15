@@ -81,16 +81,17 @@ VERSION=vX.Y.Z
 talosctl -n ${NODE_1} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
 talosctl -n ${NODE_2} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
 talosctl -n ${NODE_3} upgrade --image factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:${VERSION}
-# Image including iscsi-tools for turing Raspberry Pi 4
+# Image including iscsi-tools for Raspberry Pi 4
 talosctl -n ${NODE_4} upgrade --image factory.talos.dev/installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:${VERSION}
 ```
 
 ## Apply changes
 
 ```bash
-talosctl apply -f controlplane.yaml -p @n1.yaml -n ${NODE_1}
-talosctl apply -f worker.yaml -p @n2.yaml -n ${NODE_2}
-talosctl apply -f worker.yaml -p @n3.yaml -n ${NODE_3}
+talosctl apply -f controlplane.yaml -p @n1.yaml -n ${NODE_1} --dry-run
+talosctl apply -f worker.yaml -p @n2.yaml -n ${NODE_2} --dry-run
+talosctl apply -f worker.yaml -p @n3.yaml -n ${NODE_3} --dry-run
+talosctl apply -f worker.yaml -p @n4.yaml -n ${NODE_4} --dry-run
 ```
 
 ## NAS setup
