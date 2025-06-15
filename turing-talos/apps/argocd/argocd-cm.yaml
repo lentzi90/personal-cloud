@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  url: https://argocd.jern.fi
+  oidc.config: |
+    name: Keycloak
+    issuer: https://keycloak.jern.fi/realms/jern.fi
+    clientID: argocd
+    enablePKCEAuthentication: true
+    requestedScopes: ["openid", "profile", "email", "groups"]
