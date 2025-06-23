@@ -7,7 +7,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^longhorn/base/kustomization.yaml$"],
+      "managerFilePatterns": ["/^longhorn/base/kustomization.yaml$/"],
       "matchStrings": [
         "longhorn\\/longhorn\\/(?<currentValue>.*?)\\/deploy\\/longhorn.yaml\\n"
       ],
@@ -16,30 +16,36 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+      "managerFilePatterns": [
+        "/^argocd/bases/sopsSecretGenerator/kustomization.yaml$/"
+      ],
       "matchStrings": ["SOPS_SECRET_GENERATOR_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "goabout/kustomize-sopssecretgenerator",
       "datasourceTemplate": "github-releases"
     },
     {
       "customType": "regex",
-      "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+      "managerFilePatterns": [
+        "/^argocd/bases/sopsSecretGenerator/kustomization.yaml$/"
+      ],
       "matchStrings": ["SOPS_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "mozilla/sops",
       "datasourceTemplate": "github-releases"
     },
     {
       "customType": "regex",
-      "fileMatch": ["^argocd/bases/sopsSecretGenerator/kustomization.yaml$"],
+      "managerFilePatterns": [
+        "/^argocd/bases/sopsSecretGenerator/kustomization.yaml$/"
+      ],
       "matchStrings": ["YQ_VERSION=(?<currentValue>.*?)\\n"],
       "depNameTemplate": "mikefarah/yq",
       "datasourceTemplate": "github-releases"
     },
     {
       "customType": "regex",
-      "fileMatch": [
-        "^nginx-ingress/bases/cloud/kustomization.yaml$",
-        "^nginx-ingress/bases/kind/kustomization.yaml$"
+      "managerFilePatterns": [
+        "/^nginx-ingress/bases/cloud/kustomization.yaml$/",
+        "/^nginx-ingress/bases/kind/kustomization.yaml$/"
       ],
       "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
       "depNameTemplate": "kubernetes/ingress-nginx",
@@ -48,7 +54,7 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["^cert-manager/base/kustomization.yaml$"],
+      "managerFilePatterns": ["/^cert-manager/base/kustomization.yaml$/"],
       "matchStrings": [
         "download\\/(?<currentValue>.*?)\\/cert-manager.yaml\\n"
       ],
@@ -57,14 +63,14 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["^prometheus/base/prometheus.yaml$"],
+      "managerFilePatterns": ["/^prometheus/base/prometheus.yaml$/"],
       "matchStrings": ["version: (?<currentValue>.*?)\\n"],
       "depNameTemplate": "prometheus/prometheus",
       "datasourceTemplate": "github-releases"
     },
     {
       "customType": "regex",
-      "fileMatch": ["^cloudnative-pg/base/kustomization.yaml$"],
+      "managerFilePatterns": ["/^cloudnative-pg/base/kustomization.yaml$/"],
       "matchStrings": ["download\\/(?<currentValue>.*?)\\/cnpg-.*.yaml\\n"],
       "autoReplaceStringTemplate": "download/{{{prettyNewVersion}}}/cnpg-{{{newVersion}}}.yaml\\n",
       "depNameTemplate": "prometheus/prometheus",
