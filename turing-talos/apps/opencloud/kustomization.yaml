@@ -22,3 +22,6 @@ configMapGenerator:
 - name: opencloud-env
   envs:
   - config.env
+- name: opencloud-config
+  files:
+  - csp.yaml

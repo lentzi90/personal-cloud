@@ -24,11 +24,17 @@ spec:
         - configMapRef:
             name: opencloud-env
         volumeMounts:
+        - name: config-files
+          mountPath: /etc/opencloud/csp.yaml
+          subPath: csp.yaml
         - name: opencloud-data
           mountPath: /var/lib/opencloud
         - name: opencloud-config
           mountPath: /etc/opencloud
       volumes:
+      - name: config-files
+        configMap:
+          name: opencloud-config
       - name: opencloud-data
         persistentVolumeClaim:
           claimName: opencloud-data
