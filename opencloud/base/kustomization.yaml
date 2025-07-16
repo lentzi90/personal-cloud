@@ -14,4 +14,4 @@ resources:
 
 images:
 - name: docker.io/opencloudeu/opencloud-rolling
-  newTag: 3.0.0
+  newTag: 3.1.0
