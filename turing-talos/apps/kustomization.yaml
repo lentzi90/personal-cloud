@@ -22,4 +22,5 @@ resources:
 - opencloud-app.yaml
 - personal-blog-app.yaml
 - pi-hole-app.yaml
+- spegel-app.yaml
 - wireguard-app.yaml
