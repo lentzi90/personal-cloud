@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     chart: spegel
-    repoURL: oci://ghcr.io/spegel-org/helm-charts
+    repoURL: ghcr.io/spegel-org/helm-charts
     targetRevision: 0.3.0
     helm:
       releaseName: spegel
