@@ -8,7 +8,7 @@ labels:
 
 images:
   - name: grafana/grafana
-    newTag: 12.0.2
+    newTag: 12.1.0
 
 # This is based on https://grafana.com/docs/grafana/latest/installation/kubernetes/
 resources:
