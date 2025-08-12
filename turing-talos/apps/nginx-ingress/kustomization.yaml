@@ -7,3 +7,4 @@ resources:
 - ../../../nginx-ingress/bases/cloud
 patches:
 - path: service.yaml
+- path: deployment.yaml
