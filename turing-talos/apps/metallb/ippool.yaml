@@ -4,4 +4,4 @@ metadata:
   name: default
 spec:
   addresses:
-  - 192.168.0.20-192.168.0.49
+  - 192.168.1.50-192.168.1.99

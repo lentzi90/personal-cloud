@@ -5,4 +5,4 @@ metadata:
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
-  loadBalancerIP: 192.168.0.23
+  loadBalancerIP: 192.168.1.53

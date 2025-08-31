@@ -2,7 +2,7 @@ machine:
   kubelet:
     nodeIP:
       validSubnets:
-      - 192.168.0.213/32
+      - 192.168.1.23/32
     extraMounts:
     - destination: /var/lib/longhorn
       type: bind
@@ -18,16 +18,16 @@ machine:
         physical: true # should select any hardware network device, if you have just one, it will be selected
       dhcp: false
       addresses:
-      - 192.168.0.213/24
+      - 192.168.1.23/24
       routes:
       - network: 0.0.0.0/0
-        gateway: 192.168.0.1
+        gateway: 192.168.1.1
     nameservers:
     - 86.54.11.1
     - 86.54.11.201
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.10.4
+    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.10.7
   files:
   # Containerd config for spegel
   - path: /etc/cri/conf.d/20-customization.part
