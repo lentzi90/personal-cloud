@@ -1,10 +1,10 @@
 # Turing Talos cluster
 
 Network environment:
-- 192.168.0.1 - Router
-- DHCP: 192.168.0.100 - 192.168.0.199
-- Metallb pool: 192.168.0.50 - 192.168.0.99
-- Static IPs for hosts: 192.168.0.200 - 192.168.0.250
+- 192.168.1.1 - Router
+- DHCP: 192.168.1.100 - 192.168.1.250
+- Metallb pool: 192.168.1.50 - 192.168.1.99
+- Static IPs for hosts: 192.168.1.20 - 192.168.1.49
 - Talos VIPs: 192.168.0.10 - 192.168.0.19
 
 ## Generating configuration files
@@ -22,10 +22,10 @@ Check DHCP assigned IPs with `tpi uart -n <i> get`.
 Then initialize the cluster like this:
 
 ```bash
-NODE_1=192.168.0.210
-NODE_2=192.168.0.211
-NODE_3=192.168.0.212
-NODE_4=192.168.0.213
+NODE_1=192.168.1.20
+NODE_2=192.168.1.21
+NODE_3=192.168.1.22
+NODE_4=192.168.1.23
 
 talosctl apply -f controlplane.yaml -p @n1.yaml --insecure -n ${NODE_1}
 talosctl bootstrap -n 192.168.0.210
@@ -68,7 +68,7 @@ Kubernetes upgrade:
 
 ```bash
 VERSION=vX.Y.Z
-NODE_1=192.168.0.210
+NODE_1=192.168.0.20
 
 talosctl upgrade-k8s -n ${NODE_1} --to ${VERSION} --dry-run
 ```
