@@ -33,4 +33,4 @@ configurations:
 
 images:
 - name: ghcr.io/cloudnative-pg/postgresql
-  newTag: "17.6"
+  newTag: "18.0"
