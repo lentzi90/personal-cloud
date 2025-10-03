@@ -8,7 +8,7 @@ images:
 - name: alpine
   newTag: 3.22.1
 - name: registry.fedoraproject.org/fedora
-  newTag: "43"
+  newTag: "44"
 
 patches:
 - path: argocd-repo-server-deployment.yaml
