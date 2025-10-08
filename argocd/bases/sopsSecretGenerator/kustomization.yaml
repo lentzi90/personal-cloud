@@ -6,7 +6,7 @@ resources:
 
 images:
 - name: alpine
-  newTag: 3.22.1
+  newTag: 3.22.2
 - name: registry.fedoraproject.org/fedora
   newTag: "43"
 
