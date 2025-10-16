@@ -3,6 +3,8 @@ machine:
     nodeIP:
       validSubnets:
       - 192.168.1.23/32
+    extraArgs:
+      rotate-server-certificates: "true"
     extraMounts:
     - destination: /var/lib/longhorn
       type: bind
