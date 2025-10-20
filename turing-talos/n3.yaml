@@ -37,3 +37,13 @@ machine:
     content: |
       [plugins."io.containerd.cri.v1.images"]
         discard_unpacked_layers = false
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn-disk
+provisioning:
+  diskSelector:
+    match: "!system_disk"
+  minSize: 100GiB
+filesystem:
+  type: ext4
