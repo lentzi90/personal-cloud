@@ -63,6 +63,24 @@
     },
     {
       "customType": "regex",
+      "managerFilePatterns": ["/^external-secrets/base/kustomization.yaml$/"],
+      "matchStrings": [
+        "download\\/(?<currentValue>.*?)\\/external-secrets.yaml\\n"
+      ],
+      "depNameTemplate": "external-secrets/external-secrets",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^keycloak-operator/base/kustomization.yaml$/"],
+      "matchStrings": [
+        "keycloak-k8s-resources\\/(?<currentValue>.*?)\\/kubernetes.*.yml\\n"
+      ],
+      "depNameTemplate": "keycloak/keycloak-k8s-resources",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
       "managerFilePatterns": ["/^prometheus/base/prometheus.yaml$/"],
       "matchStrings": ["version: (?<currentValue>.*?)\\n"],
       "depNameTemplate": "prometheus/prometheus",
@@ -73,7 +91,7 @@
       "managerFilePatterns": ["/^cloudnative-pg/base/kustomization.yaml$/"],
       "matchStrings": ["download\\/(?<currentValue>.*?)\\/cnpg-.*.yaml\\n"],
       "autoReplaceStringTemplate": "download/{{{prettyNewVersion}}}/cnpg-{{{newVersion}}}.yaml\\n",
-      "depNameTemplate": "prometheus/prometheus",
+      "depNameTemplate": "cloudnative-pg/cloudnative-pg",
       "datasourceTemplate": "github-releases"
     }
   ],
