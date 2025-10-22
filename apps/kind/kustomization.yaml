@@ -15,8 +15,6 @@ resources:
 - keycloak-app.yaml
 - keycloak-operator-app.yaml
 - metallb-app.yaml
-- minio-app.yaml
-- nextcloud-app.yaml
 - opencloud-app.yaml
 - pi-hole-app.yaml
 - wireguard-app.yaml
