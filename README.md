@@ -11,8 +11,7 @@ The `apps` folder contains argocd Applications including an "app-of-apps".
 Use `rsync` to download all data from the NFS share.
 
 ```bash
-rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/nextcloud ./
-rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/minio ./
+rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/opencloud ./
 ```
 
 Make btrfs snapshots of the data.
@@ -46,16 +45,6 @@ kubectl -n argocd apply -f apps/kind/apps-app.yaml
 # Add ClusterSecretStore
 kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=...
 kubectl apply -f secret-store/test-secretstore.yaml
-
-# Finally set up minio credentials for nextcloud
-# This is needed for backups of the database
-minio_root_user="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_USER}" | base64 -d)"
-minio_root_password="$(kubectl -n minio get secret minio-root-creds -o jsonpath="{.data.MINIO_ROOT_PASSWORD}" | base64 -d)"
-minio_nextcloud_user="$(kubectl -n nextcloud get secret minio-creds -o jsonpath="{.data.USER}" | base64 -d)"
-minio_nextcloud_password="$(kubectl -n nextcloud get secret minio-creds -o jsonpath="{.data.PASSWORD}" | base64 -d)"
-kubectl -n minio exec -it deploy/minio -- mc alias set local http://localhost:9000 "${minio_root_user}" "${minio_root_password}"
-kubectl -n minio exec -it deploy/minio -- mc admin user add local "${minio_nextcloud_user}" "${minio_nextcloud_password}"
-kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite --user "${minio_nextcloud_user}"
 ```
 
 ## Accessing the apps
@@ -63,7 +52,7 @@ kubectl -n minio exec -it deploy/minio -- mc admin policy attach local readwrite
 Add the following to `/etc/hosts`:
 
 ```
-127.0.0.1 argocd.local nextcloud.local jellyfin.local
+127.0.0.1 argocd.local opencloud.local jellyfin.local
 ```
 
 ### Argocd
@@ -75,13 +64,9 @@ Log in as `admin` with the password you get from this commands:
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
-### Nextcloud
+### OpenCloud
 
-Login at [nextcloud.local](https://nextcloud.local) as `admin` with the password
-
-```bash
-kubectl -n nextcloud get secret nextcloud-admin -o jsonpath="{.data.NEXTCLOUD_ADMIN_PASSWORD}" | base64 -d
-```
+Login at [opencloud.local](https://opencloud.local) with `admin`/`admin`.
 
 ### Jellyfin
 

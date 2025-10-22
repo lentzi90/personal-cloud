@@ -18,7 +18,6 @@ resources:
 - keycloak-operator-app.yaml
 - longhorn-app.yaml
 - metallb-app.yaml
-- minio-app.yaml
 - opencloud-app.yaml
 - personal-blog-app.yaml
 - pi-hole-app.yaml
