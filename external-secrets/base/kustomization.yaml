@@ -28,11 +28,3 @@ patches:
       path: /metadata/annotations
       value:
         cert-manager.io/inject-ca-from: external-secrets/external-secrets-webhook-ca
-- target:
-    version: v1
-    kind: CustomResourceDefinition
-  patch: |-
-    - op: add
-      path: /metadata/annotations
-      value:
-        cert-manager.io/inject-ca-from: external-secrets/external-secrets-webhook-ca
