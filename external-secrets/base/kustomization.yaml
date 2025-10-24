@@ -4,7 +4,7 @@ labels:
 - pairs:
     app.kubernetes.io/name: external-secrets
 resources:
-- https://github.com/external-secrets/external-secrets/releases/download/v0.20.3/external-secrets.yaml
+- https://github.com/external-secrets/external-secrets/releases/download/v0.20.4/external-secrets.yaml
 - webhook-pki.yaml
 patches:
 - path: cert-controller-delete-deploy.yaml
