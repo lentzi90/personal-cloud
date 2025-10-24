@@ -16,17 +16,12 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: jellyfin-data
-          mountPath: /media
+          mountPath: /config
         - name: cache
           mountPath: /cache
-        - name: jellyfin-config
-          mountPath: /config
       volumes:
       - name: jellyfin-data
         persistentVolumeClaim:
           claimName: jellyfin-data
-      - name: jellyfin-config
-        persistentVolumeClaim:
-          claimName: jellyfin-config
       - name: cache
         emptyDir: {}
