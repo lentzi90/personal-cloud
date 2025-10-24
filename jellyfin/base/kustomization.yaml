@@ -12,7 +12,6 @@ resources:
 - deployment.yaml
 - service.yaml
 - jellyfin-data-pvc.yaml
-- jellyfin-config-pvc.yaml
 
 images:
 - name: docker.io/jellyfin/jellyfin
