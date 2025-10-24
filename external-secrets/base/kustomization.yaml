@@ -4,7 +4,7 @@ labels:
 - pairs:
     app.kubernetes.io/name: external-secrets
 resources:
-- https://github.com/external-secrets/external-secrets/releases/download/v0.14.1/external-secrets.yaml
+- https://github.com/external-secrets/external-secrets/releases/download/v0.20.3/external-secrets.yaml
 - webhook-pki.yaml
 patches:
 - path: cert-controller-delete-deploy.yaml
@@ -23,14 +23,6 @@ patches:
 - target:
     version: v1
     kind: ValidatingWebhookConfiguration
-  patch: |-
-    - op: add
-      path: /metadata/annotations
-      value:
-        cert-manager.io/inject-ca-from: external-secrets/external-secrets-webhook-ca
-- target:
-    version: v1
-    kind: CustomResourceDefinition
   patch: |-
     - op: add
       path: /metadata/annotations
