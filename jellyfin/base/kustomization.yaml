@@ -15,4 +15,4 @@ resources:
 
 images:
 - name: docker.io/jellyfin/jellyfin
-  newTag: 10.11.1
+  newTag: 10.11.2
