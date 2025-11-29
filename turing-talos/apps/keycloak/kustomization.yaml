@@ -7,6 +7,10 @@ labels:
 resources:
 - ../../../keycloak/base
 - httproute.yaml
+
+components:
+- ../../../keycloak/components/opencloud-realm
+
 patches:
 - path: keycloak.yaml
 - target:
@@ -15,3 +19,20 @@ patches:
   patch: |-
     - op: remove
       path: /spec/http/tlsSecret
+# Configure web client redirect URIs for turing-talos environment
+# Note: web client is at index 2 (after account and account-console)
+- target:
+    kind: KeycloakRealmImport
+    name: opencloud-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/2/redirectUris
+      value:
+        - https://opencloud.jern.fi/*
+    - op: add
+      path: /spec/realm/clients/2/webOrigins
+      value:
+        - https://opencloud.jern.fi
+    - op: add
+      path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
+      value: https://opencloud.jern.fi/*

@@ -7,6 +7,10 @@ labels:
 resources:
 - ../../base
 - httproute.yaml
+
+components:
+- ../../components/opencloud-realm
+
 patches:
 - target:
     kind: Keycloak
@@ -17,3 +21,19 @@ patches:
       value: true
     - op: remove
       path: /spec/http/tlsSecret
+# Configure web client redirect URIs for KinD environment
+- target:
+    kind: KeycloakRealmImport
+    name: opencloud-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/2/redirectUris
+      value:
+        - https://opencloud.local/*
+    - op: add
+      path: /spec/realm/clients/2/webOrigins
+      value:
+        - https://opencloud.local
+    - op: add
+      path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
+      value: https://opencloud.local/*
