@@ -5,8 +5,8 @@ metadata:
 spec:
   storageClassName: ""
   accessModes:
-  - ReadWriteMany
-  volumeName: opencloud-bombur
+  - ReadWriteOnce
+  volumeName: opencloud-iscsi
   resources:
     requests:
       storage: 100Gi

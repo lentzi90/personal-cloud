@@ -1,12 +1,16 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: opencloud-bombur
+  name: opencloud-iscsi
 spec:
   capacity:
     storage: 100Gi
   accessModes:
-  - ReadWriteMany
-  nfs:
-    server: "192.168.1.49"
-    path: "/media/data/opencloud"
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  iscsi:
+    targetPortal: "192.168.1.49:3260"
+    iqn: "iqn.2025-01.local.bombur:opencloud"
+    lun: 1
+    fsType: ext4
+    readOnly: false

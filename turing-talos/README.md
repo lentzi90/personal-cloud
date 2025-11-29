@@ -115,3 +115,53 @@ sudo nano /etc/exports
 sudo exportfs -ar
 sudo systemctl restart nfs-kernel-server
 ```
+
+## iSCSI setup
+
+```bash
+# Install tgt
+sudo apt install -y tgt
+
+# Verify it's running
+sudo systemctl status tgt
+
+# Create directory for iSCSI LUNs
+sudo mkdir -p /media/data/iscsi-luns
+
+# Create a 100GB sparse file for OpenCloud
+sudo truncate -s 100G /media/data/iscsi-luns/opencloud.img
+
+# Verify the file was created (should show 100G but use minimal actual space)
+ls -lh /media/data/iscsi-luns/opencloud.img
+du -h /media/data/iscsi-luns/opencloud.img
+
+# Set up a loop device and format it
+sudo losetup -f /media/data/iscsi-luns/opencloud.img
+LOOP_DEV=$(losetup -j /media/data/iscsi-luns/opencloud.img | cut -d: -f1)
+echo "Loop device: $LOOP_DEV"
+
+# Format with ext4
+sudo mkfs.ext4 "$LOOP_DEV"
+
+# Mount the loop device
+sudo mkdir -p /mnt/iscsi-opencloud
+sudo mount "$LOOP_DEV" /mnt/iscsi-opencloud
+
+# Copy data from existing OpenCloud NFS share
+# Adjust the source path if your OpenCloud data is elsewhere
+sudo rsync -avP /media/data/opencloud/ /mnt/iscsi-opencloud/
+
+# Verify the data was copied
+ls -la /mnt/iscsi-opencloud/
+du -sh /mnt/iscsi-opencloud/
+
+# Set proper ownership (OpenCloud runs as uid/gid 1000)
+sudo chown -R 1000:1000 /mnt/iscsi-opencloud/
+
+# Unmount and detach the loop device
+sudo umount /mnt/iscsi-opencloud
+sudo losetup -d "$LOOP_DEV"
+
+# Clean up mount point
+sudo rmdir /mnt/iscsi-opencloud
+```
