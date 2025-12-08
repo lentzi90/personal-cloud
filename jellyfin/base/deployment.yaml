@@ -15,11 +15,16 @@ spec:
           containerPort: 8096
           protocol: TCP
         volumeMounts:
-        - name: jellyfin-data
+        - name: jellyfin-config
           mountPath: /config
+        - name: jellyfin-data
+          mountPath: /media
         - name: cache
           mountPath: /cache
       volumes:
+      - name: jellyfin-config
+        persistentVolumeClaim:
+          claimName: jellyfin-config
       - name: jellyfin-data
         persistentVolumeClaim:
           claimName: jellyfin-data
