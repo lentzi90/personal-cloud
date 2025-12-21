@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: wireguard
 spec:
+  strategy:
+    type: Recreate
   template:
     spec:
       # securityContext:
