@@ -11,6 +11,6 @@ spec:
         - name: TZ
           value: "Europe/Helsinki"
         - name: PEERS
-          value: "aragon,elrond,phone"
+          value: "aragon,frodo,phone"
         - name: SERVERURL
           value: wireguard.jern.fi
