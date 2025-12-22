@@ -6,6 +6,8 @@ labels:
     environment: turing-talos
 resources:
 - ../../../longhorn/base
+- certificate.yaml
+- ingress.yaml
 patches:
 - path: namespace.yaml
 - target:
