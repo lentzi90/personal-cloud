@@ -150,6 +150,38 @@ spec:
     - podLogs:
         name: ingress-nginx
         namespace: ingress-nginx
+  # envoy-gateway
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/envoy-gateway-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: envoy-gateway
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: envoy-gateway
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        name: envoy-gateway
+        namespace: envoy-gateway-system
+    - podLogs:
+        name: envoy-gateway
+        namespace: envoy-gateway-system
   # argocd - Note: won't be ready until the ingress has an external IP
   - try:
     - script:
