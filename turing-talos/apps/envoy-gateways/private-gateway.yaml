@@ -1,0 +1,9 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-private
+  namespace: envoy-gateway-system
+spec:
+  addresses:
+    type: IPAddress
+    value: 192.168.1.54

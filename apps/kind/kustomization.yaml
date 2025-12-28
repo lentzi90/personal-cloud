@@ -9,6 +9,7 @@ resources:
 - cert-manager-app.yaml
 - cloudnative-pg-app.yaml
 - envoy-gateway-app.yaml
+- envoy-gateways-app.yaml
 - external-secrets-app.yaml
 - hetzner-acme-app.yaml
 - ingress-nginx-app.yaml

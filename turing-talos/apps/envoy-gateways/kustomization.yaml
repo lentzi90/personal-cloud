@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: envoy-gateway-system
+
+labels:
+- pairs:
+    environment: turing-talos
+
+resources:
+- ../../../envoy-gateway/base
+
+patches:
+- path: private-gateway.yaml
+- path: public-gateway.yaml
