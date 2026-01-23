@@ -13,23 +13,9 @@ machine:
       - bind
       - rshared
       - rw
-  network:
-    hostname: merry
-    interfaces:
-    - deviceSelector:
-        physical: true # should select any hardware network device, if you have just one, it will be selected
-      dhcp: false
-      addresses:
-      - 192.168.1.23/24
-      routes:
-      - network: 0.0.0.0/0
-        gateway: 192.168.1.1
-    nameservers:
-    - 86.54.11.1
-    - 86.54.11.201
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.11.6
+    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.12.0
   files:
   # Containerd config for spegel
   - path: /etc/cri/conf.d/20-customization.part
@@ -37,3 +23,28 @@ machine:
     content: |
       [plugins."io.containerd.cri.v1.images"]
         discard_unpacked_layers = false
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: merry
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: lan0
+selector:
+  match: link.physical
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: lan0
+addresses:
+- address: 192.168.1.23/24
+routes:
+- destination: 0.0.0.0/0
+  gateway: 192.168.1.1
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+- address: 86.54.11.1
+- address: 86.54.11.201
