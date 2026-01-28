@@ -11,6 +11,13 @@ spec:
         content: |
           sed -i "s HEAD ${TARGET_REVISION} g" apps/kind/*-app.yaml
   - try:
+    # Configure DNS for ingress hostnames
+    - script:
+        timeout: 30s
+        content: |
+          KIND_IP=$(docker inspect chart-testing-control-plane --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
+          echo "$KIND_IP keycloak.local opencloud.local argocd.local" | sudo tee -a /etc/hosts
+  - try:
     # Apply cert-manager manifests
     - script:
         timeout: 1m
@@ -439,6 +446,32 @@ spec:
     - podLogs:
         name: keycloak-db-1
         namespace: keycloak
+  # Verify KeycloakRealmImport for OpenCloud realm
+  - try:
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: k8s.keycloak.org/v2alpha1
+          kind: KeycloakRealmImport
+          metadata:
+            name: opencloud-realm
+            namespace: keycloak
+          status:
+            (conditions[?type == 'Done']):
+            - status: 'True'
+    catch:
+    - describe:
+        apiVersion: k8s.keycloak.org/v2alpha1
+        kind: KeycloakRealmImport
+        name: opencloud-realm
+        namespace: keycloak
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Keycloak Realm Import Status ==="
+          kubectl get keycloakrealmimport -n keycloak -o yaml
+          echo "=== Keycloak Logs ==="
+          kubectl logs -n keycloak -l app=keycloak --tail=100
   # pi-hole
   - try:
     - script:
@@ -567,3 +600,77 @@ spec:
     - podLogs:
         name: opencloud
         namespace: opencloud
+  # Verify OpenCloud OIDC configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying OpenCloud OIDC Configuration ==="
+          # Check that the ConfigMap has OIDC settings
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OC_OIDC_ISSUER}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.PROXY_AUTOPROVISION_ACCOUNTS}'
+          echo ""
+          # Verify the deployment is using the ConfigMap
+          kubectl get deployment opencloud -n opencloud -o jsonpath='{.spec.template.spec.containers[0].envFrom[*].configMapRef.name}'
+          echo ""
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== OpenCloud ConfigMap ==="
+          kubectl get configmap opencloud-env -n opencloud -o yaml
+          echo "=== OpenCloud Deployment ==="
+          kubectl get deployment opencloud -n opencloud -o yaml
+  # Verify Keycloak OIDC discovery endpoint is accessible
+  - try:
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing Keycloak OIDC Discovery Endpoint ==="
+          RESPONSE=$(curl -sk https://keycloak.local/realms/openCloud/.well-known/openid-configuration)
+          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/openCloud"' || exit 1
+          echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
+          echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
+          echo "OIDC discovery endpoint OK"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: keycloak
+        selector: app=keycloak
+    - podLogs:
+        namespace: keycloak
+        selector: app=keycloak
+        tail: 50
+  # Verify OpenCloud requires OIDC authentication
+  - try:
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing OpenCloud OIDC Authentication Requirement ==="
+          # WebDAV endpoint requires authentication
+          HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" https://opencloud.local/remote.php/webdav/)
+          echo "HTTP Code: $HTTP_CODE"
+          if [[ "$HTTP_CODE" != "401" ]]; then
+            echo "Expected 401 Unauthorized, got $HTTP_CODE"
+            exit 1
+          fi
+          # Verify WWW-Authenticate header references Bearer auth
+          AUTH_HEADER=$(curl -sk -I https://opencloud.local/remote.php/webdav/ | grep -i www-authenticate | head -1)
+          echo "Auth header: $AUTH_HEADER"
+          if [[ "$AUTH_HEADER" != *"Bearer"* ]]; then
+            echo "Expected Bearer authentication"
+            exit 1
+          fi
+          echo "OpenCloud correctly requires OIDC authentication"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+        tail: 50
