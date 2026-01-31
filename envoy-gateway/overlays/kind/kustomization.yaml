@@ -10,3 +10,7 @@ labels:
 
 resources:
 - ../../base
+- wildcard-certificate.yaml
+
+patches:
+- path: private-gateway.yaml
