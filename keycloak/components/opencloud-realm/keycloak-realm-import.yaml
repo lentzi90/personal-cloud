@@ -1,0 +1,514 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: opencloud-realm
+  labels:
+    app: keycloak
+    realm: opencloud
+spec:
+  keycloakCRName: keycloak
+  realm:
+    realm: openCloud
+    enabled: true
+    displayName: OpenCloud
+    registrationAllowed: false
+    resetPasswordAllowed: true
+    editUsernameAllowed: false
+    bruteForceProtected: true
+    permanentLockout: false
+    maxFailureWaitSeconds: 900
+    minimumQuickLoginWaitSeconds: 60
+    waitIncrementSeconds: 60
+    quickLoginCheckMilliSeconds: 1000
+    maxDeltaTimeSeconds: 43200
+    failureFactor: 5
+    # Default client scopes that are automatically assigned to new clients
+    defaultDefaultClientScopes:
+    - profile
+    - email
+    - roles
+    - web-origins
+    - acr
+    - basic
+    roles:
+      realm:
+      - name: opencloudAdmin
+        description: OpenCloud Administrator role with full access
+      - name: opencloudUser
+        description: Standard OpenCloud user role
+      - name: opencloudGuest
+        description: Guest role with limited access
+      - name: opencloudSpaceAdmin
+        description: OpenCloud Space Administrator role
+      - name: offline_access
+        description: "${role_offline-access}"
+      - name: uma_authorization
+        description: "${role_uma_authorization}"
+      - name: default-roles-opencloud
+        description: "${role_default-roles}"
+        composite: true
+        composites:
+          realm:
+          - offline_access
+          - uma_authorization
+          client:
+            account:
+            - manage-account
+            - view-profile
+      client:
+        account:
+        - name: manage-account
+          description: "${role_manage-account}"
+          composite: true
+          composites:
+            client:
+              account:
+              - manage-account-links
+              - manage-consent
+              - view-applications
+              - view-consent
+              - view-groups
+              - delete-account
+        - name: manage-account-links
+          description: "${role_manage-account-links}"
+        - name: manage-consent
+          description: "${role_manage-consent}"
+          composite: true
+          composites:
+            client:
+              account:
+              - view-consent
+        - name: view-applications
+          description: "${role_view-applications}"
+        - name: view-consent
+          description: "${role_view-consent}"
+        - name: view-groups
+          description: "${role_view-groups}"
+        - name: view-profile
+          description: "${role_view-profile}"
+        - name: delete-account
+          description: "${role_delete-account}"
+    defaultRole:
+      name: default-roles-opencloud
+    # Scope mappings allow clients to include specific client roles in tokens
+    # when fullScopeAllowed is false
+    scopeMappings:
+    - clientScope: account-console
+      roles:
+      - manage-account
+      - view-groups
+    clientScopeMappings:
+      account:
+      - client: account-console
+        roles:
+        - manage-account
+        - view-groups
+    groups:
+    - name: users
+      realmRoles:
+      - opencloudUser
+    - name: admins
+      realmRoles:
+      - opencloudAdmin
+    clientScopes:
+    # Standard OpenID Connect scopes required by Keycloak
+    - name: openid
+      description: OpenID Connect scope
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "false"
+    - name: web-origins
+      description: OpenID Connect scope for add allowed web origins to the access token
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "false"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: allowed web origins
+        protocol: openid-connect
+        protocolMapper: oidc-allowed-origins-mapper
+        consentRequired: false
+    - name: roles
+      description: OpenID Connect scope for user realm roles
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "false"
+        display.on.consent.screen: "true"
+        consent.screen.text: "${rolesScopeConsentText}"
+      protocolMappers:
+      - name: realm roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-realm-role-mapper
+        consentRequired: false
+        config:
+          multivalued: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: realm_access.roles
+          jsonType.label: String
+      - name: client roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-client-role-mapper
+        consentRequired: false
+        config:
+          multivalued: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: resource_access.${client_id}.roles
+          jsonType.label: String
+      - name: audience resolve
+        protocol: openid-connect
+        protocolMapper: oidc-audience-resolve-mapper
+        consentRequired: false
+    - name: acr
+      description: OpenID Connect scope for acr (authentication context class reference)
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "false"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: acr loa level
+        protocol: openid-connect
+        protocolMapper: oidc-acr-mapper
+        consentRequired: false
+        config:
+          id.token.claim: "true"
+          access.token.claim: "true"
+    - name: basic
+      description: OpenID Connect scope for basic claims
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "false"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: auth_time
+        protocol: openid-connect
+        protocolMapper: oidc-usersessionmodel-note-mapper
+        consentRequired: false
+        config:
+          user.session.note: AUTH_TIME
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: auth_time
+          jsonType.label: long
+      - name: sub
+        protocol: openid-connect
+        protocolMapper: oidc-sub-mapper
+        consentRequired: false
+        config:
+          introspection.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+    - name: profile
+      description: OpenID Connect built-in scope for user profile claims
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "true"
+        consent.screen.text: "${profileScopeConsentText}"
+      protocolMappers:
+      - name: username
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: username
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: preferred_username
+          jsonType.label: String
+      - name: family name
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: lastName
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: family_name
+          jsonType.label: String
+      - name: given name
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: firstName
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: given_name
+          jsonType.label: String
+      - name: full name
+        protocol: openid-connect
+        protocolMapper: oidc-full-name-mapper
+        consentRequired: false
+        config:
+          id.token.claim: "true"
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+    - name: email
+      description: OpenID Connect built-in scope for email claims
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "true"
+        consent.screen.text: "${emailScopeConsentText}"
+      protocolMappers:
+      - name: email
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: email
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: email
+          jsonType.label: String
+      - name: email verified
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: emailVerified
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: email_verified
+          jsonType.label: boolean
+    - name: OpenCloudUniqueID
+      description: Provides the unique user ID claim for OpenCloud
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: openclouduuid
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+        consentRequired: false
+        config:
+          userinfo.token.claim: "true"
+          user.attribute: id
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: openclouduuid
+          jsonType.label: String
+    - name: oc-groups
+      description: Group membership for OpenCloud
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        consentRequired: false
+        config:
+          full.path: "false"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: groups
+          userinfo.token.claim: "true"
+    - name: oc-roles
+      description: User roles for OpenCloud
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "false"
+      protocolMappers:
+      - name: realm roles
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-realm-role-mapper
+        consentRequired: false
+        config:
+          multivalued: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: roles
+          jsonType.label: String
+    clients:
+    # Account Console - for user self-service
+    - clientId: account
+      name: Account
+      description: Account Management
+      enabled: true
+      alwaysDisplayInConsole: false
+      clientAuthenticatorType: client-secret
+      publicClient: true
+      protocol: openid-connect
+      rootUrl: ${authBaseUrl}
+      baseUrl: /realms/openCloud/account/
+      redirectUris:
+      - /realms/openCloud/account/*
+      webOrigins:
+      - "+"
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: false
+      defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+    - clientId: account-console
+      name: Account Console
+      description: Account Console for user self-service
+      enabled: true
+      alwaysDisplayInConsole: false
+      clientAuthenticatorType: client-secret
+      publicClient: true
+      protocol: openid-connect
+      rootUrl: ${authBaseUrl}
+      baseUrl: /realms/openCloud/account/
+      redirectUris:
+      - /realms/openCloud/account/*
+      webOrigins:
+      - "+"
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: false
+      defaultClientScopes:
+      - web-origins
+      - acr
+      - profile
+      - roles
+      - basic
+      - email
+      attributes:
+        pkce.code.challenge.method: S256
+        post.logout.redirect.uris: +
+      protocolMappers:
+      - name: audience resolve
+        protocol: openid-connect
+        protocolMapper: oidc-audience-resolve-mapper
+        consentRequired: false
+    - clientId: web
+      name: OpenCloud Web
+      description: OpenCloud Web Application
+      enabled: true
+      clientAuthenticatorType: client-secret
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: true
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - OpenCloudUniqueID
+      - oc-groups
+      - oc-roles
+      optionalClientScopes:
+      - offline_access
+      attributes:
+        pkce.code.challenge.method: S256
+    - clientId: OpenCloudDesktop
+      name: OpenCloud Desktop Client
+      description: OpenCloud Desktop Sync Client
+      enabled: true
+      clientAuthenticatorType: client-secret
+      redirectUris:
+      - http://127.0.0.1/*
+      - http://localhost/*
+      webOrigins:
+      - http://127.0.0.1
+      - http://localhost
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: true
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - OpenCloudUniqueID
+      - oc-groups
+      - oc-roles
+      - offline_access
+      attributes:
+        pkce.code.challenge.method: S256
+    - clientId: OpenCloudAndroid
+      name: OpenCloud Android App
+      description: OpenCloud Android Mobile Application
+      enabled: true
+      clientAuthenticatorType: client-secret
+      redirectUris:
+      - oc://android.opencloud.com/*
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: true
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - OpenCloudUniqueID
+      - oc-groups
+      - oc-roles
+      - offline_access
+      attributes:
+        pkce.code.challenge.method: S256
+    - clientId: OpenCloudIOS
+      name: OpenCloud iOS App
+      description: OpenCloud iOS Mobile Application
+      enabled: true
+      clientAuthenticatorType: client-secret
+      redirectUris:
+      - oc://ios.opencloud.com/*
+      - oc.ios://ios.opencloud.com/*
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: true
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - OpenCloudUniqueID
+      - oc-groups
+      - oc-roles
+      - offline_access
+      attributes:
+        pkce.code.challenge.method: S256
+    users:
+    - username: admin
+      enabled: true
+      emailVerified: true
+      firstName: Admin
+      lastName: User
+      email: admin@opencloud.local
+      credentials:
+      - type: password
+        value: admin
+        temporary: false
+      realmRoles:
+      - opencloudAdmin
+      - default-roles-opencloud
+      groups:
+      - admins

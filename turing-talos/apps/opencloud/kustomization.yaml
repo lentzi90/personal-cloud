@@ -11,6 +11,7 @@ resources:
 - ingress.yaml
 - opencloud-pv.yaml
 - external-secret.yaml
+
 patches:
 - path: opencloud-data-pvc.yaml
 - path: deployment-patch.yaml
@@ -22,3 +23,7 @@ configMapGenerator:
 - name: opencloud-env
   envs:
   - config.env
+  - oidc.env
+- name: opencloud-csp
+  files:
+  - csp.yaml
