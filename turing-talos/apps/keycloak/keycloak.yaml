@@ -3,5 +3,7 @@ kind: Keycloak
 metadata:
   name: keycloak
 spec:
+  http:
+    httpEnabled: true
   hostname:
     hostname: keycloak.jern.fi

@@ -8,5 +8,6 @@ resources:
 - ../../../keycloak/base
 - certificate.yaml
 - ingress.yaml
+- httproute.yaml
 patches:
 - path: keycloak.yaml
