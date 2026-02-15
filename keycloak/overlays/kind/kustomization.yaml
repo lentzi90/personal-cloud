@@ -8,6 +8,7 @@ resources:
 - ../../base
 - certificate.yaml
 - ingress.yaml
+- httproute.yaml
 patches:
 - target:
     kind: Keycloak
