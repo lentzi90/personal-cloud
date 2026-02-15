@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
+spec:
+  type: ClusterIP
+  ports:
+  - port: 443
+    targetPort: https
+    protocol: TCP
+    name: https
+  - port: 8080
+    targetPort: metrics
+    protocol: TCP
+    name: metrics
+  selector:
+    app.kubernetes.io/name: cert-manager-webhook-hetzner-cloud

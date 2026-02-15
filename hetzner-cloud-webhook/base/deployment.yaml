@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
+spec:
+  template:
+    spec:
+      serviceAccountName: cert-manager-webhook-hetzner-cloud
+      containers:
+      - name: cert-manager-webhook-hetzner-cloud
+        image: docker.io/hetzner/cert-manager-webhook-hetzner
+        imagePullPolicy: IfNotPresent
+        args:
+        - --tls-cert-file=/tls/tls.crt
+        - --tls-private-key-file=/tls/tls.key
+        - --secure-port=8443
+        env:
+        - name: GROUP_NAME
+          value: "acme.hetzner.com"
+        ports:
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /healthz
+            port: https
+        readinessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /healthz
+            port: https
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: certs
+          mountPath: /tls
+          readOnly: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: cert-manager-webhook-hetzner-cloud-webhook-tls
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

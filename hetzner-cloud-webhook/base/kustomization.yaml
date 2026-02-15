@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/name: cert-manager-webhook-hetzner-cloud
+
+images:
+- name: docker.io/hetzner/cert-manager-webhook-hetzner
+  newTag: v0.6.5
+
+resources:
+- apiservice.yaml
+- rbac.yaml
+- deployment.yaml
+- service.yaml
+- webhook-pki.yaml

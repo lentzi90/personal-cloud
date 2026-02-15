@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
+---
+# Grant cert-manager permission to validate using our apiserver
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:domain-solver
+rules:
+- apiGroups:
+  - acme.hetzner.com
+  resources:
+  - '*'
+  verbs:
+  - 'create'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:secret-reader
+  namespace: cert-manager
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "secrets"
+  resourceNames:
+  - hetzner-cloud-secret
+  verbs:
+  - "get"
+  - "watch"
+---
+# apiserver gets the auth-delegator role to delegate auth decisions to
+# the core apiserver
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:domain-solver
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cert-manager-webhook-hetzner-cloud:domain-solver
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: cert-manager
+  namespace: cert-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:secret-reader
+  namespace: cert-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cert-manager-webhook-hetzner-cloud:secret-reader
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
+---
+# Grant the webhook permission to read the ConfigMap containing the Kubernetes
+# apiserver's requestheader-ca-certificate.
+# This ConfigMap is automatically created by the Kubernetes apiserver.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-manager-webhook-hetzner-cloud:webhook-authentication-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: cert-manager-webhook-hetzner-cloud
+  namespace: cert-manager
