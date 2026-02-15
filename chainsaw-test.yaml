@@ -632,9 +632,9 @@ spec:
             --timeout=120s
           
           # Add hosts entries for local testing (check if not already present with correct IP)
-          grep -q "^127\.0\.0\.1[[:space:]].*argocd\.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
-          grep -q "^127\.0\.0\.1[[:space:]].*keycloak\.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
-          grep -q "^127\.0\.0\.1[[:space:]].*opencloud\.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
+          grep -q "^127\.0\.0\.1[[:space:]]\+argocd\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
+          grep -q "^127\.0\.0\.1[[:space:]]\+keycloak\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
+          grep -q "^127\.0\.0\.1[[:space:]]\+opencloud\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
           
           # Test ingress controller health
           echo ""
@@ -753,9 +753,11 @@ spec:
           
           # Install ArgoCD CLI with checksum verification
           echo "Installing ArgoCD CLI..."
-          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
           
-          if [ -z "$ARGOCD_VERSION" ]; then
+          # Use jq for reliable JSON parsing
+          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
+          
+          if [ -z "$ARGOCD_VERSION" ] || [ "$ARGOCD_VERSION" = "null" ]; then
             echo "✗ Failed to retrieve ArgoCD version from GitHub API"
             exit 1
           fi
@@ -774,9 +776,16 @@ spec:
             exit 1
           fi
           
-          # Verify checksum
-          cd /tmp
-          if grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c -; then
+          # Verify checksum (use subshell to avoid changing working directory)
+          echo "Verifying checksum..."
+          checksum_line=$(grep "argocd-linux-amd64$" /tmp/argocd-checksums.txt)
+          
+          if [ -z "$checksum_line" ]; then
+            echo "✗ Could not find checksum for argocd-linux-amd64 in checksums file"
+            exit 1
+          fi
+          
+          if (cd /tmp && echo "$checksum_line" | sha256sum -c -); then
             echo "✓ Checksum verification passed"
             sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
             argocd version --client
@@ -784,7 +793,6 @@ spec:
             echo "✗ Checksum verification failed"
             exit 1
           fi
-          cd -
           
           # Get admin password from secret and use it securely
           echo ""
