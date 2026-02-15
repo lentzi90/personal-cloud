@@ -115,6 +115,10 @@ sudo nmcli c delete peer1
 ```
  ## Chainsaw test
 
+ The Chainsaw test suite validates the deployment of all applications in a KinD cluster and includes end-to-end tests to verify actual application functionality.
+
+ ### Running the tests
+
  ```bash
 sudo kind create cluster --config=kind-config.yaml
 sudo kind get kubeconfig > kubeconfig.yaml
@@ -122,3 +126,22 @@ export KUBECONFIG=kubeconfig.yaml
 export BITWARDEN_ACCESS_TOKEN=...
 chainsaw test
  ```
+
+ ### Test Coverage
+
+ The test suite includes:
+
+ 1. **Resource Deployment Tests**: Validates that all Kubernetes resources (Deployments, Pods, etc.) are created and healthy
+ 2. **ArgoCD Application Sync Tests**: Ensures all ArgoCD Applications reach "Healthy" and "Synced" status
+ 3. **HTTP Health Checks**: Tests that applications are accessible via HTTP/HTTPS endpoints
+    - Nginx ingress controller health
+    - ArgoCD UI accessibility
+    - Keycloak UI accessibility
+    - OpenCloud (Nextcloud) UI accessibility
+ 4. **Certificate Validation**: Verifies TLS certificates are properly configured and not expired
+    - ArgoCD certificate
+    - Keycloak certificate
+    - OpenCloud certificate
+ 5. **Authentication Tests**: Validates login and API access
+    - ArgoCD CLI login with admin credentials
+    - Application listing via ArgoCD API
