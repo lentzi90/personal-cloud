@@ -10,6 +10,7 @@ labels:
 resources:
 - ../../../envoy-gateway/base
 - wildcard-certificate.yaml
+- apex-certificate.yaml
 
 patches:
 - path: private-gateway.yaml

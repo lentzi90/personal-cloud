@@ -9,8 +9,9 @@ labels:
     environment: kind
 
 resources:
-  - ../../base
-  - namespace.yaml
+- ../../base
+- namespace.yaml
+- httproute.yaml
 
 patches:
 - path: ingress.yaml
