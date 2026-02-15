@@ -639,7 +639,9 @@ spec:
           # Test ingress controller health
           echo ""
           echo "--- Testing Ingress Controller ---"
-          # Note: /healthz returns 404 when accessed without valid ingress rule, which is expected
+          # Note: /healthz endpoint returns 404 when accessed without a valid ingress rule
+          # This is expected behavior - the 404 confirms the ingress controller is running
+          # and processing requests (just not routing this particular path)
           test_http_endpoint "Nginx Ingress Controller" "http://localhost/healthz" 404
           
           # Test ArgoCD
@@ -782,6 +784,13 @@ spec:
           
           if [ -z "$checksum_line" ]; then
             echo "✗ Could not find checksum for argocd-linux-amd64 in checksums file"
+            exit 1
+          fi
+          
+          # Ensure we got exactly one match
+          match_count=$(echo "$checksum_line" | wc -l)
+          if [ "$match_count" -ne 1 ]; then
+            echo "✗ Found $match_count matches for argocd-linux-amd64, expected exactly 1"
             exit 1
           fi
           
