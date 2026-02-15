@@ -631,10 +631,10 @@ spec:
             --selector=app.kubernetes.io/component=controller \
             --timeout=120s
           
-          # Add hosts entries for local testing (check if not already present)
-          grep -q "argocd.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
-          grep -q "keycloak.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
-          grep -q "opencloud.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
+          # Add hosts entries for local testing (check if not already present with correct IP)
+          grep -q "127.0.0.1.*argocd.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
+          grep -q "127.0.0.1.*keycloak.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
+          grep -q "127.0.0.1.*opencloud.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
           
           # Test ingress controller health
           echo ""
@@ -790,11 +790,12 @@ spec:
           echo "Logging in to ArgoCD via port-forward..."
           cat "$password_file" | argocd login --port-forward --port-forward-namespace argocd \
             --username=admin --password-stdin --insecure
+          login_status=$?
           
           # Clean up password file
           rm -f "$password_file"
           
-          if [ $? -eq 0 ]; then
+          if [ $login_status -eq 0 ]; then
             echo "✓ Successfully logged in to ArgoCD"
           else
             echo "✗ Failed to log in to ArgoCD"
