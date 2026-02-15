@@ -1,14 +1,8 @@
-# https://argoproj.github.io/argo-cd/operator-manual/ingress/#ssl-passthrough-with-cert-manager-and-lets-encrypt
+# https://argoproj.github.io/argo-cd/operator-manual/ingress/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: argocd-server-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    # If you encounter a redirect loop or are getting a 307 response code
-    # then you need to force the nginx ingress to connect to the backend using HTTPS.
-    #
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
   rules:
@@ -19,10 +13,10 @@ spec:
           service:
             name: argocd-server
             port:
-              name: https
+              name: http
         path: /
         pathType: Prefix
   tls:
   - hosts:
     - argocd.local
-    secretName: argocd-secret # do not change, this is provided by Argo CD
+    secretName: argocd-secret
