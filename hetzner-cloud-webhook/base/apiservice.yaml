@@ -1,0 +1,14 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.acme.hetzner.com
+  annotations:
+    cert-manager.io/inject-ca-from: "cert-manager/cert-manager-webhook-hetzner-cloud-webhook-tls"
+spec:
+  group: acme.hetzner.com
+  groupPriorityMinimum: 1000
+  versionPriority: 15
+  service:
+    name: cert-manager-webhook-hetzner-cloud
+    namespace: cert-manager
+  version: v1alpha1

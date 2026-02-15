@@ -12,6 +12,7 @@ resources:
 - envoy-gateways-app.yaml
 - external-secrets-app.yaml
 - hetzner-acme-app.yaml
+- hetzner-cloud-webhook-app.yaml
 - ingress-nginx-app.yaml
 - jellyfin-app.yaml
 - keycloak-app.yaml
