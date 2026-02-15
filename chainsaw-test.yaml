@@ -631,14 +631,15 @@ spec:
             --selector=app.kubernetes.io/component=controller \
             --timeout=120s
           
-          # Add hosts entries for local testing
-          echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
-          echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
-          echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
+          # Add hosts entries for local testing (check if not already present)
+          grep -q "argocd.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
+          grep -q "keycloak.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
+          grep -q "opencloud.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
           
           # Test ingress controller health
           echo ""
           echo "--- Testing Ingress Controller ---"
+          # Note: /healthz returns 404 when accessed without valid ingress rule, which is expected
           test_http_endpoint "Nginx Ingress Controller" "http://localhost/healthz" 404
           
           # Test ArgoCD
@@ -750,29 +751,48 @@ spec:
         content: |
           echo "=== Testing ArgoCD CLI Authentication ==="
           
-          # Install ArgoCD CLI
+          # Install ArgoCD CLI with checksum verification
           echo "Installing ArgoCD CLI..."
-          curl -sSL -o /tmp/argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-          sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
-          argocd version --client
+          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "Latest ArgoCD version: ${ARGOCD_VERSION}"
           
-          # Get admin password from secret
+          curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+          curl -sSL -o /tmp/argocd-linux-amd64.sha256 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
+          
+          # Verify checksum
+          if grep argocd-linux-amd64 /tmp/argocd-linux-amd64.sha256 | sha256sum -c -; then
+            echo "✓ Checksum verification passed"
+            sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
+            argocd version --client
+          else
+            echo "✗ Checksum verification failed"
+            exit 1
+          fi
+          
+          # Get admin password from secret and use it securely
           echo ""
           echo "Retrieving ArgoCD admin password..."
-          password=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+          # Store password in a temporary file with restricted permissions
+          password_file=$(mktemp)
+          chmod 600 "$password_file"
+          kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d > "$password_file"
           
-          if [ -z "$password" ]; then
+          if [ ! -s "$password_file" ]; then
             echo "✗ Failed to retrieve ArgoCD admin password"
+            rm -f "$password_file"
             exit 1
           fi
           
           echo "✓ Retrieved admin password"
           
-          # Login to ArgoCD using port-forward
+          # Login to ArgoCD using port-forward (password via stdin)
           echo ""
           echo "Logging in to ArgoCD via port-forward..."
-          argocd login --port-forward --port-forward-namespace argocd \
-            --username=admin --password="${password}" --insecure
+          cat "$password_file" | argocd login --port-forward --port-forward-namespace argocd \
+            --username=admin --password-stdin --insecure
+          
+          # Clean up password file
+          rm -f "$password_file"
           
           if [ $? -eq 0 ]; then
             echo "✓ Successfully logged in to ArgoCD"
