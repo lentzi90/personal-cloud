@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: apex-jern-fi
+spec:
+  secretName: apex-jern-fi-cert
+  dnsNames:
+  - "jern.fi"
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  revisionHistoryLimit: 5

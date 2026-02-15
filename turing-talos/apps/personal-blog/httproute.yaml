@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: personal-blog
+spec:
+  parentRefs:
+  - name: envoy-public
+    namespace: envoy-gateway-system
+    sectionName: https
+  hostnames:
+  - lennart.jern.fi
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: personal-blog
+      port: 8080

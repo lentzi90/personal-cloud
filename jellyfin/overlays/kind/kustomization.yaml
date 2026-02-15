@@ -13,3 +13,4 @@ resources:
 - namespace.yaml
 - certificate.yaml
 - ingress.yaml
+- httproute.yaml

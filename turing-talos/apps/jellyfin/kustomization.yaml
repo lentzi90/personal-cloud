@@ -9,6 +9,7 @@ resources:
 - namespace.yaml
 - certificate.yaml
 - ingress.yaml
+- httproute.yaml
 - jellyfin-pv.yaml
 patches:
 - path: jellyfin-data-pvc.yaml

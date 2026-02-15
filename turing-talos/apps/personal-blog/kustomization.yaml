@@ -11,3 +11,4 @@ resources:
 - ../../../personal-blog/base
 - namespace.yaml
 - ingress.yaml
+- httproute.yaml

@@ -10,6 +10,7 @@ labels:
 resources:
 - ../../../blog/base
 - namespace.yaml
+- httproute.yaml
 
 patches:
 - path: ingress.yaml
