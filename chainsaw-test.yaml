@@ -754,13 +754,29 @@ spec:
           # Install ArgoCD CLI with checksum verification
           echo "Installing ArgoCD CLI..."
           ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+          
+          if [ -z "$ARGOCD_VERSION" ]; then
+            echo "✗ Failed to retrieve ArgoCD version from GitHub API"
+            exit 1
+          fi
+          
           echo "Latest ArgoCD version: ${ARGOCD_VERSION}"
           
-          curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
-          curl -sSL -o /tmp/argocd-linux-amd64.sha256 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
+          # Download ArgoCD CLI binary
+          if ! curl -sSL -f -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"; then
+            echo "✗ Failed to download ArgoCD CLI binary"
+            exit 1
+          fi
+          
+          # Download checksums file
+          if ! curl -sSL -f -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"; then
+            echo "✗ Failed to download ArgoCD checksums"
+            exit 1
+          fi
           
           # Verify checksum
-          if grep argocd-linux-amd64 /tmp/argocd-linux-amd64.sha256 | sha256sum -c -; then
+          cd /tmp
+          if grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c -; then
             echo "✓ Checksum verification passed"
             sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
             argocd version --client
@@ -768,6 +784,7 @@ spec:
             echo "✗ Checksum verification failed"
             exit 1
           fi
+          cd -
           
           # Get admin password from secret and use it securely
           echo ""
