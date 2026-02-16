@@ -224,7 +224,7 @@ spec:
   - try:
     - script:
         timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/argocd-app.yaml
+        content: kubectl -n argocd apply --server-side -f apps/kind/argocd-app.yaml
     - assert:
         timeout: 10m
         resource:
