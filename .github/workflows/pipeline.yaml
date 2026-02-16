@@ -24,11 +24,11 @@ jobs:
         # Install ArgoCD CLI with checksum verification
         ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
         curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
-        curl -sSL -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
+        curl -sSL -o /tmp/cli_checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/cli_checksums.txt"
         
         # Verify checksum
         cd /tmp
-        checksum_line=$(grep "argocd-linux-amd64$" argocd-checksums.txt)
+        checksum_line=$(grep "argocd-linux-amd64$" cli_checksums.txt)
         if [ -z "$checksum_line" ]; then
           echo "Error: Could not find checksum for argocd-linux-amd64"
           exit 1
