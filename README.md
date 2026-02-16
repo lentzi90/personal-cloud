@@ -44,6 +44,9 @@ argocd --port-forward --port-forward-namespace=argocd cluster list
 # Apply the app of apps to install everything
 kubectl -n argocd apply -f apps/kind/apps-app.yaml
 
+# Note: For ArgoCD v3.3.0+, the self-managed ArgoCD application requires server-side apply
+# If applying individual apps, use: kubectl -n argocd apply --server-side -f apps/kind/argocd-app.yaml
+
 # Add ClusterSecretStore
 kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=...
 kubectl apply -f secret-store/test-secretstore.yaml
