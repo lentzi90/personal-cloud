@@ -37,7 +37,8 @@ This repository contains Kubernetes manifests for a personal cloud infrastructur
 - Always use Kustomize for managing Kubernetes manifests
 - Follow the base/overlay pattern:
   - `base/`: Contains the core manifests
-  - `overlays/<environment>/`: Contains environment-specific patches
+  - `overlays/<environment>/`: Contains environment-specific patches (e.g., `kind/` for local testing)
+  - Some services also have kustomization overlays in the `turing-talos/` top-level directory
 - Use `kustomization.yaml` files with proper apiVersion: `kustomize.config.k8s.io/v1beta1`
 - Include environment labels in overlays:
   ```yaml
@@ -50,14 +51,13 @@ This repository contains Kubernetes manifests for a personal cloud infrastructur
 ### ArgoCD Applications
 
 - All ArgoCD Application manifests go in the `apps/` directory
-- Use `ServerSideApply=true` in syncOptions for self-managed ArgoCD Applications (required for ArgoCD v3.3.0+)
+- Use `ServerSideApply=true` in syncOptions for applications with large manifests
 - Example:
   ```yaml
   syncPolicy:
     syncOptions:
     - ServerSideApply=true
   ```
-- Use `kubectl apply --server-side` when manually applying ArgoCD Application manifests
 
 ### YAML Conventions
 
@@ -147,6 +147,6 @@ kustomize build <path-to-overlay>
 
 - Never commit secrets directly to the repository
 - Use External Secrets Operator with Bitwarden for secret management
-- Always use `--server-side` flag when applying self-managed ArgoCD Applications
+- Use `--server-side` flag when applying large Kubernetes manifests
 - Test changes locally with KinD before creating PRs
 - Follow GitOps principles: all changes should go through Git
