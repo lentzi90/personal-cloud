@@ -12,6 +12,8 @@ resources:
 - letsencrypt-prod.yaml
 - letsencrypt-staging.yaml
 - certificate.yaml
+- httproute.yaml
 patches:
 - path: argocd-cm.yaml
 - path: argocd-rbac-cm.yaml
+- path: argocd-cmd-params-cm.yaml

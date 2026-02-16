@@ -27,6 +27,11 @@ spec:
             (conditions[?type == 'Available']):
             - status: 'True'
   - try:
+    # Install Gateway API CRDs (needed before argocd, which includes an HTTPRoute)
+    - script:
+        timeout: 1m
+        content: kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
+  - try:
     # Apply argocd manifests
     - script:
         timeout: 1m
@@ -220,7 +225,7 @@ spec:
         kind: Gateway
         name: envoy-public
         namespace: envoy-gateway-system
-  # argocd - Note: won't be ready until the ingress has an external IP
+  # argocd - Note: won't be ready until the gateway has an external IP
   - try:
     - script:
         timeout: 10s
