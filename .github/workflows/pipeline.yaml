@@ -21,14 +21,24 @@ jobs:
       uses: kyverno/action-install-chainsaw@v0.2.14
     - name: Install ArgoCD CLI
       run: |
-        # Install ArgoCD CLI
+        # Install ArgoCD CLI with checksum verification
         ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
         curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
         curl -sSL -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
         
         # Verify checksum
         cd /tmp
-        grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c -
+        checksum_line=$(grep "argocd-linux-amd64$" argocd-checksums.txt)
+        if [ -z "$checksum_line" ]; then
+          echo "Error: Could not find checksum for argocd-linux-amd64"
+          exit 1
+        fi
+        match_count=$(echo "$checksum_line" | wc -l)
+        if [ "$match_count" -ne 1 ]; then
+          echo "Error: Found $match_count matches, expected exactly 1"
+          exit 1
+        fi
+        echo "$checksum_line" | sha256sum -c -
         
         # Install to system
         sudo install -m 755 argocd-linux-amd64 /usr/local/bin/argocd

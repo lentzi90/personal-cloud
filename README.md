@@ -134,9 +134,11 @@ sudo kind get kubeconfig > kubeconfig.yaml
 export KUBECONFIG=kubeconfig.yaml
 export BITWARDEN_ACCESS_TOKEN=...
 
-# Install ArgoCD CLI (if not already installed)
+# Install ArgoCD CLI with checksum verification (if not already installed)
 ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
 curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+curl -sSL -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
+cd /tmp && grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c - && cd -
 sudo install -m 755 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
 
 # Run tests
