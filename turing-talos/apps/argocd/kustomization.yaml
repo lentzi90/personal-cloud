@@ -7,11 +7,9 @@ labels:
 resources:
 - ../../../argocd/bases/upstream
 - namespace.yaml
-- ingress.yaml
 - selfsigned-issuer.yaml
 - letsencrypt-prod.yaml
 - letsencrypt-staging.yaml
-- certificate.yaml
 - httproute.yaml
 patches:
 - path: argocd-cm.yaml

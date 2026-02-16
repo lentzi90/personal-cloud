@@ -7,8 +7,6 @@ labels:
 resources:
 - ../../../opencloud/base
 - namespace.yaml
-- certificate.yaml
-- ingress.yaml
 - httproute.yaml
 - opencloud-pv.yaml
 - external-secret.yaml

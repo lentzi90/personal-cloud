@@ -11,9 +11,7 @@ labels:
 resources:
 - ../../bases/upstream
 - namespace.yaml
-- ingress.yaml
 - selfsigned-issuer.yaml
-- certificate.yaml
 - httproute.yaml
 patches:
 - path: argocd-cmd-params-cm.yaml
