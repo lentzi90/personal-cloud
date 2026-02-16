@@ -32,7 +32,7 @@ sudo kind get kubeconfig > kubeconfig.yaml
 export KUBECONFIG=kubeconfig.yaml
 
 kubectl apply -k cert-manager/overlays/kind
-kubectl apply -k argocd/overlays/kind
+kubectl apply --server-side -k argocd/overlays/kind
 
 # Login and check that it is working
 password="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
