@@ -6,8 +6,6 @@ labels:
     environment: kind
 resources:
 - ../../base
-- certificate.yaml
-- ingress.yaml
 - httproute.yaml
 patches:
 - target:
