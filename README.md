@@ -135,11 +135,14 @@ export KUBECONFIG=kubeconfig.yaml
 export BITWARDEN_ACCESS_TOKEN=...
 
 # Install ArgoCD CLI with checksum verification (if not already installed)
-ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
-curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
-curl -sSL -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
-cd /tmp && grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c - && cd -
-sudo install -m 755 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
+# See .github/workflows/pipeline.yaml for the complete installation procedure
+if ! command -v argocd &> /dev/null; then
+  ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
+  curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+  curl -sSL -o /tmp/argocd-checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-checksums.txt"
+  cd /tmp && grep "argocd-linux-amd64$" argocd-checksums.txt | sha256sum -c - && cd -
+  sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
+fi
 
 # Run tests
 chainsaw test

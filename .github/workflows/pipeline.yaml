@@ -41,7 +41,7 @@ jobs:
         echo "$checksum_line" | sha256sum -c -
         
         # Install to system
-        sudo install -m 755 argocd-linux-amd64 /usr/local/bin/argocd
+        sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
         argocd version --client
     - name: Create Kind Cluster
       uses: helm/kind-action@v1.13.0
