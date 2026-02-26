@@ -123,38 +123,6 @@ spec:
     - podLogs:
         name: speaker
         namespace: metallb-system
-  # ingress-nginx
-  - try:
-    - script:
-        timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/ingress-nginx-app.yaml
-    - assert:
-        timeout: 10m
-        resource:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: ingress-nginx
-            namespace: argocd
-          status:
-            health:
-              status: Healthy
-            sync:
-              status: Synced
-    catch:
-    - describe:
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        name: ingress-nginx
-        namespace: argocd
-    - describe:
-        apiVersion: v1
-        kind: Pod
-        name: ingress-nginx
-        namespace: ingress-nginx
-    - podLogs:
-        name: ingress-nginx
-        namespace: ingress-nginx
   # envoy-gateway
   - try:
     - script:
