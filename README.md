@@ -2,7 +2,7 @@
 
 1. Install cert-manager: `kubectl apply -k cert-manager/overlays/<overlay>`
 2. Install Gateway API CRDs: `kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml`
-3. Install argocd: `kubectl apply -k argocd/overlays/<overlay>`
+3. Install argocd: `kubectl apply --server-side -k argocd/overlays/<overlay>`
 4. Add all applications: `kubectl apply -k apps/overlays/<overlay>`
 
 The `apps` folder contains argocd Applications including an "app-of-apps".
@@ -34,7 +34,7 @@ export KUBECONFIG=kubeconfig.yaml
 
 kubectl apply -k cert-manager/overlays/kind
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
-kubectl apply -k argocd/overlays/kind
+kubectl apply --server-side -k argocd/overlays/kind
 
 # Login and check that it is working
 password="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)"
@@ -43,6 +43,9 @@ argocd --port-forward --port-forward-namespace=argocd cluster list
 
 # Apply the app of apps to install everything
 kubectl -n argocd apply -f apps/kind/apps-app.yaml
+
+# Note: For ArgoCD v3.3.0+, the self-managed ArgoCD application requires server-side apply
+# If applying individual apps, use: kubectl -n argocd apply --server-side -f apps/kind/argocd-app.yaml
 
 # Add ClusterSecretStore
 kubectl -n external-secrets create secret generic bitwarden-access-token --from-literal=token=...

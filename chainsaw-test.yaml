@@ -35,7 +35,7 @@ spec:
     # Apply argocd manifests
     - script:
         timeout: 1m
-        content: kubectl apply -k argocd/overlays/kind
+        content: kubectl apply --server-side -k argocd/overlays/kind
     # Verify that the argocd-server deployment is ready
     - assert:
         timeout: 5m
@@ -229,7 +229,7 @@ spec:
   - try:
     - script:
         timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/argocd-app.yaml
+        content: kubectl -n argocd apply --server-side -f apps/kind/argocd-app.yaml
     - assert:
         timeout: 10m
         resource:
