@@ -308,38 +308,6 @@ spec:
     - podLogs:
         name: cnpg
         namespace: cnpg-system
-  # hetzner-acme
-  - try:
-    - script:
-        timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/hetzner-acme-app.yaml
-    - assert:
-        timeout: 10m
-        resource:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: hetzner-acme
-            namespace: argocd
-          status:
-            health:
-              status: Healthy
-            sync:
-              status: Synced
-    catch:
-    - describe:
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        name: hetzner-acme
-        namespace: argocd
-    - describe:
-        apiVersion: v1
-        kind: Pod
-        name: cert-manager-webhook-hetzner
-        namespace: cert-manager
-    - podLogs:
-        name: cert-manager-webhook-hetzner
-        namespace: cert-manager
   # hetzner-cloud-webhook
   - try:
     - script:
