@@ -24,3 +24,4 @@ spec:
           config:
             tokenSecretKeyRef:
               name: hetzner-cloud-secret
+              key: token
