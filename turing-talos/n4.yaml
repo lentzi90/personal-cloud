@@ -16,13 +16,8 @@ machine:
   install:
     disk: /dev/sda
     image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.12.0
-  files:
-  # Containerd config for spegel
-  - path: /etc/cri/conf.d/20-customization.part
-    op: create
-    content: |
-      [plugins."io.containerd.cri.v1.images"]
-        discard_unpacked_layers = false
+  features:
+    stableHostname: false
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
@@ -32,7 +27,7 @@ apiVersion: v1alpha1
 kind: LinkAliasConfig
 name: lan0
 selector:
-  match: link.physical
+  match: link.type == 1
 ---
 apiVersion: v1alpha1
 kind: LinkConfig
@@ -40,8 +35,7 @@ name: lan0
 addresses:
 - address: 192.168.1.23/24
 routes:
-- destination: 0.0.0.0/0
-  gateway: 192.168.1.1
+- gateway: 192.168.1.1
 ---
 apiVersion: v1alpha1
 kind: ResolverConfig
