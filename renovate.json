@@ -93,6 +93,15 @@
       "autoReplaceStringTemplate": "download/{{{prettyNewVersion}}}/cnpg-{{{newVersion}}}.yaml\\n",
       "depNameTemplate": "cloudnative-pg/cloudnative-pg",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^external-secrets/components/bitwarden-sdk-server/deployment.yaml$/"
+      ],
+      "matchStrings": ["bitwarden-sdk-server:(?<currentValue>.*?)\""],
+      "depNameTemplate": "external-secrets/bitwarden-sdk-server",
+      "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [{ "matchCategories": ["docker"], "enabled": false }]
