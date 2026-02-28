@@ -117,10 +117,54 @@ sudo nmcli c delete peer1
 ```
  ## Chainsaw test
 
+ The Chainsaw test suite validates the deployment of all applications in a KinD cluster and includes end-to-end tests to verify actual application functionality.
+
+ ### Prerequisites
+
+ The E2E tests require the following tools to be installed:
+ - `kubectl` - Kubernetes CLI
+ - `argocd` - ArgoCD CLI
+ - `curl` - HTTP client
+ - `openssl` - TLS/SSL toolkit
+ - `jq` - JSON processor
+
+ ### Running the tests
+
  ```bash
 sudo kind create cluster --config=kind-config.yaml
 sudo kind get kubeconfig > kubeconfig.yaml
 export KUBECONFIG=kubeconfig.yaml
 export BITWARDEN_ACCESS_TOKEN=...
+
+# Install ArgoCD CLI with checksum verification (if not already installed)
+# See .github/workflows/pipeline.yaml for the complete installation procedure
+if ! command -v argocd &> /dev/null; then
+  ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
+  curl -sSL -o /tmp/argocd-linux-amd64 "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+  curl -sSL -o /tmp/cli_checksums.txt "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/cli_checksums.txt"
+  cd /tmp && grep "argocd-linux-amd64$" cli_checksums.txt | sha256sum -c - && cd -
+  sudo install -m 555 /tmp/argocd-linux-amd64 /usr/local/bin/argocd
+fi
+
+# Run tests
 chainsaw test
  ```
+
+ ### Test Coverage
+
+ The test suite includes:
+
+ 1. **Resource Deployment Tests**: Validates that all Kubernetes resources (Deployments, Pods, etc.) are created and healthy
+ 2. **ArgoCD Application Sync Tests**: Ensures all ArgoCD Applications reach "Healthy" and "Synced" status
+ 3. **HTTP Health Checks** (`.github/scripts/test-http-endpoints.sh`): Tests that applications are accessible via HTTP/HTTPS endpoints
+    - Envoy gateway readiness
+    - ArgoCD UI accessibility
+    - Keycloak UI accessibility
+    - OpenCloud UI accessibility
+ 4. **Certificate Validation** (`.github/scripts/test-certificates.sh`): Verifies TLS certificates are properly configured and not expired
+    - ArgoCD certificate
+    - Keycloak certificate
+    - OpenCloud certificate
+ 5. **Authentication Tests** (`.github/scripts/test-argocd-auth.sh`): Validates login and API access
+    - ArgoCD CLI login with admin credentials
+    - Application listing via ArgoCD API
