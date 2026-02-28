@@ -20,7 +20,7 @@ spec:
       containers:
       - name: bitwarden-sdk-server
         securityContext: {}
-        image: "ghcr.io/external-secrets/bitwarden-sdk-server:v0.3.2"
+        image: "ghcr.io/external-secrets/bitwarden-sdk-server:v0.4.2"
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - mountPath: /certs
