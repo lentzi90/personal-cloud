@@ -157,10 +157,10 @@ chainsaw test
  1. **Resource Deployment Tests**: Validates that all Kubernetes resources (Deployments, Pods, etc.) are created and healthy
  2. **ArgoCD Application Sync Tests**: Ensures all ArgoCD Applications reach "Healthy" and "Synced" status
  3. **HTTP Health Checks** (`.github/scripts/test-http-endpoints.sh`): Tests that applications are accessible via HTTP/HTTPS endpoints
-    - Nginx ingress controller health
+    - Envoy gateway readiness
     - ArgoCD UI accessibility
     - Keycloak UI accessibility
-    - OpenCloud (Nextcloud) UI accessibility
+    - OpenCloud UI accessibility
  4. **Certificate Validation** (`.github/scripts/test-certificates.sh`): Verifies TLS certificates are properly configured and not expired
     - ArgoCD certificate
     - Keycloak certificate

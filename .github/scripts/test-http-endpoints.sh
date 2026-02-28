@@ -21,30 +21,21 @@ test_http_endpoint() {
   fi
 }
 
-# Wait for ingress to be ready
-echo "Waiting for nginx ingress controller to be ready..."
-kubectl wait --namespace ingress-nginx \
+# Wait for envoy gateway to be ready
+echo "Waiting for envoy gateway to be ready..."
+kubectl wait --namespace envoy-gateway-system \
   --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
+  --selector=gateway.envoyproxy.io/owning-gateway-name=envoy-private \
   --timeout=120s
 
 # Add hosts entries for local testing (check if not already present with correct IP)
-grep -q "^127\.0\.0\.1[[:space:]]\+argocd\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
-grep -q "^127\.0\.0\.1[[:space:]]\+keycloak\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
-grep -q "^127\.0\.0\.1[[:space:]]\+opencloud\.local[[:space:]]*$" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
-
-# Test ingress controller health
-echo ""
-echo "--- Testing Ingress Controller ---"
-# Note: /healthz endpoint returns 404 when accessed without a valid ingress rule
-# This is expected behavior - the 404 confirms the ingress controller is running
-# and processing requests (just not routing this particular path)
-test_http_endpoint "Nginx Ingress Controller" "http://localhost/healthz" 404
+grep -q "^127\.0\.0\.1[[:space:]].*argocd\.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
+grep -q "^127\.0\.0\.1[[:space:]].*keycloak\.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
+grep -q "^127\.0\.0\.1[[:space:]].*opencloud\.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
 
 # Test ArgoCD
 echo ""
 echo "--- Testing ArgoCD ---"
-# ArgoCD redirects HTTP to HTTPS, so we test HTTPS endpoint
 test_http_endpoint "ArgoCD UI" "https://argocd.local/" 200
 
 # Test Keycloak
@@ -59,10 +50,10 @@ else
   exit 1
 fi
 
-# Test Opencloud (Nextcloud)
+# Test Opencloud
 echo ""
 echo "--- Testing Opencloud ---"
-# Nextcloud typically returns 302 for root path (redirects to login)
+# OpenCloud typically returns 302 for root path (redirects to login)
 response=$(curl -k -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "https://opencloud.local/" || echo "000")
 if [ "$response" = "200" ] || [ "$response" = "302" ] || [ "$response" = "303" ]; then
   echo "✓ Opencloud is accessible (HTTP $response)"

@@ -548,13 +548,13 @@ spec:
           .github/scripts/test-http-endpoints.sh
     catch:
     - describe:
-        apiVersion: v1
-        kind: Service
-        name: ingress-nginx-controller
-        namespace: ingress-nginx
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        name: envoy-private
+        namespace: envoy-gateway-system
     - podLogs:
-        namespace: ingress-nginx
-        selector: app.kubernetes.io/component=controller
+        namespace: envoy-gateway-system
+        selector: gateway.envoyproxy.io/owning-gateway-name=envoy-private
   # End-to-End Tests: Certificate Validation
   - try:
     - script:
