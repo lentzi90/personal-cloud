@@ -29,9 +29,9 @@ kubectl wait --namespace envoy-gateway-system \
   --timeout=120s
 
 # Add hosts entries for local testing (check if not already present with correct IP)
-grep -q "^127\.0\.0\.1[[:space:]].*argocd\.local" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
-grep -q "^127\.0\.0\.1[[:space:]].*keycloak\.local" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
-grep -q "^127\.0\.0\.1[[:space:]].*opencloud\.local" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
+grep -q "^127\.0\.0\.1[[:space:]].*\bargocd\.local\b" /etc/hosts || echo "127.0.0.1 argocd.local" | sudo tee -a /etc/hosts
+grep -q "^127\.0\.0\.1[[:space:]].*\bkeycloak\.local\b" /etc/hosts || echo "127.0.0.1 keycloak.local" | sudo tee -a /etc/hosts
+grep -q "^127\.0\.0\.1[[:space:]].*\bopencloud\.local\b" /etc/hosts || echo "127.0.0.1 opencloud.local" | sudo tee -a /etc/hosts
 
 # Test ArgoCD
 echo ""
