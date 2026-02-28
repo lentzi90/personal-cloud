@@ -27,6 +27,11 @@ spec:
             (conditions[?type == 'Available']):
             - status: 'True'
   - try:
+    # Install Gateway API CRDs (needed before argocd, which includes an HTTPRoute)
+    - script:
+        timeout: 1m
+        content: kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
+  - try:
     # Apply argocd manifests
     - script:
         timeout: 1m
@@ -118,38 +123,6 @@ spec:
     - podLogs:
         name: speaker
         namespace: metallb-system
-  # ingress-nginx
-  - try:
-    - script:
-        timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/ingress-nginx-app.yaml
-    - assert:
-        timeout: 10m
-        resource:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: ingress-nginx
-            namespace: argocd
-          status:
-            health:
-              status: Healthy
-            sync:
-              status: Synced
-    catch:
-    - describe:
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        name: ingress-nginx
-        namespace: argocd
-    - describe:
-        apiVersion: v1
-        kind: Pod
-        name: ingress-nginx
-        namespace: ingress-nginx
-    - podLogs:
-        name: ingress-nginx
-        namespace: ingress-nginx
   # envoy-gateway
   - try:
     - script:
@@ -220,7 +193,7 @@ spec:
         kind: Gateway
         name: envoy-public
         namespace: envoy-gateway-system
-  # argocd - Note: won't be ready until the ingress has an external IP
+  # argocd - Note: won't be ready until the gateway has an external IP
   - try:
     - script:
         timeout: 10s
@@ -335,38 +308,6 @@ spec:
     - podLogs:
         name: cnpg
         namespace: cnpg-system
-  # hetzner-acme
-  - try:
-    - script:
-        timeout: 10s
-        content: kubectl -n argocd apply -f apps/kind/hetzner-acme-app.yaml
-    - assert:
-        timeout: 10m
-        resource:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: hetzner-acme
-            namespace: argocd
-          status:
-            health:
-              status: Healthy
-            sync:
-              status: Synced
-    catch:
-    - describe:
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        name: hetzner-acme
-        namespace: argocd
-    - describe:
-        apiVersion: v1
-        kind: Pod
-        name: cert-manager-webhook-hetzner
-        namespace: cert-manager
-    - podLogs:
-        name: cert-manager-webhook-hetzner
-        namespace: cert-manager
   # hetzner-cloud-webhook
   - try:
     - script:

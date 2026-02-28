@@ -9,5 +9,4 @@ labels:
 resources:
 - deployment.yaml
 - service.yaml
-- ingress.yaml
 - pod-disruption-budget.yaml

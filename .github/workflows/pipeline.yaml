@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/kustomize-reusable.yaml
     with:
       paths: >
-        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind external-secrets/overlays/kind hetzner-acme/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind jellyfin/overlays/kind metallb/overlays/kind nginx-ingress/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind
+        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind external-secrets/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind jellyfin/overlays/kind metallb/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind
   kind-deploy:
     needs: kustomize-build
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
         sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
         argocd version --client
     - name: Create Kind Cluster
-      uses: helm/kind-action@v1.13.0
+      uses: helm/kind-action@v1.14.0
       with:
         config: kind-config.yaml
 

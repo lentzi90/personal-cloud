@@ -6,7 +6,12 @@ labels:
     environment: jern.fi
 resources:
 - ../../../keycloak/base
-- certificate.yaml
-- ingress.yaml
+- httproute.yaml
 patches:
 - path: keycloak.yaml
+- target:
+    kind: Keycloak
+    name: keycloak
+  patch: |-
+    - op: remove
+      path: /spec/http/tlsSecret
