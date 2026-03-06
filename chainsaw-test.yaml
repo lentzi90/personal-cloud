@@ -540,3 +540,52 @@ spec:
     - podLogs:
         name: opencloud
         namespace: opencloud
+  # End-to-End Tests: HTTP Health Checks
+  - try:
+    - script:
+        timeout: 2m
+        content: |
+          .github/scripts/test-http-endpoints.sh
+    catch:
+    - describe:
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        name: envoy-private
+        namespace: envoy-gateway-system
+    - podLogs:
+        namespace: envoy-gateway-system
+        selector: gateway.envoyproxy.io/owning-gateway-name=envoy-private
+  # End-to-End Tests: Certificate Validation
+  - try:
+    - script:
+        timeout: 1m
+        content: |
+          .github/scripts/test-certificates.sh
+    catch:
+    - describe:
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        namespace: argocd
+    - describe:
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        namespace: keycloak
+    - describe:
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        namespace: opencloud
+  # End-to-End Tests: ArgoCD CLI Authentication
+  - try:
+    - script:
+        timeout: 2m
+        content: |
+          .github/scripts/test-argocd-auth.sh
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Secret
+        name: argocd-initial-admin-secret
+        namespace: argocd
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-server
