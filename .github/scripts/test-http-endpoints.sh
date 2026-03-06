@@ -6,12 +6,15 @@ echo "=== Testing HTTP Endpoints ==="
 # Function to test HTTP endpoint
 test_http_endpoint() {
   local name=$1
-  local url=$2
+  local host=$2
   local expected_status=${3:-200}
-  
+  local extra_args=${4:-}
+
+  local url="https://${host}:${LOCAL_HTTPS_PORT}/"
   echo "Testing $name at $url..."
-  response=$(curl -k -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "$url" 2>/dev/null) || true
-  
+  response=$(curl -k -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 \
+    --resolve "${host}:${LOCAL_HTTPS_PORT}:127.0.0.1" $extra_args "$url" 2>/dev/null) || true
+
   if [ "$response" = "$expected_status" ]; then
     echo "✓ $name is accessible (HTTP $response)"
     return 0
@@ -21,50 +24,70 @@ test_http_endpoint() {
   fi
 }
 
-# Wait for envoy gateway to be ready
+# Wait for envoy gateway proxy to be ready
 echo "Waiting for envoy gateway to be ready..."
 kubectl wait --namespace envoy-gateway-system \
   --for=condition=ready pod \
   --selector=gateway.envoyproxy.io/owning-gateway-name=envoy-private \
   --timeout=120s
 
-# Get the gateway's external IP assigned by MetalLB
-echo "Getting gateway IP..."
-GATEWAY_IP=$(kubectl get gateway envoy-private -n envoy-gateway-system -o jsonpath='{.status.addresses[0].value}')
-if [ -z "$GATEWAY_IP" ]; then
-  echo "✗ Failed to get gateway IP"
+# Find the envoy gateway proxy service
+echo "Finding envoy gateway proxy service..."
+PROXY_SVC=$(kubectl get svc -n envoy-gateway-system \
+  -l gateway.envoyproxy.io/owning-gateway-name=envoy-private \
+  -o jsonpath='{.items[0].metadata.name}')
+if [ -z "$PROXY_SVC" ]; then
+  echo "✗ Failed to find envoy gateway proxy service"
   exit 1
 fi
-echo "Gateway IP: $GATEWAY_IP"
+echo "Proxy service: $PROXY_SVC"
 
-# Add hosts entries using the gateway's actual IP
-ESCAPED_IP=$(echo "$GATEWAY_IP" | sed 's/\./\\./g')
-grep -q "^${ESCAPED_IP}[[:space:]].*\bargocd\.local\b" /etc/hosts || echo "${GATEWAY_IP} argocd.local" | sudo tee -a /etc/hosts
-grep -q "^${ESCAPED_IP}[[:space:]].*\bkeycloak\.local\b" /etc/hosts || echo "${GATEWAY_IP} keycloak.local" | sudo tee -a /etc/hosts
-grep -q "^${ESCAPED_IP}[[:space:]].*\bopencloud\.local\b" /etc/hosts || echo "${GATEWAY_IP} opencloud.local" | sudo tee -a /etc/hosts
+# Port-forward to the gateway proxy service
+LOCAL_HTTPS_PORT=8443
+echo "Starting port-forward to $PROXY_SVC (local port $LOCAL_HTTPS_PORT -> 443)..."
+kubectl port-forward -n envoy-gateway-system "svc/$PROXY_SVC" "${LOCAL_HTTPS_PORT}:443" &
+PF_PID=$!
+
+# Ensure port-forward is cleaned up on exit
+cleanup() {
+  echo "Cleaning up port-forward (PID $PF_PID)..."
+  kill "$PF_PID" 2>/dev/null || true
+  wait "$PF_PID" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+# Wait for port-forward to be ready
+echo "Waiting for port-forward to be ready..."
+for i in $(seq 1 10); do
+  if curl -k -s -o /dev/null --connect-timeout 1 "https://127.0.0.1:${LOCAL_HTTPS_PORT}" 2>/dev/null; then
+    echo "Port-forward is ready"
+    break
+  fi
+  if [ "$i" = "10" ]; then
+    echo "✗ Port-forward failed to become ready"
+    exit 1
+  fi
+  sleep 1
+done
 
 # Test ArgoCD
 echo ""
 echo "--- Testing ArgoCD ---"
-test_http_endpoint "ArgoCD UI" "https://argocd.local/" 200
+test_http_endpoint "ArgoCD UI" "argocd.local" 200
 
 # Test Keycloak
 echo ""
 echo "--- Testing Keycloak ---"
 # Keycloak may redirect, so we follow redirects
-response=$(curl -k -s -o /dev/null -w "%{http_code}" -L --connect-timeout 10 --max-time 30 "https://keycloak.local/" 2>/dev/null) || true
-if [ "$response" = "200" ]; then
-  echo "✓ Keycloak is accessible (HTTP $response)"
-else
-  echo "✗ Keycloak returned HTTP $response (expected 200)"
-  exit 1
-fi
+test_http_endpoint "Keycloak" "keycloak.local" 200 "-L"
 
 # Test Opencloud
 echo ""
 echo "--- Testing Opencloud ---"
-# OpenCloud typically returns 302 for root path (redirects to login)
-response=$(curl -k -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "https://opencloud.local/" 2>/dev/null) || true
+# OpenCloud may return 200, 302, or 303 for root path
+response=$(curl -k -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 \
+  --resolve "opencloud.local:${LOCAL_HTTPS_PORT}:127.0.0.1" \
+  "https://opencloud.local:${LOCAL_HTTPS_PORT}/" 2>/dev/null) || true
 if [ "$response" = "200" ] || [ "$response" = "302" ] || [ "$response" = "303" ]; then
   echo "✓ Opencloud is accessible (HTTP $response)"
 else
