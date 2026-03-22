@@ -1,6 +1,5 @@
 {
   "extends": ["config:recommended"],
-  "kustomize": { "ignorePaths": ["**/nginx-ingress/**"] },
   "hostRules": [
     { "matchHost": "index.docker.io", "token": "{{ secrets.token }}" }
   ],
@@ -44,13 +43,12 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/^nginx-ingress/bases/cloud/kustomization.yaml$/",
-        "/^nginx-ingress/bases/kind/kustomization.yaml$/"
+        "/^apps/kind/envoy-gateway-app.yaml$/",
+        "/^turing-talos/apps/envoy-gateway-app.yaml$/"
       ],
-      "matchStrings": ["\\?ref=controller-(?<currentValue>.*?)\\n"],
-      "depNameTemplate": "kubernetes/ingress-nginx",
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^controller-(?<version>.*?)$"
+      "matchStrings": ["targetRevision: (?<currentValue>.*?)\\n"],
+      "depNameTemplate": "envoyproxy/gateway",
+      "datasourceTemplate": "github-releases"
     },
     {
       "customType": "regex",
