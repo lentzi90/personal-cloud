@@ -1,0 +1,63 @@
+name: Update WireGuard Image Tag
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+    - name: Get latest linuxserver/docker-wireguard release
+      id: latest_release
+      run: |
+        TAG=$(gh release view --repo linuxserver/docker-wireguard --json tagName --jq .tagName)
+        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Get current tag from kustomization
+      id: current_tag
+      run: |
+        TAG=$(grep 'newTag:' wireguard/base/kustomization.yaml | awk '{print $2}')
+        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+    - name: Update kustomization and create PR
+      if: steps.latest_release.outputs.tag != steps.current_tag.outputs.tag
+      run: |
+        LATEST_TAG="${{ steps.latest_release.outputs.tag }}"
+        BRANCH="update/wireguard-${LATEST_TAG}"
+
+        # Validate tag format to avoid issues with special characters in shell/sed
+        if ! echo "$LATEST_TAG" | grep -qE '^[a-zA-Z0-9][a-zA-Z0-9._+-]*$'; then
+          echo "Unexpected tag format: ${LATEST_TAG}"
+          exit 1
+        fi
+
+        # Skip if a PR already exists for this version
+        PR_COUNT=$(gh pr list --head "$BRANCH" --json number --jq 'length')
+        if [ "$PR_COUNT" -gt "0" ]; then
+          echo "PR already exists for wireguard ${LATEST_TAG}"
+          exit 0
+        fi
+
+        sed -i "s#newTag: .*#newTag: ${LATEST_TAG}#" wireguard/base/kustomization.yaml
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b "$BRANCH"
+        git add wireguard/base/kustomization.yaml
+        git commit -m "chore: update wireguard image tag to ${LATEST_TAG}"
+        git push origin "$BRANCH"
+        gh pr create \
+          --title "chore: update wireguard image tag to ${LATEST_TAG}" \
+          --body "Automated update of WireGuard container image tag from \`${{ steps.current_tag.outputs.tag }}\` to \`${LATEST_TAG}\`." \
+          --base main
+      env:
+        GH_TOKEN: ${{ github.token }}
