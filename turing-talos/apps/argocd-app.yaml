@@ -13,7 +13,18 @@ spec:
     path: turing-talos/apps/argocd
     repoURL: https://github.com/lentzi90/personal-cloud.git
     targetRevision: main
+  ignoreDifferences:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    jqPathExpressions:
+    - .spec.parentRefs[].group
+    - .spec.parentRefs[].kind
+    - .spec.rules[].backendRefs[].group
+    - .spec.rules[].backendRefs[].kind
+    - .spec.rules[].backendRefs[].weight
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+    - ServerSideApply=true
