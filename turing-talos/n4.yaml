@@ -15,7 +15,7 @@ machine:
       - rw
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.12.0
+    image: factory.talos.dev/metal-installer/f47e6cd2634c7a96988861031bcc4144468a1e3aef82cca4f5b5ca3fffef778a:v1.12.5
   features:
     stableHostname: false
 ---
