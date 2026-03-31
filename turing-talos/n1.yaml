@@ -15,7 +15,7 @@ machine:
       - rw
   install:
     disk: /dev/mcblk0
-    image: factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.12.0
+    image: factory.talos.dev/installer/85f683902139269fbc5a7f64ea94a694d31e0b3d94347a225223fcbd042083ae:v1.12.5
   features:
     stableHostname: false
   files:
