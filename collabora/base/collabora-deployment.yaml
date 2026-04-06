@@ -30,12 +30,7 @@ spec:
         - configMapRef:
             name: collabora-env
         securityContext:
-          allowPrivilegeEscalation: true
-          capabilities:
-            add:
-            - SYS_ADMIN
-          seccompProfile:
-            type: Unconfined
+          privileged: true
         livenessProbe:
           httpGet:
             path: /hosting/discovery

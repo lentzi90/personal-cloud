@@ -567,16 +567,16 @@ spec:
     - describe:
         apiVersion: v1
         kind: Pod
-        name: collabora
         namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
     - podLogs:
-        name: collabora
         namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
     - describe:
         apiVersion: v1
         kind: Pod
-        name: collaboration
         namespace: opencloud
+        selector: app.kubernetes.io/name=collaboration
     - podLogs:
-        name: collaboration
         namespace: opencloud
+        selector: app.kubernetes.io/name=collaboration
