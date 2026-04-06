@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collaboration
+  labels:
+    app.kubernetes.io/name: collaboration
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: collaboration
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: collaboration
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: collaboration
+        image: docker.io/opencloudeu/opencloud-rolling
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "opencloud collaboration server"
+        ports:
+        - name: http
+          containerPort: 9300
+          protocol: TCP
+        - name: grpc
+          containerPort: 9301
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: collaboration-env
+        volumeMounts:
+        - name: opencloud-config
+          mountPath: /etc/opencloud
+      volumes:
+      - name: opencloud-config
+        persistentVolumeClaim:
+          claimName: opencloud-config
