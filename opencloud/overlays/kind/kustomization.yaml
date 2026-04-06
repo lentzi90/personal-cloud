@@ -13,6 +13,9 @@ resources:
 - namespace.yaml
 - httproute.yaml
 
+components:
+- ../../components/keycloak-oidc
+
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -24,26 +27,3 @@ configMapGenerator:
 - name: opencloud-csp
   files:
   - csp.yaml
-
-patches:
-- target:
-    kind: Deployment
-    name: opencloud
-  patch: |-
-    - op: add
-      path: /spec/template/spec/volumes/-
-      value:
-        name: csp-config
-        configMap:
-          name: opencloud-csp
-    - op: add
-      path: /spec/template/spec/containers/0/volumeMounts/-
-      value:
-        name: csp-config
-        mountPath: /etc/opencloud/csp.yaml
-        subPath: csp.yaml
-    - op: add
-      path: /spec/template/spec/containers/0/env
-      value:
-        - name: PROXY_CSP_CONFIG_FILE_LOCATION
-          value: /etc/opencloud/csp.yaml
