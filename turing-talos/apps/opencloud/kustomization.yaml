@@ -14,6 +14,9 @@ patches:
 - path: opencloud-data-pvc.yaml
 - path: deployment-patch.yaml
 
+components:
+- ../../../opencloud/components/keycloak-oidc
+
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -21,3 +24,7 @@ configMapGenerator:
 - name: opencloud-env
   envs:
   - config.env
+  - oidc.env
+- name: opencloud-csp
+  files:
+  - csp.yaml

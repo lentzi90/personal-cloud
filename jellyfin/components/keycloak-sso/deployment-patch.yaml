@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: install-sso-plugin
+        image: docker.io/curlimages/curl:8.11.1
+        command:
+        - sh
+        - -c
+        - |
+          set -ex
+          PLUGIN_DIR="/config/plugins/505ce9d1-d916-42fa-86ca-673ef241d7df_4.0.0.3"
+          mkdir -p "${PLUGIN_DIR}"
+          if [ ! -f "${PLUGIN_DIR}/SSO-Auth.dll" ]; then
+            curl -L --retry 3 --retry-delay 5 \
+              -o "${PLUGIN_DIR}/SSO-Auth.dll" \
+              "https://github.com/9p4/jellyfin-plugin-sso/releases/download/v4.0.0.3/SSO-Auth.dll"
+          fi
+          mkdir -p /config/plugins/configurations
+          if [ ! -f /config/plugins/configurations/SSO-Auth.xml ]; then
+            cp /sso-config/SSO-Auth.xml /config/plugins/configurations/SSO-Auth.xml
+          fi
+        volumeMounts:
+        - name: jellyfin-config
+          mountPath: /config
+        - name: jellyfin-sso-config
+          mountPath: /sso-config
+          readOnly: true
+      volumes:
+      - name: jellyfin-sso-config
+        configMap:
+          name: jellyfin-sso-config
