@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencloud
+spec:
+  template:
+    spec:
+      containers:
+      - name: opencloud
+        volumeMounts:
+        - name: opencloud-csp
+          mountPath: /etc/opencloud-csp
+      volumes:
+      - name: opencloud-csp
+        configMap:
+          name: opencloud-csp
