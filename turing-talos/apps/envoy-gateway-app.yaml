@@ -12,7 +12,7 @@ spec:
   source:
     chart: gateway-helm
     repoURL: docker.io/envoyproxy
-    targetRevision: v1.7.1
+    targetRevision: v1.7.2
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
