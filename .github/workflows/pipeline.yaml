@@ -18,7 +18,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
     - name: Install Chainsaw
-      uses: kyverno/action-install-chainsaw@v0.2.14
+      uses: kyverno/action-install-chainsaw@v0.2.15
     - name: Create Kind Cluster
       uses: helm/kind-action@v1.14.0
       with:
