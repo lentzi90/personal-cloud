@@ -7,6 +7,10 @@ labels:
 resources:
 - ../../../keycloak/base
 - httproute.yaml
+
+components:
+- ../../../keycloak/components/homelab-realm
+
 patches:
 - path: keycloak.yaml
 - target:
@@ -15,3 +19,35 @@ patches:
   patch: |-
     - op: remove
       path: /spec/http/tlsSecret
+# Patch OpenCloud web client (index 2) redirect URIs for turing-talos environment
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/2/redirectUris
+      value:
+        - https://opencloud.jern.fi/*
+    - op: add
+      path: /spec/realm/clients/2/webOrigins
+      value:
+        - https://opencloud.jern.fi
+    - op: add
+      path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
+      value: https://opencloud.jern.fi/*
+# Patch Jellyfin client (index 6) redirect URIs for turing-talos environment
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/6/redirectUris
+      value:
+        - https://jellyfin.jern.fi/sso/OID/redirect/Keycloak
+    - op: add
+      path: /spec/realm/clients/6/webOrigins
+      value:
+        - https://jellyfin.jern.fi
+    - op: add
+      path: /spec/realm/clients/6/baseUrl
+      value: https://jellyfin.jern.fi

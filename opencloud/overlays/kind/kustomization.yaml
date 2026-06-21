@@ -13,6 +13,9 @@ resources:
 - namespace.yaml
 - httproute.yaml
 
+components:
+- ../../components/keycloak-oidc
+
 generatorOptions:
   disableNameSuffixHash: true
 
@@ -20,3 +23,7 @@ configMapGenerator:
 - name: opencloud-env
   envs:
   - config.env
+  - oidc.env
+- name: opencloud-csp
+  files:
+  - csp.yaml

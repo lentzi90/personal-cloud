@@ -412,6 +412,32 @@ spec:
     - podLogs:
         name: keycloak-db-1
         namespace: keycloak
+  # Verify homelab realm import
+  - try:
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: k8s.keycloak.org/v2alpha1
+          kind: KeycloakRealmImport
+          metadata:
+            name: homelab-realm
+            namespace: keycloak
+          status:
+            (conditions[?type == 'Done']):
+            - status: 'True'
+    catch:
+    - describe:
+        apiVersion: k8s.keycloak.org/v2alpha1
+        kind: KeycloakRealmImport
+        name: homelab-realm
+        namespace: keycloak
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Keycloak Realm Import Status ==="
+          kubectl get keycloakrealmimport -n keycloak -o yaml
+          echo "=== Keycloak Logs ==="
+          kubectl logs -n keycloak -l app=keycloak --tail=100
   # pi-hole
   - try:
     - script:
@@ -540,3 +566,39 @@ spec:
     - podLogs:
         name: opencloud
         namespace: opencloud
+  # Verify OpenCloud OIDC configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying OpenCloud OIDC Configuration ==="
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OC_OIDC_ISSUER}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.PROXY_AUTOPROVISION_ACCOUNTS}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OCIS_EXCLUDE_RUN_SERVICES}'
+          echo ""
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== OpenCloud ConfigMap ==="
+          kubectl get configmap opencloud-env -n opencloud -o yaml
+          echo "=== OpenCloud Deployment ==="
+          kubectl get deployment opencloud -n opencloud -o yaml
+  # Verify Jellyfin SSO plugin configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying Jellyfin SSO Plugin Configuration ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o jsonpath='{.data.SSO-Auth\.xml}' | grep -q 'OidEndpoint' && echo "SSO-Auth.xml present and contains OidEndpoint"
+          echo ""
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Jellyfin SSO ConfigMap ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o yaml
+          echo "=== Jellyfin Deployment ==="
+          kubectl get deployment jellyfin -n jellyfin -o yaml
