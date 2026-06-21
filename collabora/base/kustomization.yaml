@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: false
+  pairs:
+    app.kubernetes.io/part-of: collabora
+
+resources:
+- collabora-deployment.yaml
+- collabora-service.yaml
+- collaboration-deployment.yaml
+- collaboration-service.yaml
+
+images:
+- name: docker.io/collabora/code
+  newTag: 25.04.9.4.1
+- name: docker.io/opencloudeu/opencloud-rolling
+  newTag: 6.0.0

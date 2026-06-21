@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+  labels:
+    app.kubernetes.io/name: collabora
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: collabora
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/collabora: unconfined
+      labels:
+        app.kubernetes.io/name: collabora
+    spec:
+      containers:
+      - name: collabora
+        image: docker.io/collabora/code
+        command: ["/bin/bash", "-c"]
+        args: ["coolconfig generate-proof-key && /start-collabora-online.sh"]
+        ports:
+        - name: http
+          containerPort: 9980
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: collabora-env
+        securityContext:
+          privileged: true
+        livenessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5

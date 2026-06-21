@@ -10,22 +10,16 @@ labels:
 
 resources:
 - ../../base
-- namespace.yaml
-- httproute.yaml
+- collabora-httproute.yaml
+- wopiserver-httproute.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
 
 configMapGenerator:
-- name: opencloud-env
+- name: collabora-env
   envs:
-  - config.env
-- name: opencloud-csp
-  files:
-  - csp.yaml
-
-patches:
-- path: csp-patch.yaml
-  target:
-    kind: Deployment
-    name: opencloud
+  - collabora.env
+- name: collaboration-env
+  envs:
+  - collaboration.env
