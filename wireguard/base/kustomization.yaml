@@ -13,4 +13,4 @@ resources:
 
 images:
 - name: lscr.io/linuxserver/wireguard
-  newTag: 1.0.20260223-r0-ls117
+  newTag: 1.0.20260223-r0-ls118
