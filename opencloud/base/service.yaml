@@ -9,3 +9,11 @@ spec:
     port: 80
     targetPort: http
     protocol: TCP
+  - name: nats
+    port: 9233
+    targetPort: 9233
+    protocol: TCP
+  - name: reva-grpc
+    port: 9142
+    targetPort: 9142
+    protocol: TCP

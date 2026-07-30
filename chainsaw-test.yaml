@@ -540,3 +540,43 @@ spec:
     - podLogs:
         name: opencloud
         namespace: opencloud
+  # collabora
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/collabora-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: collabora
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: collabora
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collaboration
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collaboration
