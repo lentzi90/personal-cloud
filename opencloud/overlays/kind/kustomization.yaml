@@ -40,10 +40,9 @@ patches:
       path: /spec/template/spec/containers/0/volumeMounts/-
       value:
         name: csp-config
-        mountPath: /etc/opencloud/csp.yaml
-        subPath: csp.yaml
+        mountPath: /etc/opencloud-csp
     - op: add
       path: /spec/template/spec/containers/0/env
       value:
         - name: PROXY_CSP_CONFIG_FILE_LOCATION
-          value: /etc/opencloud/csp.yaml
+          value: /etc/opencloud-csp/csp.yaml

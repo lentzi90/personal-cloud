@@ -14,11 +14,10 @@ spec:
               name: opencloud-admin
               key: IDM_ADMIN_PASSWORD
         - name: PROXY_CSP_CONFIG_FILE_LOCATION
-          value: /etc/opencloud/csp.yaml
+          value: /etc/opencloud-csp/csp.yaml
         volumeMounts:
         - name: csp-config
-          mountPath: /etc/opencloud/csp.yaml
-          subPath: csp.yaml
+          mountPath: /etc/opencloud-csp
       volumes:
       - name: csp-config
         configMap:

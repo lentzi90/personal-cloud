@@ -11,13 +11,6 @@ spec:
         content: |
           sed -i "s HEAD ${TARGET_REVISION} g" apps/kind/*-app.yaml
   - try:
-    # Configure DNS for ingress hostnames
-    - script:
-        timeout: 30s
-        content: |
-          KIND_IP=$(docker inspect chart-testing-control-plane --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
-          echo "$KIND_IP keycloak.local opencloud.local argocd.local" | sudo tee -a /etc/hosts
-  - try:
     # Apply cert-manager manifests
     - script:
         timeout: 1m
@@ -199,6 +192,30 @@ spec:
         apiVersion: gateway.networking.k8s.io/v1
         kind: Gateway
         name: envoy-public
+        namespace: envoy-gateway-system
+  # Resolve the private gateway address so that hostname based routes can be
+  # reached from the test runner
+  - try:
+    - script:
+        timeout: 5m
+        content: |
+          for _ in $(seq 60); do
+            GATEWAY_IP=$(kubectl -n envoy-gateway-system get gateway envoy-private -o jsonpath='{.status.addresses[0].value}')
+            if [ -n "${GATEWAY_IP}" ]; then
+              break
+            fi
+            sleep 5
+          done
+          if [ -z "${GATEWAY_IP}" ]; then
+            echo "envoy-private gateway has no address"
+            exit 1
+          fi
+          echo "${GATEWAY_IP} keycloak.local opencloud.local argocd.local" | sudo tee -a /etc/hosts
+    catch:
+    - describe:
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        name: envoy-private
         namespace: envoy-gateway-system
   # argocd - Note: won't be ready until the gateway has an external IP
   - try:

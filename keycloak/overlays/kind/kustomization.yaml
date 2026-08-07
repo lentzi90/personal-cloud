@@ -37,3 +37,27 @@ patches:
     - op: add
       path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
       value: https://opencloud.local/*
+# Test user for the KinD environment. The username matches the OpenCloud admin
+# account created by IDM_ADMIN_PASSWORD, so signing in resolves to that account.
+- target:
+    kind: KeycloakRealmImport
+    name: opencloud-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/users
+      value:
+        - username: admin
+          enabled: true
+          emailVerified: true
+          firstName: Admin
+          lastName: User
+          email: admin@opencloud.local
+          credentials:
+            - type: password
+              value: admin
+              temporary: false
+          realmRoles:
+            - opencloudAdmin
+            - default-roles-opencloud
+          groups:
+            - admins

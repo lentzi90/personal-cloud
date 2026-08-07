@@ -496,19 +496,5 @@ spec:
       - offline_access
       attributes:
         pkce.code.challenge.method: S256
-    users:
-    - username: admin
-      enabled: true
-      emailVerified: true
-      firstName: Admin
-      lastName: User
-      email: admin@opencloud.local
-      credentials:
-      - type: password
-        value: admin
-        temporary: false
-      realmRoles:
-      - opencloudAdmin
-      - default-roles-opencloud
-      groups:
-      - admins
+    # No users are defined here. Environments that need one (e.g. the KinD test
+    # setup) add them through a patch, production users are managed in Keycloak.
