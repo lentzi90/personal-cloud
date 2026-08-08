@@ -193,6 +193,34 @@ spec:
         kind: Gateway
         name: envoy-public
         namespace: envoy-gateway-system
+  # Resolve the private gateway address so that in-cluster requests can
+  # reach the hostname based routes. This is deliberately not written to the
+  # test runner's /etc/hosts: the MetalLB pool it comes from is only reachable
+  # from inside the cluster network, not from the runner host, so the
+  # verification steps below run their curl checks from an in-cluster pod
+  # instead and pass this address in via curl's --resolve.
+  - try:
+    - script:
+        timeout: 5m
+        content: |
+          for _ in $(seq 60); do
+            GATEWAY_IP=$(kubectl -n envoy-gateway-system get gateway envoy-private -o jsonpath='{.status.addresses[0].value}')
+            if [ -n "${GATEWAY_IP}" ]; then
+              break
+            fi
+            sleep 5
+          done
+          if [ -z "${GATEWAY_IP}" ]; then
+            echo "envoy-private gateway has no address"
+            exit 1
+          fi
+          echo "${GATEWAY_IP}" > /tmp/envoy-private-ip
+    catch:
+    - describe:
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: Gateway
+        name: envoy-private
+        namespace: envoy-gateway-system
   # argocd - Note: won't be ready until the gateway has an external IP
   - try:
     - script:
@@ -412,6 +440,32 @@ spec:
     - podLogs:
         name: keycloak-db-1
         namespace: keycloak
+  # Verify KeycloakRealmImport for OpenCloud realm
+  - try:
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: k8s.keycloak.org/v2alpha1
+          kind: KeycloakRealmImport
+          metadata:
+            name: opencloud-realm
+            namespace: keycloak
+          status:
+            (conditions[?type == 'Done']):
+            - status: 'True'
+    catch:
+    - describe:
+        apiVersion: k8s.keycloak.org/v2alpha1
+        kind: KeycloakRealmImport
+        name: opencloud-realm
+        namespace: keycloak
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Keycloak Realm Import Status ==="
+          kubectl get keycloakrealmimport -n keycloak -o yaml
+          echo "=== Keycloak Logs ==="
+          kubectl logs -n keycloak -l app=keycloak --tail=100
   # pi-hole
   - try:
     - script:
@@ -540,3 +594,103 @@ spec:
     - podLogs:
         name: opencloud
         namespace: opencloud
+  # Verify OpenCloud OIDC configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying OpenCloud OIDC Configuration ==="
+          # Check that the ConfigMap has OIDC settings
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OC_OIDC_ISSUER}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.PROXY_AUTOPROVISION_ACCOUNTS}'
+          echo ""
+          # Verify the deployment is using the ConfigMap
+          kubectl get deployment opencloud -n opencloud -o jsonpath='{.spec.template.spec.containers[0].envFrom[*].configMapRef.name}'
+          echo ""
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== OpenCloud ConfigMap ==="
+          kubectl get configmap opencloud-env -n opencloud -o yaml
+          echo "=== OpenCloud Deployment ==="
+          kubectl get deployment opencloud -n opencloud -o yaml
+  # Verify Keycloak OIDC discovery endpoint is accessible
+  - try:
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing Keycloak OIDC Discovery Endpoint ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          POD=oidc-discovery-check-$$
+          # kubectl run --rm -i mixes its own client-side chatter (e.g. the
+          # "pod deleted" message) into the attached stdout stream, which
+          # corrupts the captured response. Create the pod, wait for it to
+          # finish, then read its output back with `kubectl logs` instead,
+          # which returns exactly the container's stdout.
+          kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/openCloud/.well-known/openid-configuration
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
+          RESPONSE=$(kubectl logs "${POD}")
+          kubectl delete pod "${POD}" --ignore-not-found
+          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/openCloud"' || exit 1
+          echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
+          echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
+          echo "OIDC discovery endpoint OK"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: keycloak
+        selector: app=keycloak
+    - podLogs:
+        namespace: keycloak
+        selector: app=keycloak
+        tail: 50
+  # Verify OpenCloud requires OIDC authentication
+  - try:
+    - script:
+        timeout: 90s
+        content: |
+          echo "=== Testing OpenCloud OIDC Authentication Requirement ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+
+          # WebDAV endpoint requires authentication. As above, create the pod,
+          # wait for it, and read its output back with `kubectl logs` instead
+          # of attaching, to avoid kubectl's own chatter corrupting the output.
+          POD_CODE=opencloud-auth-check-$$
+          kubectl run "${POD_CODE}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_CODE}" --timeout=30s
+          HTTP_CODE=$(kubectl logs "${POD_CODE}")
+          kubectl delete pod "${POD_CODE}" --ignore-not-found
+          echo "HTTP Code: $HTTP_CODE"
+          if [[ "$HTTP_CODE" != "401" ]]; then
+            echo "Expected 401 Unauthorized, got $HTTP_CODE"
+            exit 1
+          fi
+
+          # Verify WWW-Authenticate header references Bearer auth
+          POD_HEADER=opencloud-auth-header-check-$$
+          kubectl run "${POD_HEADER}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -I --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_HEADER}" --timeout=30s
+          AUTH_HEADER=$(kubectl logs "${POD_HEADER}" | grep -i www-authenticate | head -1)
+          kubectl delete pod "${POD_HEADER}" --ignore-not-found
+          echo "Auth header: $AUTH_HEADER"
+          if [[ "$AUTH_HEADER" != *"Bearer"* ]]; then
+            echo "Expected Bearer authentication"
+            exit 1
+          fi
+          echo "OpenCloud correctly requires OIDC authentication"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+        tail: 50

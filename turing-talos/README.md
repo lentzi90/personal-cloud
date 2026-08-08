@@ -165,3 +165,38 @@ sudo losetup -d "$LOOP_DEV"
 # Clean up mount point
 sudo rmdir /mnt/iscsi-opencloud
 ```
+
+## Backup
+
+OpenCloud's data lives in `/media/data/iscsi-luns/opencloud.img`, a plain file
+directly under the top-level btrfs subvolume, not its own subvolume. That
+means the `personal-cloud` subvolume snapshot described in the main
+[README](../README.md#backup) does **not** cover it, it has to be backed up
+separately.
+
+Snapshot the top-level subvolume instead:
+
+```bash
+ssh bombur sudo btrfs subvolume snapshot -r /media/data \
+  "/media/data/.snapshots/media-data-$(date +%Y-%m-%d)"
+```
+
+This is crash-consistent but not application-quiesced, comparable to
+snapshotting a live VM disk: ext4's journal replay handles the rest on next
+mount. It's safe to run while the LUN is in active use.
+
+Nested subvolumes, such as `personal-cloud` and its existing
+`.snapshots/personal-cloud-*` snapshots, are not duplicated by this: btrfs
+doesn't recurse into nested subvolumes, they just show up as empty
+placeholder directories inside the new snapshot. Only plain files and
+directories, including `iscsi-luns/opencloud.img`, are actually captured.
+
+Optionally, also copy the image file off-site for extra protection:
+
+```bash
+rsync --archive --compress --progress --rsync-path='sudo rsync' \
+  bombur:/media/data/iscsi-luns/opencloud.img ./
+```
+
+See [docs/opencloud-keycloak-migration.md](../docs/opencloud-keycloak-migration.md)
+for how this is used before the Keycloak migration.
