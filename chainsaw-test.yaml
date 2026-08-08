@@ -193,8 +193,12 @@ spec:
         kind: Gateway
         name: envoy-public
         namespace: envoy-gateway-system
-  # Resolve the private gateway address so that hostname based routes can be
-  # reached from the test runner
+  # Resolve the private gateway address so that in-cluster requests can
+  # reach the hostname based routes. This is deliberately not written to the
+  # test runner's /etc/hosts: the MetalLB pool it comes from is only reachable
+  # from inside the cluster network, not from the runner host, so the
+  # verification steps below run their curl checks from an in-cluster pod
+  # instead and pass this address in via curl's --resolve.
   - try:
     - script:
         timeout: 5m
@@ -210,7 +214,7 @@ spec:
             echo "envoy-private gateway has no address"
             exit 1
           fi
-          echo "${GATEWAY_IP} keycloak.local opencloud.local argocd.local" | sudo tee -a /etc/hosts
+          echo "${GATEWAY_IP}" > /tmp/envoy-private-ip
     catch:
     - describe:
         apiVersion: gateway.networking.k8s.io/v1
@@ -618,7 +622,9 @@ spec:
         timeout: 60s
         content: |
           echo "=== Testing Keycloak OIDC Discovery Endpoint ==="
-          RESPONSE=$(curl -sk https://keycloak.local/realms/openCloud/.well-known/openid-configuration)
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          RESPONSE=$(kubectl run oidc-discovery-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
+            -- -sk --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/openCloud/.well-known/openid-configuration)
           echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/openCloud"' || exit 1
           echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
           echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
@@ -639,15 +645,18 @@ spec:
         timeout: 60s
         content: |
           echo "=== Testing OpenCloud OIDC Authentication Requirement ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
           # WebDAV endpoint requires authentication
-          HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" https://opencloud.local/remote.php/webdav/)
+          HTTP_CODE=$(kubectl run opencloud-auth-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
+            -- -sk -o /dev/null -w "%{http_code}" --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/)
           echo "HTTP Code: $HTTP_CODE"
           if [[ "$HTTP_CODE" != "401" ]]; then
             echo "Expected 401 Unauthorized, got $HTTP_CODE"
             exit 1
           fi
           # Verify WWW-Authenticate header references Bearer auth
-          AUTH_HEADER=$(curl -sk -I https://opencloud.local/remote.php/webdav/ | grep -i www-authenticate | head -1)
+          AUTH_HEADER=$(kubectl run opencloud-auth-header-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
+            -- -sk -I --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/ | grep -i www-authenticate | head -1)
           echo "Auth header: $AUTH_HEADER"
           if [[ "$AUTH_HEADER" != *"Bearer"* ]]; then
             echo "Expected Bearer authentication"
