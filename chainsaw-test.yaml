@@ -623,8 +623,17 @@ spec:
         content: |
           echo "=== Testing Keycloak OIDC Discovery Endpoint ==="
           GATEWAY_IP=$(cat /tmp/envoy-private-ip)
-          RESPONSE=$(kubectl run oidc-discovery-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
-            -- -sk --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/openCloud/.well-known/openid-configuration)
+          POD=oidc-discovery-check-$$
+          # kubectl run --rm -i mixes its own client-side chatter (e.g. the
+          # "pod deleted" message) into the attached stdout stream, which
+          # corrupts the captured response. Create the pod, wait for it to
+          # finish, then read its output back with `kubectl logs` instead,
+          # which returns exactly the container's stdout.
+          kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/openCloud/.well-known/openid-configuration
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
+          RESPONSE=$(kubectl logs "${POD}")
+          kubectl delete pod "${POD}" --ignore-not-found
           echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/openCloud"' || exit 1
           echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
           echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
@@ -642,21 +651,33 @@ spec:
   # Verify OpenCloud requires OIDC authentication
   - try:
     - script:
-        timeout: 60s
+        timeout: 90s
         content: |
           echo "=== Testing OpenCloud OIDC Authentication Requirement ==="
           GATEWAY_IP=$(cat /tmp/envoy-private-ip)
-          # WebDAV endpoint requires authentication
-          HTTP_CODE=$(kubectl run opencloud-auth-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
-            -- -sk -o /dev/null -w "%{http_code}" --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/)
+
+          # WebDAV endpoint requires authentication. As above, create the pod,
+          # wait for it, and read its output back with `kubectl logs` instead
+          # of attaching, to avoid kubectl's own chatter corrupting the output.
+          POD_CODE=opencloud-auth-check-$$
+          kubectl run "${POD_CODE}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_CODE}" --timeout=30s
+          HTTP_CODE=$(kubectl logs "${POD_CODE}")
+          kubectl delete pod "${POD_CODE}" --ignore-not-found
           echo "HTTP Code: $HTTP_CODE"
           if [[ "$HTTP_CODE" != "401" ]]; then
             echo "Expected 401 Unauthorized, got $HTTP_CODE"
             exit 1
           fi
+
           # Verify WWW-Authenticate header references Bearer auth
-          AUTH_HEADER=$(kubectl run opencloud-auth-header-check-$$ --rm -i --restart=Never --image=curlimages/curl:8.11.1 \
-            -- -sk -I --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/ | grep -i www-authenticate | head -1)
+          POD_HEADER=opencloud-auth-header-check-$$
+          kubectl run "${POD_HEADER}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -I --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_HEADER}" --timeout=30s
+          AUTH_HEADER=$(kubectl logs "${POD_HEADER}" | grep -i www-authenticate | head -1)
+          kubectl delete pod "${POD_HEADER}" --ignore-not-found
           echo "Auth header: $AUTH_HEADER"
           if [[ "$AUTH_HEADER" != *"Bearer"* ]]; then
             echo "Expected Bearer authentication"
