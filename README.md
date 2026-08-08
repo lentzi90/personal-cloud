@@ -12,8 +12,13 @@ The `apps` folder contains argocd Applications including an "app-of-apps".
 Use `rsync` to download all data from the NFS share.
 
 ```bash
-rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/opencloud ./
+rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' lennart@bombur:/media/data/personal-cloud/nextcloud ./
 ```
+
+> OpenCloud is the exception: it no longer sits on this NFS share, it's on its
+> own iSCSI-backed disk image instead. See
+> [turing-talos/README.md](turing-talos/README.md#backup) for how to back that
+> up.
 
 Make btrfs snapshots of the data.
 

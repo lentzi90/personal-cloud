@@ -34,19 +34,30 @@ account, the graph service rejects client supplied IDs.
 
 ## Before starting
 
-1. **Back up the data**, as described in the main [README](../README.md):
+1. **Back up the data**, as described in
+   [turing-talos/README.md](../turing-talos/README.md#backup). OpenCloud's
+   data is a single ext4 image (`/media/data/iscsi-luns/opencloud.img`)
+   exported over iSCSI, sitting directly under the top-level btrfs subvolume
+   (not inside the `personal-cloud` subvolume), so it needs its own snapshot
+   of the top level:
 
    ```bash
-   rsync --archive --compress --progress --delete --rsync-path='sudo -u www-data rsync' \
-     lennart@bombur:/media/data/personal-cloud/opencloud ./
-   sudo btrfs subvolume snapshot -r . ".snapshots/nasse-$(date +%Y-%m-%d)"
+   ssh bombur sudo btrfs subvolume snapshot -r /media/data \
+     "/media/data/.snapshots/media-data-$(date +%Y-%m-%d)"
    ```
+
+   This is crash-consistent (comparable to snapshotting a live VM disk; ext4's
+   journal replay handles the rest) and safe to take while the LUN is actively
+   mounted by the `opencloud` pod. Nested subvolumes such as `personal-cloud`
+   and its own snapshots are not duplicated, they show up as empty
+   placeholders; only plain files and directories, including
+   `iscsi-luns/opencloud.img`, are actually captured.
 
 2. **Note the current spaces.** Personal space IDs are the user IDs, so this is
    the list that must not grow during the migration:
 
    ```bash
-   ssh bombur sudo ls /media/data/personal-cloud/opencloud/storage/users/spaces
+   kubectl -n opencloud exec deploy/opencloud -- find /var/lib/opencloud/storage/users/users -maxdepth 1
    ```
 
 3. **Note the usernames and groups.** Sign in to
@@ -114,7 +125,7 @@ kubectl -n opencloud logs deploy/opencloud | grep -i oidc
 3. Confirm no new space was created:
 
    ```bash
-   ssh bombur sudo ls /media/data/personal-cloud/opencloud/storage/users/spaces
+   kubectl -n opencloud exec deploy/opencloud -- find /var/lib/opencloud/storage/users/users -maxdepth 1
    ```
 
    The list must be identical to the one from the preparation step. A new entry
