@@ -9,7 +9,7 @@ resources:
 - httproute.yaml
 
 components:
-- ../../../keycloak/components/opencloud-realm
+- ../../../keycloak/components/homelab-realm
 
 patches:
 - path: keycloak.yaml
@@ -19,11 +19,44 @@ patches:
   patch: |-
     - op: remove
       path: /spec/http/tlsSecret
-# Configure web client redirect URIs for turing-talos environment
+# The shared realm component defaults to a realm named "homelab" (used by
+# KinD and any other non-production environment). Production (turing-talos)
+# is the exception: it must keep using the pre-existing, manually-created
+# `jern.fi` realm name, since ArgoCD's issuer (argocd-cm.yaml) and the
+# Keycloak accounts already in use are tied to that literal name.
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: replace
+      path: /spec/realm/realm
+      value: jern.fi
+    - op: replace
+      path: /spec/realm/displayName
+      value: jern.fi
+    - op: replace
+      path: /spec/realm/defaultRole/name
+      value: default-roles-jern.fi
+    - op: replace
+      path: /spec/realm/roles/realm/6/name
+      value: default-roles-jern.fi
+    - op: replace
+      path: /spec/realm/clients/0/baseUrl
+      value: /realms/jern.fi/account/
+    - op: replace
+      path: /spec/realm/clients/0/redirectUris/0
+      value: /realms/jern.fi/account/*
+    - op: replace
+      path: /spec/realm/clients/1/baseUrl
+      value: /realms/jern.fi/account/
+    - op: replace
+      path: /spec/realm/clients/1/redirectUris/0
+      value: /realms/jern.fi/account/*
+# Configure OpenCloud web client redirect URIs for turing-talos environment
 # Note: web client is at index 2 (after account and account-console)
 - target:
     kind: KeycloakRealmImport
-    name: opencloud-realm
+    name: homelab-realm
   patch: |-
     - op: add
       path: /spec/realm/clients/2/redirectUris
@@ -36,3 +69,16 @@ patches:
     - op: add
       path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
       value: https://opencloud.jern.fi/*
+# Configure ArgoCD client (index 6) rootUrl/adminUrl for turing-talos
+# environment. The shared component omits these since they point at
+# ArgoCD's actual external URL, which only exists in production.
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/6/rootUrl
+      value: https://argocd.jern.fi
+    - op: add
+      path: /spec/realm/clients/6/adminUrl
+      value: https://argocd.jern.fi

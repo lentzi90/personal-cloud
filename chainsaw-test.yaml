@@ -440,7 +440,7 @@ spec:
     - podLogs:
         name: keycloak-db-1
         namespace: keycloak
-  # Verify KeycloakRealmImport for OpenCloud realm
+  # Verify KeycloakRealmImport for the shared homelab realm
   - try:
     - assert:
         timeout: 10m
@@ -448,7 +448,7 @@ spec:
           apiVersion: k8s.keycloak.org/v2alpha1
           kind: KeycloakRealmImport
           metadata:
-            name: opencloud-realm
+            name: homelab-realm
             namespace: keycloak
           status:
             (conditions[?type == 'Done']):
@@ -457,13 +457,23 @@ spec:
     - describe:
         apiVersion: k8s.keycloak.org/v2alpha1
         kind: KeycloakRealmImport
-        name: opencloud-realm
+        name: homelab-realm
         namespace: keycloak
     - script:
         timeout: 30s
         content: |
           echo "=== Keycloak Realm Import Status ==="
           kubectl get keycloakrealmimport -n keycloak -o yaml
+          echo "=== Keycloak Realm Import Job ==="
+          kubectl get jobs -n keycloak -o wide
+          echo "=== Keycloak Realm Import Job Pod(s) ==="
+          kubectl get pods -n keycloak -l app=keycloak-realm-import -o wide
+          echo "=== Keycloak Realm Import Job Logs ==="
+          # The realm-import Job's pod is labeled app=keycloak-realm-import by the
+          # operator (distinct from the main Keycloak StatefulSet pod, which is
+          # labeled app=keycloak and never runs the actual import) - this is where
+          # the real Keycloak-reported validation error/stack trace shows up.
+          kubectl logs -n keycloak -l app=keycloak-realm-import --tail=200 --all-containers
           echo "=== Keycloak Logs ==="
           kubectl logs -n keycloak -l app=keycloak --tail=100
   # pi-hole
@@ -630,11 +640,11 @@ spec:
           # finish, then read its output back with `kubectl logs` instead,
           # which returns exactly the container's stdout.
           kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
-            curl -sk --max-time 10 --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/openCloud/.well-known/openid-configuration
+            curl -sk --max-time 10 --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/homelab/.well-known/openid-configuration
           kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
           RESPONSE=$(kubectl logs "${POD}")
           kubectl delete pod "${POD}" --ignore-not-found
-          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/openCloud"' || exit 1
+          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/homelab"' || exit 1
           echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
           echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
           echo "OIDC discovery endpoint OK"
