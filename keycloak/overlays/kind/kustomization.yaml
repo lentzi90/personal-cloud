@@ -37,6 +37,22 @@ patches:
     - op: add
       path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
       value: https://opencloud.local/*
+# Configure Jellyfin client (index 7) redirect URIs for KinD environment
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/7/redirectUris
+      value:
+        - https://jellyfin.local/sso/OID/redirect/Keycloak
+    - op: add
+      path: /spec/realm/clients/7/webOrigins
+      value:
+        - https://jellyfin.local
+    - op: add
+      path: /spec/realm/clients/7/baseUrl
+      value: https://jellyfin.local
 # Test user for the KinD environment. The username matches the OpenCloud admin
 # account created by IDM_ADMIN_PASSWORD, so signing in resolves to that account.
 - target:
@@ -58,6 +74,7 @@ patches:
               temporary: false
           realmRoles:
             - opencloudAdmin
+            - jellyfinAdmin
             - default-roles-homelab
           groups:
             - admins
