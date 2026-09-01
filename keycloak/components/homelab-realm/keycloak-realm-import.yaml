@@ -1,16 +1,16 @@
 apiVersion: k8s.keycloak.org/v2alpha1
 kind: KeycloakRealmImport
 metadata:
-  name: opencloud-realm
+  name: homelab-realm
   labels:
     app: keycloak
-    realm: opencloud
+    realm: homelab
 spec:
   keycloakCRName: keycloak
   realm:
-    realm: openCloud
+    realm: homelab
     enabled: true
-    displayName: OpenCloud
+    displayName: homelab
     registrationAllowed: false
     resetPasswordAllowed: true
     editUsernameAllowed: false
@@ -44,7 +44,7 @@ spec:
         description: "${role_offline-access}"
       - name: uma_authorization
         description: "${role_uma_authorization}"
-      - name: default-roles-opencloud
+      - name: default-roles-homelab
         description: "${role_default-roles}"
         composite: true
         composites:
@@ -89,7 +89,7 @@ spec:
         - name: delete-account
           description: "${role_delete-account}"
     defaultRole:
-      name: default-roles-opencloud
+      name: default-roles-homelab
     # Scope mappings allow clients to include specific client roles in tokens
     # when fullScopeAllowed is false
     scopeMappings:
@@ -110,6 +110,11 @@ spec:
     - name: admins
       realmRoles:
       - opencloudAdmin
+    - name: ArgoCDAdmins
+      path: /ArgoCDAdmins
+      subGroups: []
+      realmRoles: []
+      clientRoles: {}
     clientScopes:
     # Standard OpenID Connect scopes required by Keycloak
     - name: openid
@@ -334,8 +339,30 @@ spec:
           access.token.claim: "true"
           claim.name: roles
           jsonType.label: String
+    # Generic top-level group membership scope, used by argocd (ArgoCD RBAC is
+    # done via `g, <group>, role:...` entries matching this `groups` claim, see
+    # turing-talos/apps/argocd/argocd-rbac-cm.yaml). Distinct from OpenCloud's
+    # `oc-groups` scope above, which is named/scoped per-app; both are kept
+    # rather than merged so the already-working OpenCloud mappers are untouched.
+    - name: groups
+      protocol: openid-connect
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "true"
+      protocolMappers:
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-group-membership-mapper
+        consentRequired: false
+        config:
+          full.path: "false"
+          multivalued: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          userinfo.token.claim: "true"
+          claim.name: groups
     clients:
-    # Account Console - for user self-service
+    # index 0: Account Console - for user self-service
     - clientId: account
       name: Account
       description: Account Management
@@ -345,9 +372,9 @@ spec:
       publicClient: true
       protocol: openid-connect
       rootUrl: ${authBaseUrl}
-      baseUrl: /realms/openCloud/account/
+      baseUrl: /realms/homelab/account/
       redirectUris:
-      - /realms/openCloud/account/*
+      - /realms/homelab/account/*
       webOrigins:
       - "+"
       standardFlowEnabled: true
@@ -362,6 +389,7 @@ spec:
       - roles
       - basic
       - email
+    # index 1: Account Console
     - clientId: account-console
       name: Account Console
       description: Account Console for user self-service
@@ -371,9 +399,9 @@ spec:
       publicClient: true
       protocol: openid-connect
       rootUrl: ${authBaseUrl}
-      baseUrl: /realms/openCloud/account/
+      baseUrl: /realms/homelab/account/
       redirectUris:
-      - /realms/openCloud/account/*
+      - /realms/homelab/account/*
       webOrigins:
       - "+"
       standardFlowEnabled: true
@@ -396,6 +424,8 @@ spec:
         protocol: openid-connect
         protocolMapper: oidc-audience-resolve-mapper
         consentRequired: false
+    # index 2: OpenCloud Web (public PKCE client). Redirect URIs are patched
+    # per-environment (this index is referenced by overlay patches).
     - clientId: web
       name: OpenCloud Web
       description: OpenCloud Web Application
@@ -419,6 +449,7 @@ spec:
       - offline_access
       attributes:
         pkce.code.challenge.method: S256
+    # index 3: OpenCloud Desktop Client
     - clientId: OpenCloudDesktop
       name: OpenCloud Desktop Client
       description: OpenCloud Desktop Sync Client
@@ -447,13 +478,15 @@ spec:
       - offline_access
       attributes:
         pkce.code.challenge.method: S256
+    # index 4: OpenCloud Android App
     - clientId: OpenCloudAndroid
       name: OpenCloud Android App
       description: OpenCloud Android Mobile Application
       enabled: true
       clientAuthenticatorType: client-secret
       redirectUris:
-      - oc://android.opencloud.com/*
+      - oc://android.opencloud.eu
+      - oc://android.opencloud.eu/*
       publicClient: true
       protocol: openid-connect
       standardFlowEnabled: true
@@ -471,14 +504,15 @@ spec:
       - offline_access
       attributes:
         pkce.code.challenge.method: S256
+    # index 5: OpenCloud iOS App
     - clientId: OpenCloudIOS
       name: OpenCloud iOS App
       description: OpenCloud iOS Mobile Application
       enabled: true
       clientAuthenticatorType: client-secret
       redirectUris:
-      - oc://ios.opencloud.com/*
-      - oc.ios://ios.opencloud.com/*
+      - oc://ios.opencloud.eu
+      - oc://ios.opencloud.eu/*
       publicClient: true
       protocol: openid-connect
       standardFlowEnabled: true
@@ -496,5 +530,52 @@ spec:
       - offline_access
       attributes:
         pkce.code.challenge.method: S256
-    # No users are defined here. Environments that need one (e.g. the KinD test
-    # setup) add them through a patch, production users are managed in Keycloak.
+    # index 6: ArgoCD, faithfully reproduced from the manually-configured
+    # jern.fi realm (see docs/unified-sso-migration.md inventory), except:
+    # - rootUrl/adminUrl are omitted here since they point at ArgoCD's actual
+    #   external URL, which is environment-specific (only turing-talos runs
+    #   ArgoCD with OIDC configured); that overlay patches them in.
+    # - optionalClientScopes: the manual export also listed address, phone,
+    #   organization and microprofile-jwt, but those are only auto-created by
+    #   Keycloak when a realm is created via the Admin UI/API. A from-scratch
+    #   KeycloakRealmImport that (like this one) declares its own explicit
+    #   clientScopes list skips that auto-creation entirely (see
+    #   RealmManager.isCreateDefaultClientScopes upstream), so referencing
+    #   those undefined scope names here makes the whole realm import Job
+    #   fail. offline_access is kept since Keycloak always creates it
+    #   regardless (see RealmManager.setupOfflineTokens).
+    - clientId: argocd
+      name: ArgoCD Client
+      description: See https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak
+      baseUrl: /applications
+      clientAuthenticatorType: client-secret
+      enabled: true
+      redirectUris:
+      - http://localhost:8085/auth/callback
+      - /auth/callback
+      - /pkce/verify
+      webOrigins:
+      - "+"
+      standardFlowEnabled: true
+      directAccessGrantsEnabled: true
+      publicClient: true
+      frontchannelLogout: true
+      protocol: openid-connect
+      attributes:
+        post.logout.redirect.uris: /applications
+        pkce.code.challenge.method: S256
+        use.refresh.tokens: "true"
+      fullScopeAllowed: true
+      defaultClientScopes:
+      - web-origins
+      - acr
+      - roles
+      - profile
+      - groups
+      - basic
+      - email
+      optionalClientScopes:
+      - offline_access
+    # No users are defined here. Environments that need one (e.g. the KinD
+    # test setup) add them through a patch, production users are managed in
+    # Keycloak.

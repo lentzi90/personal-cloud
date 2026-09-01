@@ -9,7 +9,7 @@ resources:
 - httproute.yaml
 
 components:
-- ../../components/opencloud-realm
+- ../../components/homelab-realm
 
 patches:
 - target:
@@ -21,10 +21,10 @@ patches:
       value: true
     - op: remove
       path: /spec/http/tlsSecret
-# Configure web client redirect URIs for KinD environment
+# Configure OpenCloud web client (index 2) redirect URIs for KinD environment
 - target:
     kind: KeycloakRealmImport
-    name: opencloud-realm
+    name: homelab-realm
   patch: |-
     - op: add
       path: /spec/realm/clients/2/redirectUris
@@ -41,7 +41,7 @@ patches:
 # account created by IDM_ADMIN_PASSWORD, so signing in resolves to that account.
 - target:
     kind: KeycloakRealmImport
-    name: opencloud-realm
+    name: homelab-realm
   patch: |-
     - op: add
       path: /spec/realm/users
@@ -58,6 +58,6 @@ patches:
               temporary: false
           realmRoles:
             - opencloudAdmin
-            - default-roles-opencloud
+            - default-roles-homelab
           groups:
             - admins

@@ -44,7 +44,7 @@ Edit the copied `oidc.env` file and update the issuer URL to match your Keycloak
 deployment:
 
 ```env
-OC_OIDC_ISSUER=https://keycloak.example.com/realms/openCloud
+OC_OIDC_ISSUER=https://keycloak.example.com/realms/homelab
 ```
 
 ### 3. Add the oidc.env to your configMapGenerator
@@ -74,13 +74,13 @@ configMapGenerator:
 The deployment then needs `PROXY_CSP_CONFIG_FILE_LOCATION=/etc/opencloud/csp.yaml`
 and the ConfigMap mounted at that path.
 
-### 5. Include the opencloud-realm component in your Keycloak overlay
+### 5. Include the homelab-realm component in your Keycloak overlay
 
 Add the component to your Keycloak kustomization:
 
 ```yaml
 components:
-- ../../components/opencloud-realm
+- ../../../keycloak/components/homelab-realm
 ```
 
 And patch the redirect URIs for your environment (the `web` client is at index 2):
@@ -89,7 +89,7 @@ And patch the redirect URIs for your environment (the `web` client is at index 2
 patches:
 - target:
     kind: KeycloakRealmImport
-    name: opencloud-realm
+    name: homelab-realm
   patch: |-
     - op: add
       path: /spec/realm/clients/2/redirectUris
@@ -103,6 +103,8 @@ patches:
       path: /spec/realm/clients/2/attributes/post.logout.redirect.uris
       value: https://opencloud.example.com/*
 ```
+
+The realm defaults to being named `homelab`.
 
 The realm import does not contain any users. Create them in Keycloak, and make
 sure the username matches the OpenCloud username when migrating an existing
