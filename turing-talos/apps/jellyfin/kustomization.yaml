@@ -9,5 +9,17 @@ resources:
 - namespace.yaml
 - httproute.yaml
 - jellyfin-pv.yaml
+
+components:
+- ../../../jellyfin/components/keycloak-sso
+
 patches:
 - path: jellyfin-data-pvc.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: jellyfin-sso-config
+  files:
+  - SSO-Auth.xml

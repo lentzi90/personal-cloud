@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <OidConfigs>
+    <item>
+      <key>
+        <string>Keycloak</string>
+      </key>
+      <value>
+        <PluginConfiguration>
+          <OidEndpoint>https://keycloak.local/realms/homelab</OidEndpoint>
+          <OidClientId>jellyfin</OidClientId>
+          <OidSecret />
+          <Enabled>true</Enabled>
+          <EnableAuthorization>true</EnableAuthorization>
+          <EnableAllFolders>true</EnableAllFolders>
+          <EnabledFolders />
+          <AdminRoles>
+            <string>jellyfinAdmin</string>
+          </AdminRoles>
+          <Roles>
+            <string>jellyfinUser</string>
+            <string>jellyfinAdmin</string>
+          </Roles>
+          <EnableFolderRoles>false</EnableFolderRoles>
+          <FolderRoleMappings />
+          <RoleClaim>realm_access.roles</RoleClaim>
+          <OidScopes />
+          <DisablePushedAuthorization>true</DisablePushedAuthorization>
+          <DoNotValidateEndpoints>false</DoNotValidateEndpoints>
+          <DoNotValidateIssuerName>false</DoNotValidateIssuerName>
+        </PluginConfiguration>
+      </value>
+    </item>
+  </OidConfigs>
+</PluginConfiguration>

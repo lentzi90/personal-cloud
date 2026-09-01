@@ -38,7 +38,7 @@ patches:
       path: /spec/realm/defaultRole/name
       value: default-roles-jern.fi
     - op: replace
-      path: /spec/realm/roles/realm/6/name
+      path: /spec/realm/roles/realm/8/name
       value: default-roles-jern.fi
     - op: replace
       path: /spec/realm/clients/0/baseUrl
@@ -82,3 +82,20 @@ patches:
     - op: add
       path: /spec/realm/clients/6/adminUrl
       value: https://argocd.jern.fi
+# Configure Jellyfin client redirect URIs for turing-talos environment
+# Note: jellyfin client is at index 7 (last one)
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/7/redirectUris
+      value:
+        - https://jellyfin.jern.fi/sso/OID/redirect/Keycloak
+    - op: add
+      path: /spec/realm/clients/7/webOrigins
+      value:
+        - https://jellyfin.jern.fi
+    - op: add
+      path: /spec/realm/clients/7/baseUrl
+      value: https://jellyfin.jern.fi
