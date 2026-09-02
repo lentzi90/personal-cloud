@@ -20,7 +20,7 @@ jobs:
     - name: Install Chainsaw
       uses: kyverno/action-install-chainsaw@v0.2.15
     - name: Create Kind Cluster
-      uses: helm/kind-action@v1.14.0
+      uses: helm/kind-action@v1.15.0
       with:
         config: kind-config.yaml
 
