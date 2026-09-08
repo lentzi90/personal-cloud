@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+spec:
+  template:
+    spec:
+      containers:
+      - name: collabora
+        securityContext:
+          # KinD-only workaround: without privileged mode coolwsd crashes with
+          # SIGSEGV while setting up its chroot jail inside a KinD node.
+          privileged: true

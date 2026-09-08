@@ -62,7 +62,7 @@ kubectl apply -f secret-store/test-secretstore.yaml
 Add the following to `/etc/hosts`:
 
 ```
-127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local
+127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local collabora.test.local
 ```
 
 ### Argocd
@@ -80,6 +80,10 @@ Login at [opencloud.test.local](https://opencloud.test.local) with `admin`/`admi
 Authentication goes through Keycloak, the user is defined in the `openCloud`
 realm. See [the migration guide](docs/opencloud-keycloak-migration.md) for how
 this is set up and how to roll it out to an existing installation.
+
+Documents (e.g. `.docx`, `.odt`) can be edited in the browser via
+[Collabora Online](https://collabora.test.local). See [collabora/README.md](collabora/README.md)
+for how this is wired up, including the in-cluster DNS needed on KinD.
 
 ### Jellyfin
 

@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: collabora
+
+labels:
+- includeSelectors: true
+  pairs:
+    environment: kind
+
+resources:
+- ../../base
+- namespace.yaml
+- collabora-httproute.yaml
+
+patches:
+- path: deployment-patch.yaml
+
+configMapGenerator:
+- name: collabora-env
+  envs:
+  - collabora.env
