@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+  labels:
+    app.kubernetes.io/name: collabora
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: collabora
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/collabora: unconfined
+      labels:
+        app.kubernetes.io/name: collabora
+    spec:
+      # Generate a WOPI proof key before Collabora starts, the same way the
+      # reference docker-compose (opencloud-eu/opencloud-compose) does with
+      # its separate "collabora-proof-key" one-shot service. Unlike that
+      # reference, this uses an emptyDir instead of a persistent volume, so a
+      # new key is generated on every pod (re)start.
+      initContainers:
+      - name: proof-key
+        image: docker.io/alpine/openssl
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          if [ ! -s /proof/proof_key ]; then
+            openssl genrsa -traditional -out /proof/proof_key.tmp 4096
+            chmod 444 /proof/proof_key.tmp
+            mv /proof/proof_key.tmp /proof/proof_key
+            echo "WOPI proof key generated"
+          else
+            echo "WOPI proof key already exists"
+          fi
+        volumeMounts:
+        - name: proof-key
+          mountPath: /proof
+      containers:
+      - name: collabora
+        image: docker.io/collabora/code
+        ports:
+        - name: http
+          containerPort: 9980
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: collabora-env
+        securityContext:
+          # Collabora needs privileged mode to set up its chroot jail in
+          # Kubernetes/KinD (without it the container crashes with SIGSEGV).
+          privileged: true
+        volumeMounts:
+        - name: proof-key
+          mountPath: /etc/coolwsd/proof_key
+          subPath: proof_key
+          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+            # coolwsd serves HTTPS on this port (ssl.enable=true in
+            # collabora.env); the kubelet ignores certificate errors for
+            # probes, so the self-signed certificate is fine here.
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+            scheme: HTTPS
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+      volumes:
+      - name: proof-key
+        emptyDir: {}

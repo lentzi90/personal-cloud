@@ -19,11 +19,13 @@ directives:
   - "'self'"
   - "blob:"
   - "https://embed.diagrams.net/"
+  - "https://collabora.local/"
   img-src:
   - "'self'"
   - "data:"
   - "blob:"
   - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+  - "https://collabora.local/"
   manifest-src:
   - "'self'"
   media-src:
