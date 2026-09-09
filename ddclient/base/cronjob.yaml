@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: ddclient
@@ -14,7 +14,7 @@ spec:
             fsGroup: 994
           restartPolicy: Never
           containers:
-          - image: lennartj/ddclient
+          - image: ghcr.io/lentzi90/ddclient:master@sha256:47ac5939d879823a6c57b291623f6d70d6a1e9fa99ce6e371a41f1a32eb76555
             name: ddclient
             resources: {}
             volumeMounts:
