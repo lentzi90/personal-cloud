@@ -704,3 +704,85 @@ spec:
         namespace: opencloud
         selector: app.kubernetes.io/name=opencloud
         tail: 50
+  # collabora
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/collabora-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: collabora
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: collabora
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+        tail: 100
+  # Verify Collabora Online discovery endpoint is accessible
+  - try:
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing Collabora Online Discovery Endpoint ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          POD=collabora-discovery-check-$$
+          kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "collabora.local:443:${GATEWAY_IP}" https://collabora.local/hosting/discovery
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
+          HTTP_CODE=$(kubectl logs "${POD}")
+          kubectl delete pod "${POD}" --ignore-not-found
+          echo "HTTP Code: $HTTP_CODE"
+          if [[ "$HTTP_CODE" != "200" ]]; then
+            echo "Expected 200 OK, got $HTTP_CODE"
+            exit 1
+          fi
+          echo "Collabora Online discovery endpoint OK"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=collabora
+        tail: 50
+  # Verify OpenCloud has the Collabora (WOPI) integration configured
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying OpenCloud Collabora Configuration ==="
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OC_ADD_RUN_SERVICES}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR}'
+          echo ""
+          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.COLLABORATION_APP_ADDR}'
+          echo ""
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== OpenCloud ConfigMap ==="
+          kubectl get configmap opencloud-env -n opencloud -o yaml
+          echo "=== OpenCloud Deployment ==="
+          kubectl get deployment opencloud -n opencloud -o yaml
