@@ -9,9 +9,16 @@ labels:
 resources:
 - cronjob.yaml
 
-## Create a secret with the ddclient.conf using a secretGenerator like this
-## in you overlay.
+## Provide the ddclient-config secret (a single `ddclient.conf` key) in your
+## overlay. Two supported approaches:
+##
+## 1. A secretGenerator, using a real ddclient.conf (good for throwaway/test
+##    environments where the config doesn't need to be kept secret):
 # secretGenerator:
 #   - name: ddclient-config
 #     files:
 #       - ddclient.conf
+##
+## 2. An ExternalSecret with a `target.template` that renders ddclient.conf,
+##    pulling the API token from a secret store (see
+##    turing-talos/apps/ddclient/externalsecret.yaml for a real example).

@@ -508,6 +508,38 @@ spec:
     - podLogs:
         name: pi-hole
         namespace: pi-hole
+  # ddclient
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/ddclient-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: ddclient
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: ddclient
+        namespace: argocd
+    - describe:
+        apiVersion: batch/v1
+        kind: CronJob
+        name: ddclient
+        namespace: ddclient
+    - podLogs:
+        namespace: ddclient
+        selector: app.kubernetes.io/name=ddclient
   # wireguard
   - try:
     - script:
