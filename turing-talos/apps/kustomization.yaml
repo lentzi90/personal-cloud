@@ -9,6 +9,7 @@ resources:
 - blog-app.yaml
 - cert-manager-app.yaml
 - cloudnative-pg-app.yaml
+- collabora-app.yaml
 - envoy-gateway-app.yaml
 - envoy-gateways-app.yaml
 - external-secrets-app.yaml
