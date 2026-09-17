@@ -15,9 +15,8 @@ patches:
 - path: opencloud-data-pvc.yaml
 - path: deployment-patch.yaml
 
-generatorOptions:
-  disableNameSuffixHash: true
-
+# Keep the name hash on these ConfigMaps: the OpenCloud pod only reads them at
+# startup, so a changed hash is what makes the Deployment roll out new settings.
 configMapGenerator:
 - name: opencloud-env
   envs:
