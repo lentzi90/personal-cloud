@@ -12,3 +12,14 @@ resources:
 - ../../base
 - namespace.yaml
 - httproute.yaml
+
+components:
+- ../../components/keycloak-sso
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: jellyfin-sso-config
+  files:
+  - SSO-Auth.xml
