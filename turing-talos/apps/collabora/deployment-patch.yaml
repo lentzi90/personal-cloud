@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+spec:
+  template:
+    spec:
+      containers:
+      - name: collabora
+        envFrom:
+        - configMapRef:
+            name: collabora-env
+        - secretRef:
+            name: collabora-admin

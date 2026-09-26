@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: opencloud
+
+labels:
+- includeSelectors: true
+  pairs:
+    environment: kind
+
+resources:
+- ../../base
+- collabora-httproute.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: collabora-env
+  envs:
+  - collabora.env
