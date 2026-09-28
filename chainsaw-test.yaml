@@ -572,6 +572,27 @@ spec:
     - podLogs:
         name: jellyfin
         namespace: jellyfin
+  # Verify Jellyfin SSO plugin configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying Jellyfin SSO Plugin ConfigMap ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o jsonpath='{.data.SSO-Auth\.xml}' | grep -q 'OidEndpoint' && echo "SSO-Auth.xml present and contains OidEndpoint"
+          echo ""
+          echo "=== Verifying SSO plugin DLL was installed by the init container ==="
+          POD=$(kubectl get pod -n jellyfin -l app.kubernetes.io/name=jellyfin -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n jellyfin "${POD}" -c jellyfin -- find /config/plugins -iname 'SSO-Auth.dll'
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Jellyfin SSO ConfigMap ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o yaml
+          echo "=== Jellyfin Deployment ==="
+          kubectl get deployment jellyfin -n jellyfin -o yaml
+          echo "=== Jellyfin install-sso-plugin init container logs ==="
+          kubectl logs -n jellyfin -l app.kubernetes.io/name=jellyfin -c install-sso-plugin --tail=100
   # opencloud
   - try:
     - script:

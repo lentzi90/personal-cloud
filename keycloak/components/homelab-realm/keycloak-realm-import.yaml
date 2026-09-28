@@ -40,6 +40,10 @@ spec:
         description: Guest role with limited access
       - name: opencloudSpaceAdmin
         description: OpenCloud Space Administrator role
+      - name: jellyfinAdmin
+        description: Jellyfin administrator role
+      - name: jellyfinUser
+        description: Standard Jellyfin user role
       - name: offline_access
         description: "${role_offline-access}"
       - name: uma_authorization
@@ -107,9 +111,11 @@ spec:
     - name: users
       realmRoles:
       - opencloudUser
+      - jellyfinUser
     - name: admins
       realmRoles:
       - opencloudAdmin
+      - jellyfinAdmin
     - name: ArgoCDAdmins
       path: /ArgoCDAdmins
       subGroups: []
@@ -576,6 +582,27 @@ spec:
       - email
       optionalClientScopes:
       - offline_access
+    # index 7: Jellyfin (public PKCE client for the 9p4/jellyfin-plugin-sso
+    # plugin). Redirect URIs are patched per-environment.
+    - clientId: jellyfin
+      name: Jellyfin
+      description: Jellyfin Media Server
+      enabled: true
+      clientAuthenticatorType: client-secret
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: false
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - roles
+      attributes:
+        pkce.code.challenge.method: S256
     # No users are defined here. Environments that need one (e.g. the KinD
     # test setup) add them through a patch, production users are managed in
     # Keycloak.
