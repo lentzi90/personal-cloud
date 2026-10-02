@@ -42,3 +42,6 @@ kind: ResolverConfig
 nameservers:
 - address: 86.54.11.1
 - address: 86.54.11.201
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: true
