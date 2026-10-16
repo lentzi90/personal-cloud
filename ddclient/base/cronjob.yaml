@@ -16,6 +16,13 @@ spec:
           containers:
           - image: ghcr.io/lentzi90/ddclient:master@sha256:47ac5939d879823a6c57b291623f6d70d6a1e9fa99ce6e371a41f1a32eb76555
             name: ddclient
+            # Override the image CMD, which passes -daemon=0. In ddclient 4.x
+            # daemon=0 is clamped to the 60s minimum interval, so ddclient
+            # loops forever instead of exiting after one run.
+            # See https://github.com/ddclient/ddclient/issues/856
+            args:
+            - -foreground
+            - -file=/ddclient/config/ddclient.conf
             resources: {}
             volumeMounts:
               - name: ddclient-config
