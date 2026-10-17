@@ -31,6 +31,14 @@ spec:
           if [ ! -f /config/plugins/configurations/SSO-Auth.xml ]; then
             cp /sso-config/SSO-Auth.xml /config/plugins/configurations/SSO-Auth.xml
           fi
+          # Jellyfin sits behind a TLS-terminating gateway. Unless it trusts
+          # the proxy's X-Forwarded-Proto header it builds http:// redirect
+          # URIs, which Keycloak rejects (invalid_redirect_uri). Seed
+          # network.xml (first run only) if the overlay provides one.
+          mkdir -p /config/config
+          if [ -f /sso-config/network.xml ] && [ ! -f /config/config/network.xml ]; then
+            cp /sso-config/network.xml /config/config/network.xml
+          fi
         volumeMounts:
         - name: jellyfin-config
           mountPath: /config

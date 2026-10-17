@@ -7,7 +7,7 @@
       </key>
       <value>
         <PluginConfiguration>
-          <OidEndpoint>https://keycloak.local/realms/homelab</OidEndpoint>
+          <OidEndpoint>https://keycloak.test.local/realms/homelab</OidEndpoint>
           <OidClientId>jellyfin</OidClientId>
           <OidSecret />
           <Enabled>true</Enabled>

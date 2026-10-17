@@ -5,7 +5,7 @@ metadata:
 spec:
   secretName: wildcard-local-cert
   dnsNames:
-  - "*.local"
+  - "*.test.local"
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

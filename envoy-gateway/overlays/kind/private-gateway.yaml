@@ -14,7 +14,7 @@ spec:
   - name: https
     protocol: HTTPS
     port: 443
-    hostname: "*.local"
+    hostname: "*.test.local"
     allowedRoutes:
       namespaces:
         from: All

@@ -18,7 +18,7 @@ spec:
   http:
     tlsSecret: keycloak-cert
   hostname:
-    hostname: keycloak.local
+    hostname: keycloak.test.local
   proxy:
     headers: xforwarded
   ingress:

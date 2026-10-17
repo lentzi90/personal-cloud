@@ -101,6 +101,13 @@ spec:
       roles:
       - manage-account
       - view-groups
+    # The jellyfin client has fullScopeAllowed: false, so the roles Jellyfin's
+    # SSO plugin checks (RoleClaim realm_access.roles) must be mapped to it
+    # explicitly or they never show up in the token.
+    - client: jellyfin
+      roles:
+      - jellyfinUser
+      - jellyfinAdmin
     clientScopeMappings:
       account:
       - client: account-console

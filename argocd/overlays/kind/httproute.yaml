@@ -8,7 +8,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: https
   hostnames:
-  - argocd.local
+  - argocd.test.local
   rules:
   - matches:
     - path:

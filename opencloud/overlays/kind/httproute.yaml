@@ -8,7 +8,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: https
   hostnames:
-  - opencloud.local
+  - opencloud.test.local
   rules:
   - matches:
     - path:

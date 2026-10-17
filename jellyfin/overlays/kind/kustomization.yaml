@@ -23,3 +23,4 @@ configMapGenerator:
 - name: jellyfin-sso-config
   files:
   - SSO-Auth.xml
+  - network.xml
