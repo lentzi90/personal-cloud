@@ -8,7 +8,7 @@ directives:
   - "'self'"
   - "blob:"
   - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
-  - "https://keycloak.local/"
+  - "https://keycloak.test.local/"
   default-src:
   - "'none'"
   font-src:

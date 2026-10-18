@@ -8,7 +8,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: https
   hostnames:
-  - jellyfin.local
+  - jellyfin.test.local
   rules:
   - matches:
     - path:

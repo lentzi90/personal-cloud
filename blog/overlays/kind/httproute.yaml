@@ -8,7 +8,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: https
   hostnames:
-  - blog.local
+  - blog.test.local
   rules:
   - matches:
     - path:

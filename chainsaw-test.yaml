@@ -604,6 +604,27 @@ spec:
     - podLogs:
         name: jellyfin
         namespace: jellyfin
+  # Verify Jellyfin SSO plugin configuration
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying Jellyfin SSO Plugin ConfigMap ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o jsonpath='{.data.SSO-Auth\.xml}' | grep -q 'OidEndpoint' && echo "SSO-Auth.xml present and contains OidEndpoint"
+          echo ""
+          echo "=== Verifying SSO plugin DLL was installed by the init container ==="
+          POD=$(kubectl get pod -n jellyfin -l app.kubernetes.io/name=jellyfin -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n jellyfin "${POD}" -c jellyfin -- find /config/plugins -iname 'SSO-Auth.dll'
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Jellyfin SSO ConfigMap ==="
+          kubectl get configmap jellyfin-sso-config -n jellyfin -o yaml
+          echo "=== Jellyfin Deployment ==="
+          kubectl get deployment jellyfin -n jellyfin -o yaml
+          echo "=== Jellyfin install-sso-plugin init container logs ==="
+          kubectl logs -n jellyfin -l app.kubernetes.io/name=jellyfin -c install-sso-plugin --tail=100
   # opencloud
   - try:
     - script:
@@ -672,11 +693,11 @@ spec:
           # finish, then read its output back with `kubectl logs` instead,
           # which returns exactly the container's stdout.
           kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
-            curl -sk --max-time 10 --resolve "keycloak.local:443:${GATEWAY_IP}" https://keycloak.local/realms/homelab/.well-known/openid-configuration
+            curl -sk --max-time 10 --resolve "keycloak.test.local:443:${GATEWAY_IP}" https://keycloak.test.local/realms/homelab/.well-known/openid-configuration
           kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
           RESPONSE=$(kubectl logs "${POD}")
           kubectl delete pod "${POD}" --ignore-not-found
-          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.local/realms/homelab"' || exit 1
+          echo "$RESPONSE" | jq -e '.issuer == "https://keycloak.test.local/realms/homelab"' || exit 1
           echo "$RESPONSE" | jq -e '.authorization_endpoint' || exit 1
           echo "$RESPONSE" | jq -e '.token_endpoint' || exit 1
           echo "OIDC discovery endpoint OK"
@@ -703,7 +724,7 @@ spec:
           # of attaching, to avoid kubectl's own chatter corrupting the output.
           POD_CODE=opencloud-auth-check-$$
           kubectl run "${POD_CODE}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
-            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "opencloud.test.local:443:${GATEWAY_IP}" https://opencloud.test.local/remote.php/webdav/
           kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_CODE}" --timeout=30s
           HTTP_CODE=$(kubectl logs "${POD_CODE}")
           kubectl delete pod "${POD_CODE}" --ignore-not-found
@@ -716,7 +737,7 @@ spec:
           # Verify WWW-Authenticate header references Bearer auth
           POD_HEADER=opencloud-auth-header-check-$$
           kubectl run "${POD_HEADER}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
-            curl -sk --max-time 10 -I --resolve "opencloud.local:443:${GATEWAY_IP}" https://opencloud.local/remote.php/webdav/
+            curl -sk --max-time 10 -I --resolve "opencloud.test.local:443:${GATEWAY_IP}" https://opencloud.test.local/remote.php/webdav/
           kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD_HEADER}" --timeout=30s
           AUTH_HEADER=$(kubectl logs "${POD_HEADER}" | grep -i www-authenticate | head -1)
           kubectl delete pod "${POD_HEADER}" --ignore-not-found

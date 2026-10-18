@@ -62,12 +62,12 @@ kubectl apply -f secret-store/test-secretstore.yaml
 Add the following to `/etc/hosts`:
 
 ```
-127.0.0.1 argocd.local opencloud.local jellyfin.local keycloak.local
+127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local
 ```
 
 ### Argocd
 
-Go to [argocd.local](https://argocd.local) to see the dashboard.
+Go to [argocd.test.local](https://argocd.test.local) to see the dashboard.
 Log in as `admin` with the password you get from this commands:
 
 ```bash
@@ -76,14 +76,14 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 ### OpenCloud
 
-Login at [opencloud.local](https://opencloud.local) with `admin`/`admin`.
+Login at [opencloud.test.local](https://opencloud.test.local) with `admin`/`admin`.
 Authentication goes through Keycloak, the user is defined in the `openCloud`
 realm. See [the migration guide](docs/opencloud-keycloak-migration.md) for how
 this is set up and how to roll it out to an existing installation.
 
 ### Jellyfin
 
-Setup at [jellyfin.local](https://jellyfin.local).
+Setup at [jellyfin.test.local](https://jellyfin.test.local).
 
 ### Pi-hole
 

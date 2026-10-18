@@ -8,7 +8,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: https
   hostnames:
-  - keycloak.local
+  - keycloak.test.local
   rules:
   - matches:
     - path:
