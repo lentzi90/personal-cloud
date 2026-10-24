@@ -13,5 +13,20 @@ resources:
 - namespace.yaml
 - selfsigned-issuer.yaml
 - httproute.yaml
+# public.ecr.aws rate limits anonymous pulls ("toomanyrequests: Data limit exceeded"),
+# which is easily hit from shared CI runner IPs. Pull the same redis image (same
+# digest, tag is kept from upstream) through the Google Docker Hub mirror.
+images:
+- name: public.ecr.aws/docker/library/redis
+  newName: mirror.gcr.io/library/redis
 patches:
 - path: argocd-cmd-params-cm.yaml
+# The redis image is preloaded into the CI kind cluster (see pipeline.yaml), so
+# don't force a pull from the registry.
+- target:
+    kind: Deployment
+    name: argocd-redis
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/imagePullPolicy
+      value: IfNotPresent
