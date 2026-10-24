@@ -51,6 +51,61 @@ spec:
             # and that this element status is `True`
             (conditions[?type == 'Available']):
             - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: argocd-repo-server
+            namespace: argocd
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: argocd-redis
+            namespace: argocd
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: argocd-application-controller
+            namespace: argocd
+          status:
+            (readyReplicas == replicas): true
+    catch:
+    - script:
+        timeout: 1m
+        content: |
+          kubectl -n argocd get pods,deploy,sts,svc,endpoints,networkpolicy -o wide
+          kubectl -n argocd describe deploy argocd-redis
+          kubectl -n argocd describe pod -l app.kubernetes.io/name=argocd-redis
+          kubectl -n argocd get events --sort-by=.lastTimestamp
+          kubectl -n kube-system get pods -o wide
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-redis
+        container: secret-init
+        tail: 100
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-redis
+        container: redis
+        tail: 100
+    - podLogs:
+        namespace: kube-system
+        selector: app=kindnet
+        tail: 100
   # cert-manager
   - try:
     - script:
@@ -78,11 +133,15 @@ spec:
     - describe:
         apiVersion: v1
         kind: Pod
-        name: cert-manager
         namespace: cert-manager
+        selector: app.kubernetes.io/instance=cert-manager
     - podLogs:
-        name: cert-manager
         namespace: cert-manager
+        selector: app.kubernetes.io/instance=cert-manager
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-repo-server
+        tail: 200
   # metallb
   - try:
     - script:
