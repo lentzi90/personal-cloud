@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-terminal
+spec:
+  template:
+    spec:
+      containers:
+      - name: open-terminal
+        # The image (~4 GB) and the packages installed at startup live in
+        # the container's writable layer, i.e. on the node's disk.
+        resources:
+          requests:
+            ephemeral-storage: 8Gi
+          limits:
+            ephemeral-storage: 14Gi

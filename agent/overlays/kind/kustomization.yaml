@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agent
+
+labels:
+- pairs:
+    environment: kind
+
+resources:
+- ../../base
+- namespace.yaml
+- httproute.yaml
+
+# The default image is large (~4 GB and installs packages at startup).
+# The slim variant keep CI fast. The alpine terminal ignores
+# OPEN_TERMINAL_PACKAGES.
+images:
+- name: ghcr.io/open-webui/open-terminal
+  newTag: 0.14.5-alpine
+
+# Test-only credentials. Real environments use external-secrets.
+# Add an `llm` secret (base-url, api-key) to connect a model, see README.
+generatorOptions:
+  disableNameSuffixHash: true
+secretGenerator:
+- name: open-webui
+  literals:
+  - secret-key=kind-only-change-me
+- name: open-terminal
+  literals:
+  - api-key=kind-only-change-me
