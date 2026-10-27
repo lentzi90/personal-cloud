@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agent
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/part-of: agent
+
+resources:
+- open-webui-deployment.yaml
+- open-webui-service.yaml
+- open-webui-data-pvc.yaml
+- open-terminal-deployment.yaml
+- open-terminal-service.yaml
+- open-terminal-home-pvc.yaml
+- open-terminal-networkpolicy.yaml
+
+images:
+- name: ghcr.io/open-webui/open-webui
+  newTag: v0.12.3-slim
+- name: ghcr.io/open-webui/open-terminal
+  newTag: 0.14.5

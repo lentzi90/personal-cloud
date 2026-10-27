@@ -1,0 +1,58 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-terminal
+  labels:
+    app.kubernetes.io/name: open-terminal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: open-terminal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: open-terminal
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+      - name: open-terminal
+        image: ghcr.io/open-webui/open-terminal
+        ports:
+        - name: http
+          containerPort: 8000
+        env:
+        - name: OPEN_TERMINAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-terminal
+              key: api-key
+        # Installed at startup.
+        - name: OPEN_TERMINAL_PACKAGES
+          value: >-
+            latexmk texlive-latex-recommended texlive-latex-extra
+            texlive-fonts-recommended texlive-science texlive-lang-european
+            texlive-xetex texlive-pictures lmodern fonts-lmodern
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          failureThreshold: 90
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 3Gi
+        volumeMounts:
+        - name: home
+          mountPath: /home/user
+      volumes:
+      - name: home
+        persistentVolumeClaim:
+          claimName: open-terminal-home

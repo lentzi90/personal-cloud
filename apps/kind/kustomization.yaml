@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
+- agent-app.yaml
 - apps-app.yaml
 - argocd-app.yaml
 - cert-manager-app.yaml

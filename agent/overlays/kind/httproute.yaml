@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: agent
+spec:
+  parentRefs:
+  - name: envoy-private
+    namespace: envoy-gateway-system
+    sectionName: https
+  hostnames:
+  - agent.test.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: open-webui
+      port: 80

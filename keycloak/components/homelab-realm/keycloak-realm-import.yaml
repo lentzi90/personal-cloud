@@ -59,6 +59,12 @@ spec:
             account:
             - manage-account
             - view-profile
+      # New realm roles must be appended after default-roles-homelab: the
+      # turing-talos overlay patches that role by index (roles/realm/8).
+      - name: agentAdmin
+        description: Agent administrator role
+      - name: agentUser
+        description: Standard agent user role
       client:
         account:
         - name: manage-account
@@ -108,6 +114,11 @@ spec:
       roles:
       - jellyfinUser
       - jellyfinAdmin
+    # Same for agent: Open WebUI reads realm_access.roles.
+    - client: agent
+      roles:
+      - agentUser
+      - agentAdmin
     clientScopeMappings:
       account:
       - client: account-console
@@ -123,6 +134,7 @@ spec:
       realmRoles:
       - opencloudAdmin
       - jellyfinAdmin
+      - agentAdmin
     - name: ArgoCDAdmins
       path: /ArgoCDAdmins
       subGroups: []
@@ -610,6 +622,26 @@ spec:
       - roles
       attributes:
         pkce.code.challenge.method: S256
+    # index 8: Agent (Open WebUI with a sandbox). Confidential client: Keycloak
+    # generates the secret, which is stored in Bitwarden (see agent/README.md).
+    # Redirect URIs are patched per-environment.
+    - clientId: agent
+      name: Agent
+      description: Chat UI with an agent sandbox
+      enabled: true
+      clientAuthenticatorType: client-secret
+      publicClient: false
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: false
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - roles
     # No users are defined here. Environments that need one (e.g. the KinD
     # test setup) add them through a patch, production users are managed in
     # Keycloak.

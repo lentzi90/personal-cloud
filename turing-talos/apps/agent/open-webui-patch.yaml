@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+spec:
+  template:
+    spec:
+      containers:
+      - name: open-webui
+        env:
+        - name: WEBUI_URL
+          value: https://agent.jern.fi
+        # Login only through Keycloak. Access is controlled with the realm
+        # roles below, assigned to users in Keycloak.
+        - name: ENABLE_SIGNUP
+          value: "false"
+        - name: ENABLE_LOGIN_FORM
+          value: "false"
+        - name: ENABLE_OAUTH_SIGNUP
+          value: "true"
+        - name: OAUTH_PROVIDER_NAME
+          value: Keycloak
+        - name: OPENID_PROVIDER_URL
+          value: https://keycloak.jern.fi/realms/jern.fi/.well-known/openid-configuration
+        - name: OAUTH_CLIENT_ID
+          value: agent
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: open-webui
+              key: oauth-client-secret
+        - name: OAUTH_SCOPES
+          value: openid email profile roles
+        - name: ENABLE_OAUTH_ROLE_MANAGEMENT
+          value: "true"
+        - name: OAUTH_ROLES_CLAIM
+          value: realm_access.roles
+        - name: OAUTH_ALLOWED_ROLES
+          value: agentUser,agentAdmin
+        - name: OAUTH_ADMIN_ROLES
+          value: agentAdmin
