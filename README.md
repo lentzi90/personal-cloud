@@ -62,7 +62,7 @@ kubectl apply -f secret-store/test-secretstore.yaml
 Add the following to `/etc/hosts`:
 
 ```
-127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local
+127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local
 ```
 
 ### Argocd

@@ -99,3 +99,20 @@ patches:
     - op: add
       path: /spec/realm/clients/7/baseUrl
       value: https://jellyfin.jern.fi
+# Configure LaTeX agent (Open WebUI) client redirect URIs for turing-talos
+# Note: agent client is at index 8 (last one)
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/8/redirectUris
+      value:
+        - https://agent.jern.fi/oauth/oidc/callback
+    - op: add
+      path: /spec/realm/clients/8/webOrigins
+      value:
+        - https://agent.jern.fi
+    - op: add
+      path: /spec/realm/clients/8/baseUrl
+      value: https://agent.jern.fi

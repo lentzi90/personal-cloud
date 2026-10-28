@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/kustomize-reusable.yaml
     with:
       paths: >
-        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind ddclient/overlays/kind external-secrets/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind jellyfin/overlays/kind metallb/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind
+        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind ddclient/overlays/kind external-secrets/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind jellyfin/overlays/kind metallb/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind agent/overlays/kind
   kind-deploy:
     needs: kustomize-build
     runs-on: ubuntu-latest
@@ -23,6 +23,24 @@ jobs:
       uses: helm/kind-action@v1.15.1
       with:
         config: kind-config.yaml
+
+    - name: Preload redis image
+      # Pull the redis image with retries and load it into the kind cluster, so
+      # that the test doesn't depend on registry rate limits while ArgoCD starts.
+      # The image reference comes from the kustomize overlay (mirror.gcr.io).
+      run: |
+        image=$(kustomize build argocd/overlays/kind | grep -oE 'image: \S*redis\S*' | cut -d' ' -f2 | sort -u)
+        echo "Preloading $image"
+        for i in 1 2 3 4 5; do
+          docker pull "$image" && break
+          if [ "$i" -eq 5 ]; then
+            echo "Failed to pull $image"
+            exit 1
+          fi
+          echo "Pull failed (attempt $i), retrying"
+          sleep $((i * 20))
+        done
+        kind load docker-image "$image" --name chart-testing
 
     - name: Chainsaw test
       run: chainsaw test

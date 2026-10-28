@@ -51,6 +51,61 @@ spec:
             # and that this element status is `True`
             (conditions[?type == 'Available']):
             - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: argocd-repo-server
+            namespace: argocd
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: argocd-redis
+            namespace: argocd
+          status:
+            (conditions[?type == 'Available']):
+            - status: 'True'
+    - assert:
+        timeout: 5m
+        resource:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: argocd-application-controller
+            namespace: argocd
+          status:
+            (readyReplicas == replicas): true
+    catch:
+    - script:
+        timeout: 1m
+        content: |
+          kubectl -n argocd get pods,deploy,sts,svc,endpoints,networkpolicy -o wide
+          kubectl -n argocd describe deploy argocd-redis
+          kubectl -n argocd describe pod -l app.kubernetes.io/name=argocd-redis
+          kubectl -n argocd get events --sort-by=.lastTimestamp
+          kubectl -n kube-system get pods -o wide
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-redis
+        container: secret-init
+        tail: 100
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-redis
+        container: redis
+        tail: 100
+    - podLogs:
+        namespace: kube-system
+        selector: app=kindnet
+        tail: 100
   # cert-manager
   - try:
     - script:
@@ -78,11 +133,15 @@ spec:
     - describe:
         apiVersion: v1
         kind: Pod
-        name: cert-manager
         namespace: cert-manager
+        selector: app.kubernetes.io/instance=cert-manager
     - podLogs:
-        name: cert-manager
         namespace: cert-manager
+        selector: app.kubernetes.io/instance=cert-manager
+    - podLogs:
+        namespace: argocd
+        selector: app.kubernetes.io/name=argocd-repo-server
+        tail: 200
   # metallb
   - try:
     - script:
@@ -756,4 +815,71 @@ spec:
     - podLogs:
         namespace: opencloud
         selector: app.kubernetes.io/name=opencloud
+        tail: 50
+  # agent (Open WebUI + Open Terminal)
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/agent-app.yaml
+    - assert:
+        timeout: 15m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: agent
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: agent
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: agent
+    - podLogs:
+        namespace: agent
+        selector: app.kubernetes.io/part-of=agent
+        tail: 50
+  # Verify Open WebUI is reachable through the gateway
+  - try:
+    - script:
+        timeout: 2m
+        content: |
+          echo "=== Testing Open WebUI through the gateway ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          POD=agent-health-check-$$
+          # The route may need a moment to be programmed, so retry inside the pod.
+          kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --env="GATEWAY_IP=${GATEWAY_IP}" --command -- sh -c '
+            for i in $(seq 20); do
+              code=$(curl -sk --max-time 10 -o /dev/null -w "%{http_code}" --resolve "agent.test.local:443:${GATEWAY_IP}" https://agent.test.local/health)
+              [ "${code}" = "200" ] && break
+              sleep 3
+            done
+            echo "${code}"'
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=90s
+          HTTP_CODE=$(kubectl logs "${POD}")
+          kubectl delete pod "${POD}" --ignore-not-found
+          echo "HTTP Code: ${HTTP_CODE}"
+          if [[ "${HTTP_CODE}" != "200" ]]; then
+            echo "Expected 200 from /health, got ${HTTP_CODE}"
+            exit 1
+          fi
+          echo "Open WebUI reachable through the gateway"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: agent
+        selector: app.kubernetes.io/name=open-webui
+    - podLogs:
+        namespace: agent
+        selector: app.kubernetes.io/name=open-webui
         tail: 50

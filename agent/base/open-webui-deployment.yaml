@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open-webui
+  labels:
+    app.kubernetes.io/name: open-webui
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: open-webui
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: open-webui
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: open-webui
+        image: ghcr.io/open-webui/open-webui
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: WEBUI_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-webui
+              key: secret-key
+        - name: OT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-terminal
+              key: api-key
+        # LLM backend (any OpenAI compatible API). Provided via the
+        # optional `llm` secret; can also be configured in the admin UI.
+        - name: OPENAI_API_BASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: llm
+              key: base-url
+              optional: true
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: llm
+              key: api-key
+              optional: true
+        - name: ENABLE_OLLAMA_API
+          value: "false"
+        - name: DEFAULT_LOCALE
+          value: en
+        # System-level Open Terminal, proxied by the Open WebUI backend.
+        - name: TERMINAL_SERVER_CONNECTIONS
+          value: >-
+            [{"id":"sandbox","name":"Sandbox","enabled":true,
+            "url":"http://open-terminal:8000","auth_type":"bearer","key":"$(OT_API_KEY)",
+            "config":{"access_grants":[{"principal_type":"user","principal_id":"*","permission":"read"}]}}]
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - name: data
+          mountPath: /app/backend/data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: open-webui-data
