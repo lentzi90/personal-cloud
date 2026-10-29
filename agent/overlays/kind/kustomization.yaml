@@ -17,7 +17,7 @@ resources:
 # OPEN_TERMINAL_PACKAGES.
 images:
 - name: ghcr.io/open-webui/open-terminal
-  newTag: 0.14.5-alpine
+  newTag: 0.14.6-alpine
 
 # Test-only credentials. Real environments use external-secrets.
 # Add an `llm` secret (base-url, api-key) to connect a model, see README.
