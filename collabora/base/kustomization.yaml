@@ -13,6 +13,6 @@ resources:
 
 images:
 - name: docker.io/collabora/code
-  newTag: 26.04.3.2.1
+  newTag: 26.04.5.2.1
 - name: docker.io/alpine/openssl
   newTag: "3.5.9"
