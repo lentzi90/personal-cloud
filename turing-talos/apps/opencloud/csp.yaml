@@ -19,11 +19,13 @@ directives:
   - "'self'"
   - "blob:"
   - "https://embed.diagrams.net/"
+  - "https://collabora.jern.fi/"
   img-src:
   - "'self'"
   - "data:"
   - "blob:"
   - "https://raw.githubusercontent.com/opencloud-eu/awesome-apps/"
+  - "https://collabora.jern.fi/"
   manifest-src:
   - "'self'"
   media-src:

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collabora
+  labels:
+    app.kubernetes.io/name: collabora
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: collabora
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: collabora
+    spec:
+      # Generate a WOPI proof key before Collabora starts, the same way the
+      # reference docker-compose (opencloud-eu/opencloud-compose) does with
+      # its separate "collabora-proof-key" one-shot service. The key is kept on
+      # a persistent volume: OpenCloud caches the keys from Collabora's
+      # discovery document, so a new key on every pod restart would make
+      # OpenCloud reject Collabora's signatures until the cache expires.
+      initContainers:
+      - name: proof-key
+        image: docker.io/alpine/openssl
+        command: ["/bin/sh", "-ec"]
+        args:
+        - |
+          if [ ! -s /proof/proof_key ]; then
+            openssl genrsa -traditional -out /proof/proof_key.tmp 4096
+            chmod 444 /proof/proof_key.tmp
+            mv /proof/proof_key.tmp /proof/proof_key
+            echo "WOPI proof key generated"
+          else
+            echo "WOPI proof key already exists"
+          fi
+        volumeMounts:
+        - name: proof-key
+          mountPath: /proof
+      containers:
+      - name: collabora
+        image: docker.io/collabora/code
+        ports:
+        - name: http
+          containerPort: 9980
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: collabora-env
+        securityContext:
+          # Same as the reference compose file (cap_add: SYS_ADMIN and
+          # seccomp/apparmor unconfined): coolwsd needs these to set up its
+          # chroot jails. Environments that need more (e.g. KinD) must add that
+          # in their own overlay.
+          capabilities:
+            add:
+            - SYS_ADMIN
+          seccompProfile:
+            type: Unconfined
+          appArmorProfile:
+            type: Unconfined
+        volumeMounts:
+        - name: proof-key
+          mountPath: /etc/coolwsd/proof_key
+          subPath: proof_key
+          readOnly: true
+        # TLS is terminated at the gateway, so coolwsd serves plain HTTP
+        # (ssl.enable=false, ssl.termination=true in collabora.env).
+        livenessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /hosting/discovery
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+      volumes:
+      - name: proof-key
+        persistentVolumeClaim:
+          claimName: collabora-proof-key

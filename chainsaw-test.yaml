@@ -722,10 +722,12 @@ spec:
         timeout: 30s
         content: |
           echo "=== Verifying OpenCloud OIDC Configuration ==="
+          # The ConfigMap name carries a content hash, look it up via the deployment
+          CM=$(kubectl get deployment opencloud -n opencloud -o jsonpath='{.spec.template.spec.containers[0].envFrom[0].configMapRef.name}')
           # Check that the ConfigMap has OIDC settings
-          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.OC_OIDC_ISSUER}'
+          kubectl get configmap "${CM}" -n opencloud -o jsonpath='{.data.OC_OIDC_ISSUER}'
           echo ""
-          kubectl get configmap opencloud-env -n opencloud -o jsonpath='{.data.PROXY_AUTOPROVISION_ACCOUNTS}'
+          kubectl get configmap "${CM}" -n opencloud -o jsonpath='{.data.PROXY_AUTOPROVISION_ACCOUNTS}'
           echo ""
           # Verify the deployment is using the ConfigMap
           kubectl get deployment opencloud -n opencloud -o jsonpath='{.spec.template.spec.containers[0].envFrom[*].configMapRef.name}'
@@ -734,8 +736,8 @@ spec:
     - script:
         timeout: 30s
         content: |
-          echo "=== OpenCloud ConfigMap ==="
-          kubectl get configmap opencloud-env -n opencloud -o yaml
+          echo "=== OpenCloud ConfigMaps ==="
+          kubectl get configmap -n opencloud -o yaml
           echo "=== OpenCloud Deployment ==="
           kubectl get deployment opencloud -n opencloud -o yaml
   # Verify Keycloak OIDC discovery endpoint is accessible
@@ -883,3 +885,158 @@ spec:
         namespace: agent
         selector: app.kubernetes.io/name=open-webui
         tail: 50
+  # collabora
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/collabora-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: collabora
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: collabora
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: collabora
+        selector: app.kubernetes.io/name=collabora
+    - podLogs:
+        namespace: collabora
+        selector: app.kubernetes.io/name=collabora
+        tail: 100
+  # OpenCloud and Collabora call each other server-side using the public
+  # *.test.local names, so these must resolve inside the cluster. Pods do not
+  # see the host's /etc/hosts, so point test.local at the private gateway in
+  # CoreDNS.
+  - try:
+    - script:
+        timeout: 3m
+        content: |
+          echo "=== Making *.test.local resolvable in the cluster ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          COREFILE=$(kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}')
+          if echo "${COREFILE}" | grep -q '^test.local:53'; then
+            echo "CoreDNS already configured"
+          else
+            NEW_COREFILE=$(printf '%s\ntest.local:53 {\n    errors\n    hosts {\n        %s argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local collabora.test.local\n    }\n    cache 30\n}\n' "${COREFILE}" "${GATEWAY_IP}")
+            kubectl -n kube-system patch configmap coredns --type merge -p "$(jq -n --arg corefile "${NEW_COREFILE}" '{data: {Corefile: $corefile}}')"
+            kubectl -n kube-system rollout restart deployment coredns
+          fi
+          kubectl -n kube-system rollout status deployment coredns --timeout=2m
+    catch:
+    - script:
+        timeout: 30s
+        content: kubectl -n kube-system get configmap coredns -o yaml
+    - podLogs:
+        namespace: kube-system
+        selector: k8s-app=kube-dns
+        tail: 50
+  # Verify Collabora Online discovery endpoint is accessible through the
+  # gateway using the in-cluster DNS (no curl --resolve), the same path
+  # OpenCloud uses when it fetches the discovery document.
+  - try:
+    - script:
+        timeout: 2m
+        content: |
+          echo "=== Testing Collabora Online Discovery Endpoint ==="
+          POD=collabora-discovery-check-$$
+          # The route may need a moment to be programmed, so retry inside the pod.
+          kubectl run "${POD}" -n opencloud --restart=Never --image=curlimages/curl:8.11.1 --command -- sh -c '
+            for i in $(seq 20); do
+              code=$(curl -sk --max-time 10 -o /dev/null -w "%{http_code}" https://collabora.test.local/hosting/discovery)
+              [ "${code}" = "200" ] && break
+              sleep 3
+            done
+            echo "${code}"'
+          kubectl wait -n opencloud --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=90s
+          HTTP_CODE=$(kubectl logs -n opencloud "${POD}")
+          kubectl delete pod -n opencloud "${POD}" --ignore-not-found
+          echo "HTTP Code: ${HTTP_CODE}"
+          if [ "${HTTP_CODE}" != "200" ]; then
+            echo "Expected 200 OK, got ${HTTP_CODE}"
+            exit 1
+          fi
+          echo "Collabora Online discovery endpoint OK"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: collabora
+        selector: app.kubernetes.io/name=collabora
+    - podLogs:
+        namespace: collabora
+        selector: app.kubernetes.io/name=collabora
+        tail: 50
+  # Verify OpenCloud's WOPI endpoint (called by Collabora) is reachable by name
+  # from inside the cluster. The WOPI endpoint requires an access token, so any
+  # HTTP response (not a DNS/connection failure) shows the name resolves and
+  # routes.
+  - try:
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing in-cluster access to the OpenCloud WOPI endpoint ==="
+          POD=wopi-check-$$
+          kubectl run "${POD}" -n opencloud --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 -o /dev/null -w "%{http_code}" https://opencloud.test.local/wopi/files/does-not-exist
+          kubectl wait -n opencloud --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
+          HTTP_CODE=$(kubectl logs -n opencloud "${POD}")
+          kubectl delete pod -n opencloud "${POD}" --ignore-not-found
+          echo "HTTP Code: ${HTTP_CODE}"
+          if [ "${HTTP_CODE}" = "000" ] || [ -z "${HTTP_CODE}" ]; then
+            echo "opencloud.test.local is not reachable from inside the cluster"
+            exit 1
+          fi
+          echo "OpenCloud reachable by name from inside the cluster"
+    catch:
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+    - podLogs:
+        namespace: opencloud
+        selector: app.kubernetes.io/name=opencloud
+        tail: 50
+  # Verify OpenCloud has the Collabora (WOPI) integration configured
+  - try:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== Verifying OpenCloud Collabora Configuration ==="
+          # The ConfigMap name carries a content hash, look it up via the deployment
+          CM=$(kubectl get deployment opencloud -n opencloud -o jsonpath='{.spec.template.spec.containers[0].envFrom[0].configMapRef.name}')
+          check() {
+            actual=$(kubectl get configmap "${CM}" -n opencloud -o jsonpath="{.data.$1}")
+            if [ "${actual}" != "$2" ]; then
+              echo "$1: expected '$2', got '${actual}'"
+              exit 1
+            fi
+            echo "$1=${actual}"
+          }
+          check OC_ADD_RUN_SERVICES collaboration
+          check FRONTEND_APP_HANDLER_SECURE_VIEW_APP_ADDR eu.opencloud.api.collaboration
+          check COLLABORATION_WOPI_SRC https://opencloud.test.local
+          check COLLABORATION_APP_ADDR https://collabora.test.local
+    catch:
+    - script:
+        timeout: 30s
+        content: |
+          echo "=== OpenCloud ConfigMaps ==="
+          kubectl get configmap -n opencloud -o yaml
+          echo "=== OpenCloud Deployment ==="
+          kubectl get deployment opencloud -n opencloud -o yaml

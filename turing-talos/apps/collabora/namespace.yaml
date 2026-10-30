@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: collabora
+  labels:
+    # coolwsd needs SYS_ADMIN and unconfined seccomp/AppArmor profiles to set up
+    # its chroot jails, which the baseline policy rejects. Keep this out of the
+    # opencloud namespace so that only Collabora gets the relaxed policy.
+    pod-security.kubernetes.io/enforce: privileged
