@@ -21,4 +21,4 @@ images:
 - name: ghcr.io/open-webui/open-webui
   newTag: v0.12.5-slim
 - name: ghcr.io/open-webui/open-terminal
-  newTag: 0.14.6
+  newTag: 0.14.7
