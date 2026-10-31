@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: home-assistant
+labels:
+- pairs:
+    environment: turing-talos
+resources:
+- ../../../home-assistant/base
+- namespace.yaml
+- httproute.yaml
+- externalsecret.yaml
+
+components:
+- ../../../home-assistant/components/keycloak-sso
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: home-assistant-oidc-config
+  files:
+  - auth_oidc.yaml

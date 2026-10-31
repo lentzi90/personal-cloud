@@ -116,3 +116,20 @@ patches:
     - op: add
       path: /spec/realm/clients/8/baseUrl
       value: https://agent.jern.fi
+# Configure Home Assistant client redirect URIs for turing-talos environment
+# Note: home-assistant client is at index 9 (last one)
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/9/redirectUris
+      value:
+        - https://home-assistant.jern.fi/auth/oidc/callback
+    - op: add
+      path: /spec/realm/clients/9/webOrigins
+      value:
+        - https://home-assistant.jern.fi
+    - op: add
+      path: /spec/realm/clients/9/baseUrl
+      value: https://home-assistant.jern.fi
