@@ -1,0 +1,13 @@
+auth_oidc:
+  client_id: home-assistant
+  discovery_url: https://keycloak.test.local/realms/homelab/.well-known/openid-configuration
+  display_name: Keycloak
+  features:
+    # Keycloak has no `groups` scope, the claim comes from a client mapper.
+    include_groups_scope: false
+  roles:
+    user: homeAssistantUser
+    admin: homeAssistantAdmin
+  network:
+    # The KinD gateway uses a self-signed certificate. Never do this elsewhere.
+    tls_verify: false

@@ -53,6 +53,22 @@ patches:
     - op: add
       path: /spec/realm/clients/7/baseUrl
       value: https://jellyfin.test.local
+# Configure Home Assistant client (index 9) redirect URIs for KinD environment
+- target:
+    kind: KeycloakRealmImport
+    name: homelab-realm
+  patch: |-
+    - op: add
+      path: /spec/realm/clients/9/redirectUris
+      value:
+        - https://home-assistant.test.local/auth/oidc/callback
+    - op: add
+      path: /spec/realm/clients/9/webOrigins
+      value:
+        - https://home-assistant.test.local
+    - op: add
+      path: /spec/realm/clients/9/baseUrl
+      value: https://home-assistant.test.local
 # Test user for the KinD environment. The username matches the OpenCloud admin
 # account created by IDM_ADMIN_PASSWORD, so signing in resolves to that account.
 - target:
@@ -75,6 +91,7 @@ patches:
           realmRoles:
             - opencloudAdmin
             - jellyfinAdmin
+            - homeAssistantAdmin
             - default-roles-homelab
           groups:
             - admins

@@ -62,7 +62,7 @@ kubectl apply -f secret-store/test-secretstore.yaml
 Add the following to `/etc/hosts`:
 
 ```
-127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local collabora.test.local
+127.0.0.1 argocd.test.local opencloud.test.local jellyfin.test.local home-assistant.test.local keycloak.test.local agent.test.local collabora.test.local
 ```
 
 ### Argocd
@@ -88,6 +88,16 @@ for how this is wired up, including the in-cluster DNS needed on KinD.
 ### Jellyfin
 
 Setup at [jellyfin.test.local](https://jellyfin.test.local).
+
+### Home Assistant
+
+Setup at [home-assistant.test.local](https://home-assistant.test.local).
+`configuration.yaml` is managed in git (`home-assistant/base`), the first user
+is created through the onboarding flow. SSO through Keycloak uses the
+[hass-oidc-auth](https://github.com/christiaangoossens/hass-oidc-auth) integration, see
+[home-assistant/components/keycloak-sso](home-assistant/components/keycloak-sso/README.md);
+the KinD `admin` user is a Home Assistant administrator. Location values live in
+`secrets.yaml`: hard coded for KinD and an `ExternalSecret` on turing-talos.
 
 ### Pi-hole
 

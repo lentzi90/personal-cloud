@@ -65,6 +65,10 @@ spec:
         description: Agent administrator role
       - name: agentUser
         description: Standard agent user role
+      - name: homeAssistantAdmin
+        description: Home Assistant administrator role
+      - name: homeAssistantUser
+        description: Standard Home Assistant user role
       client:
         account:
         - name: manage-account
@@ -119,6 +123,12 @@ spec:
       roles:
       - agentUser
       - agentAdmin
+    # And for home-assistant: the client's own mapper puts the realm roles in
+    # the groups claim read by hass-oidc-auth.
+    - client: home-assistant
+      roles:
+      - homeAssistantUser
+      - homeAssistantAdmin
     clientScopeMappings:
       account:
       - client: account-console
@@ -130,11 +140,13 @@ spec:
       realmRoles:
       - opencloudUser
       - jellyfinUser
+      - homeAssistantUser
     - name: admins
       realmRoles:
       - opencloudAdmin
       - jellyfinAdmin
       - agentAdmin
+      - homeAssistantAdmin
     - name: ArgoCDAdmins
       path: /ArgoCDAdmins
       subGroups: []
@@ -642,6 +654,40 @@ spec:
       - email
       - profile
       - roles
+    # index 9: Home Assistant (public PKCE client for the hass-oidc-auth
+    # custom integration). Redirect URIs are patched per-environment.
+    - clientId: home-assistant
+      name: Home Assistant
+      description: Home automation
+      enabled: true
+      clientAuthenticatorType: client-secret
+      publicClient: true
+      protocol: openid-connect
+      standardFlowEnabled: true
+      implicitFlowEnabled: false
+      directAccessGrantsEnabled: false
+      serviceAccountsEnabled: false
+      fullScopeAllowed: false
+      defaultClientScopes:
+      - openid
+      - email
+      - profile
+      - roles
+      attributes:
+        pkce.code.challenge.method: S256
+      protocolMappers:
+      # hass-oidc-auth maps top-level claim `groups` to HA user/admin roles.
+      - name: groups
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-realm-role-mapper
+        consentRequired: false
+        config:
+          multivalued: "true"
+          userinfo.token.claim: "true"
+          id.token.claim: "true"
+          access.token.claim: "true"
+          claim.name: groups
+          jsonType.label: String
     # No users are defined here. Environments that need one (e.g. the KinD
     # test setup) add them through a patch, production users are managed in
     # Keycloak.

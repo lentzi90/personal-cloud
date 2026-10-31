@@ -16,6 +16,7 @@ resources:
 - envoy-gateways-app.yaml
 - external-secrets-app.yaml
 - hetzner-cloud-webhook-app.yaml
+- home-assistant-app.yaml
 - jellyfin-app.yaml
 - keycloak-app.yaml
 - keycloak-operator-app.yaml
