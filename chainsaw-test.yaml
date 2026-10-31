@@ -918,6 +918,65 @@ spec:
         namespace: collabora
         selector: app.kubernetes.io/name=collabora
         tail: 100
+  # home-assistant
+  - try:
+    - script:
+        timeout: 10s
+        content: kubectl -n argocd apply -f apps/kind/home-assistant-app.yaml
+    - assert:
+        timeout: 10m
+        resource:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: home-assistant
+            namespace: argocd
+          status:
+            health:
+              status: Healthy
+            sync:
+              status: Synced
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Testing Home Assistant through the gateway ==="
+          GATEWAY_IP=$(cat /tmp/envoy-private-ip)
+          POD=home-assistant-check-$$
+          kubectl run "${POD}" --restart=Never --image=curlimages/curl:8.11.1 --command -- \
+            curl -sk --max-time 10 --resolve "home-assistant.test.local:443:${GATEWAY_IP}" https://home-assistant.test.local/manifest.json
+          kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${POD}" --timeout=30s
+          RESPONSE=$(kubectl logs "${POD}")
+          kubectl delete pod "${POD}" --ignore-not-found
+          echo "${RESPONSE}" | grep -q 'Home Assistant'
+    # Verify the Keycloak SSO integration is installed and configured
+    - script:
+        timeout: 60s
+        content: |
+          echo "=== Verifying Home Assistant OIDC integration ==="
+          POD=$(kubectl get pod -n home-assistant -l app.kubernetes.io/name=home-assistant -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec -n home-assistant "${POD}" -c home-assistant -- test -f /config/custom_components/auth_oidc/manifest.json
+          kubectl exec -n home-assistant "${POD}" -c home-assistant -- grep -q 'discovery_url' /config/packages/auth_oidc.yaml
+    catch:
+    - describe:
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        name: home-assistant
+        namespace: argocd
+    - describe:
+        apiVersion: v1
+        kind: Pod
+        namespace: home-assistant
+        selector: app.kubernetes.io/name=home-assistant
+    - podLogs:
+        namespace: home-assistant
+        selector: app.kubernetes.io/name=home-assistant
+        container: install-oidc-auth
+        tail: 100
+    - podLogs:
+        namespace: home-assistant
+        selector: app.kubernetes.io/name=home-assistant
+        container: home-assistant
+        tail: 100
   # OpenCloud and Collabora call each other server-side using the public
   # *.test.local names, so these must resolve inside the cluster. Pods do not
   # see the host's /etc/hosts, so point test.local at the private gateway in
@@ -932,7 +991,7 @@ spec:
           if echo "${COREFILE}" | grep -q '^test.local:53'; then
             echo "CoreDNS already configured"
           else
-            NEW_COREFILE=$(printf '%s\ntest.local:53 {\n    errors\n    hosts {\n        %s argocd.test.local opencloud.test.local jellyfin.test.local keycloak.test.local agent.test.local collabora.test.local\n    }\n    cache 30\n}\n' "${COREFILE}" "${GATEWAY_IP}")
+            NEW_COREFILE=$(printf '%s\ntest.local:53 {\n    errors\n    hosts {\n        %s argocd.test.local opencloud.test.local jellyfin.test.local home-assistant.test.local keycloak.test.local agent.test.local collabora.test.local\n    }\n    cache 30\n}\n' "${COREFILE}" "${GATEWAY_IP}")
             kubectl -n kube-system patch configmap coredns --type merge -p "$(jq -n --arg corefile "${NEW_COREFILE}" '{data: {Corefile: $corefile}}')"
             kubectl -n kube-system rollout restart deployment coredns
           fi

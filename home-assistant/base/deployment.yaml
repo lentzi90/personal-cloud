@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+      - name: home-assistant
+        image: ghcr.io/home-assistant/home-assistant
+        ports:
+        - name: http
+          containerPort: 8123
+          protocol: TCP
+        env:
+        - name: TZ
+          value: Europe/Helsinki
+        readinessProbe:
+          httpGet:
+            path: /manifest.json
+            port: http
+          periodSeconds: 10
+        startupProbe:
+          httpGet:
+            path: /manifest.json
+            port: http
+          periodSeconds: 10
+          failureThreshold: 60
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: packages
+          mountPath: /config/packages
+        - name: configuration
+          mountPath: /config/configuration.yaml
+          subPath: configuration.yaml
+          readOnly: true
+        - name: secrets
+          mountPath: /config/secrets.yaml
+          subPath: secrets.yaml
+          readOnly: true
+      volumes:
+      # Holds .storage (users, onboarding state, integrations) and the database.
+      - name: config
+        persistentVolumeClaim:
+          claimName: home-assistant-config
+      - name: packages
+        emptyDir: {}
+      - name: configuration
+        configMap:
+          name: home-assistant-configuration
+      - name: secrets
+        secret:
+          secretName: home-assistant-secrets
