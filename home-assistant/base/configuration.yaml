@@ -1,0 +1,18 @@
+# Managed through GitOps; mounted read-only over the /config volume.
+default_config:
+
+homeassistant:
+  name: Home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  time_zone: Europe/Helsinki
+  # Environment specific integrations (e.g. SSO) are added as packages.
+  packages: !include_dir_named packages
+
+# Home Assistant sits behind the Envoy gateway, which terminates TLS.
+# Trust X-Forwarded-For from the pod network of the cluster.
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+  - 10.244.0.0/16
