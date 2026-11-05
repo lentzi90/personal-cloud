@@ -22,4 +22,4 @@ configMapGenerator:
 
 images:
 - name: ghcr.io/home-assistant/home-assistant
-  newTag: 2026.10.4
+  newTag: 2026.11.0
