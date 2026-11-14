@@ -9,3 +9,6 @@ Location values (`latitude`, `longitude`, `elevation`) are read from
 
 SSO through Keycloak is described in
 [components/keycloak-sso](components/keycloak-sso/README.md).
+
+The go-e chargers and controller are added with
+[components/goe-charger](components/goe-charger/README.md).

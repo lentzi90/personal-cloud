@@ -12,6 +12,7 @@ resources:
 
 components:
 - ../../../home-assistant/components/keycloak-sso
+- ../../../home-assistant/components/goe-charger
 
 configMapGenerator:
 - name: home-assistant-oidc-config
