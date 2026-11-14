@@ -106,6 +106,10 @@ spec:
         namespace: kube-system
         selector: app=kindnet
         tail: 100
+    - podLogs:
+        namespace: kube-system
+        selector: k8s-app=kube-flannel
+        tail: 100
   # cert-manager
   - try:
     - script:
