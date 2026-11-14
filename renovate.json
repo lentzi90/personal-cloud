@@ -100,6 +100,21 @@
       "matchStrings": ["bitwarden-sdk-server:(?<currentValue>.*?)\""],
       "depNameTemplate": "external-secrets/bitwarden-sdk-server",
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/pipeline.yaml$/"],
+      "matchStrings": ["TALOS_VERSION: (?<currentValue>.*?)\\n"],
+      "depNameTemplate": "siderolabs/talos",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.github/workflows/pipeline.yaml$/"],
+      "matchStrings": ["KUBERNETES_VERSION: (?<currentValue>.*?)\\n"],
+      "depNameTemplate": "kubernetes/kubernetes",
+      "datasourceTemplate": "github-releases",
+      "extractVersionTemplate": "^v(?<version>.*)$"
     }
   ],
   "packageRules": [{ "matchCategories": ["docker"], "enabled": false }]
