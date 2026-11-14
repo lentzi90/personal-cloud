@@ -40,7 +40,12 @@ jobs:
           echo "Pull failed (attempt $i), retrying"
           sleep $((i * 20))
         done
-        kind load docker-image "$image" --name chart-testing
+        # Don't use `kind load docker-image`: it imports with --all-platforms,
+        # which fails with "content digest not found" for multi-arch images
+        # since docker save only exports the pulled platform.
+        # See https://github.com/kubernetes-sigs/kind/issues/3795
+        docker save "$image" | docker exec --privileged -i chart-testing-control-plane \
+          ctr --namespace=k8s.io images import --digests --snapshotter=overlayfs -
 
     - name: Chainsaw test
       run: chainsaw test
