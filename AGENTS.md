@@ -31,7 +31,8 @@ This is a personal Kubernetes homelab infrastructure repository using **GitOps**
 
 The GitHub Actions pipeline (`.github/workflows/pipeline.yaml`) runs on PRs:
 1. Runs `kustomize build` on all overlays to validate syntax
-2. Creates a KinD cluster and deploys using Chainsaw tests
+2. Creates a KinD cluster and deploys using Chainsaw tests (`kind-deploy`)
+3. Creates a Talos cluster (in Docker) and runs the same Chainsaw tests (`talos-deploy`). Talos has no default StorageClass and enforces Pod Security `baseline`, so `ci/local-path-provisioner` is installed and namespaces needing privileged pods must be labelled in the `kind` overlay
 
 ## Adding or Modifying Applications
 

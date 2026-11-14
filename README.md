@@ -57,6 +57,27 @@ kubectl -n external-secrets create secret generic bitwarden-access-token --from-
 kubectl apply -f secret-store/test-secretstore.yaml
 ```
 
+## Testing with Talos
+
+The CI also runs the Chainsaw test on a Talos cluster running in Docker, which is
+closer to the real `turing-talos` cluster than KinD. To do the same locally
+(Docker and `talosctl` required, versions should match the ones in
+`.github/workflows/pipeline.yaml`):
+
+```bash
+sudo modprobe br_netfilter
+talosctl cluster create docker --name talos-ci --workers 1 \
+  --memory-controlplanes 3GiB --memory-workers 10GiB \
+  --config-patch @ci/talos-user-volume.yaml
+
+# Talos has no default StorageClass
+kubectl apply -k ci/local-path-provisioner
+
+BITWARDEN_ACCESS_TOKEN=... TARGET_REVISION=<branch> chainsaw test
+
+talosctl cluster destroy --name talos-ci
+```
+
 ## Accessing the apps
 
 Add the following to `/etc/hosts`:

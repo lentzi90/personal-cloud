@@ -1,0 +1,7 @@
+# Talos machine config patch for CI clusters created with `talosctl cluster create docker`.
+# Creates a writable directory at /var/mnt/local-path-provisioner (on the EPHEMERAL
+# partition) for local-path-provisioner. Without this, /var/mnt is read-only.
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-path-provisioner
+volumeType: directory

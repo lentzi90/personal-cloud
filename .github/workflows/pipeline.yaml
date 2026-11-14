@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/kustomize-reusable.yaml
     with:
       paths: >
-        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind collabora/overlays/kind ddclient/overlays/kind external-secrets/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind home-assistant/overlays/kind jellyfin/overlays/kind metallb/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind agent/overlays/kind
+        apps/kind argocd/overlays/kind cert-manager/overlays/kind cloudnative-pg/overlays/kind collabora/overlays/kind ddclient/overlays/kind external-secrets/overlays/kind hetzner-cloud-webhook/overlays/kind keycloak-operator/overlays/kind keycloak/overlays/kind home-assistant/overlays/kind jellyfin/overlays/kind metallb/overlays/kind pi-hole/overlays/kind wireguard/overlays/kind opencloud/overlays/kind agent/overlays/kind ci/local-path-provisioner
   kind-deploy:
     needs: kustomize-build
     runs-on: ubuntu-latest
@@ -52,3 +52,66 @@ jobs:
       env:
         BITWARDEN_ACCESS_TOKEN: ${{ secrets.BITWARDEN_ACCESS_TOKEN }}
         TARGET_REVISION: ${{ github.head_ref }}
+
+  talos-deploy:
+    # Runs the same Chainsaw test as kind-deploy, but on a Talos cluster
+    # (running in Docker) to get closer to the real turing-talos cluster.
+    needs: kustomize-build
+    runs-on: ubuntu-latest
+    env:
+      # Keep in sync with the versions used by the turing-talos cluster.
+      TALOS_VERSION: v1.14.5
+      KUBERNETES_VERSION: 1.36.4
+    steps:
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+    - name: Install Chainsaw
+      uses: kyverno/action-install-chainsaw@v0.2.15
+
+    - name: Install talosctl
+      run: |
+        curl -sSfL --retry 5 -o talosctl "https://github.com/siderolabs/talos/releases/download/${TALOS_VERSION}/talosctl-linux-amd64"
+        sudo install -m 0755 talosctl /usr/local/bin/talosctl
+        talosctl version --client
+
+    - name: Create Talos cluster
+      # br_netfilter is needed for flannel (the Talos default CNI) to work.
+      # The runner has 4 CPUs and 16GB memory, so limit the nodes accordingly.
+      run: |
+        sudo modprobe br_netfilter
+        talosctl cluster create docker \
+          --name talos-ci \
+          --image "ghcr.io/siderolabs/talos:${TALOS_VERSION}" \
+          --kubernetes-version "${KUBERNETES_VERSION}" \
+          --workers 1 \
+          --memory-controlplanes 3GiB \
+          --memory-workers 10GiB \
+          --config-patch @ci/talos-user-volume.yaml
+
+    - name: Get kubeconfig
+      run: |
+        kubectl config current-context || talosctl kubeconfig --force --nodes 10.5.0.2
+        kubectl get nodes -o wide
+
+    - name: Install local-path-provisioner
+      # Talos has no default StorageClass (unlike KinD), but many apps need PVCs.
+      run: |
+        kubectl apply -k ci/local-path-provisioner
+        kubectl -n local-path-storage rollout status deployment/local-path-provisioner --timeout=3m
+
+    - name: Chainsaw test
+      run: chainsaw test
+      env:
+        BITWARDEN_ACCESS_TOKEN: ${{ secrets.BITWARDEN_ACCESS_TOKEN }}
+        TARGET_REVISION: ${{ github.head_ref }}
+
+    - name: Dump cluster state
+      if: failure()
+      run: |
+        kubectl get nodes,pods -A -o wide || true
+        kubectl get events -A --sort-by=.lastTimestamp || true
+        for c in $(docker ps -a --filter name=talos-ci --format '{{.Names}}'); do
+          echo "::group::docker logs $c"
+          docker logs --tail 200 "$c" || true
+          echo "::endgroup::"
+        done
