@@ -18,9 +18,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
     - name: Install Chainsaw
-      uses: kyverno/action-install-chainsaw@v0.2.15
+      uses: kyverno/action-install-chainsaw@1223ef75bedeb59c4e7b5455463d4316e76dff01  # v0.2.15
     - name: Create Kind Cluster
-      uses: helm/kind-action@v1.15.2
+      uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376  # v1.15.2
       with:
         config: kind-config.yaml
 
@@ -66,7 +66,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
     - name: Install Chainsaw
-      uses: kyverno/action-install-chainsaw@v0.2.15
+      uses: kyverno/action-install-chainsaw@1223ef75bedeb59c4e7b5455463d4316e76dff01  # v0.2.15
 
     - name: Install talosctl
       run: |
