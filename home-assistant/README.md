@@ -12,3 +12,6 @@ SSO through Keycloak is described in
 
 The go-e chargers and controller are added with
 [components/goe-charger](components/goe-charger/README.md).
+
+The Solis inverter is added with
+[components/solarman](components/solarman/README.md).
