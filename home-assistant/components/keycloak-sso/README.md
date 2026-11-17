@@ -1,9 +1,11 @@
 # Keycloak SSO for Home Assistant
 
-Home Assistant has no native OIDC support. This component installs the
+Home Assistant has no native OIDC support. This component loads the overlay's
+`auth_oidc.yaml` as a configuration package for the
 [hass-oidc-auth](https://github.com/christiaangoossens/hass-oidc-auth)
-custom integration with an init container and loads the overlay's
-`auth_oidc.yaml` as a configuration package. Login is done with the public
+custom integration. The integration itself must be installed by enabling
+`auth_oidc` in
+[custom-integrations](../custom-integrations/README.md). Login is done with the public
 PKCE client `home-assistant` from the shared realm
 (`keycloak/components/homelab-realm`).
 

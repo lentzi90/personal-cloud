@@ -1,10 +1,8 @@
 # go-e chargers and controller
 
-Installs the
-[ha-goecharger-api2](https://github.com/marq24/ha-goecharger-api2) custom
-integration (`goecharger_api2`, "go-e APIv2 Connect") with an init container
-into `/config/custom_components`. It supports go-eChargers and the
-go-eController.
+The [ha-goecharger-api2](https://github.com/marq24/ha-goecharger-api2) custom
+integration (`goecharger_api2`, "go-e APIv2 Connect") supports go-eChargers
+and the go-eController.
 
 ## Setup
 

@@ -5,31 +5,6 @@ metadata:
 spec:
   template:
     spec:
-      initContainers:
-      - name: install-oidc-auth
-        # Home Assistant has no native OIDC support, so install the
-        # christiaangoossens/hass-oidc-auth custom integration into the
-        # persistent /config volume. Bump the version to upgrade.
-        image: docker.io/library/alpine:3.21
-        command:
-        - sh
-        - -c
-        - |
-          set -ex
-          VERSION="v1.2.1"
-          DIR=/config/custom_components/auth_oidc
-          if [ "$(cat ${DIR}/.version 2>/dev/null)" != "${VERSION}" ]; then
-            apk add --no-cache curl unzip
-            curl -fL --retry 3 --retry-delay 5 -o /tmp/oidc.zip \
-              "https://github.com/christiaangoossens/hass-oidc-auth/releases/download/${VERSION}/hass-oidc-auth.zip"
-            rm -rf "${DIR}"
-            mkdir -p "${DIR}"
-            unzip -o /tmp/oidc.zip -d "${DIR}"
-            echo "${VERSION}" > "${DIR}/.version"
-          fi
-        volumeMounts:
-        - name: config
-          mountPath: /config
       containers:
       - name: home-assistant
         volumeMounts:

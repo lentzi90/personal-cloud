@@ -974,7 +974,7 @@ spec:
     - podLogs:
         namespace: home-assistant
         selector: app.kubernetes.io/name=home-assistant
-        container: install-oidc-auth
+        container: install-integrations
         tail: 100
     - podLogs:
         namespace: home-assistant

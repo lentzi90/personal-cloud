@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+metadata:
+  name: custom-integrations
+
+patches:
+- path: deployment-patch.yaml
+  target:
+    kind: Deployment
+    name: home-assistant
+
+# The catalog of all known integrations. Overlays select which ones to install
+# with the home-assistant-integrations-enabled ConfigMap (see the README). The
+# name suffix hash is kept so that changes roll the Deployment and run the
+# installer again.
+configMapGenerator:
+- name: home-assistant-integrations
+  files:
+  - install.sh
+  - integrations/auth_oidc.env
+  - integrations/goecharger_api2.env
+  - integrations/solarman.env

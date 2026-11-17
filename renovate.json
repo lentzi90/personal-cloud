@@ -103,6 +103,15 @@
     },
     {
       "customType": "regex",
+      "managerFilePatterns": [
+        "/^home-assistant/components/custom-integrations/integrations/.+\\.env$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\nVERSION=(?<currentValue>\\S+)\\n"
+      ]
+    },
+    {
+      "customType": "regex",
       "managerFilePatterns": ["/^\\.github/workflows/pipeline.yaml$/"],
       "matchStrings": ["TALOS_VERSION: (?<currentValue>.*?)\\n"],
       "depNameTemplate": "siderolabs/talos",

@@ -15,10 +15,13 @@ resources:
 
 components:
 - ../../components/keycloak-sso
-- ../../components/goe-charger
-- ../../components/solarman
+- ../../components/custom-integrations
 
 configMapGenerator:
+# Custom integrations to install, see components/custom-integrations.
+- name: home-assistant-integrations-enabled
+  literals:
+  - enabled=auth_oidc goecharger_api2 solarman
 - name: home-assistant-oidc-config
   files:
   - auth_oidc.yaml
