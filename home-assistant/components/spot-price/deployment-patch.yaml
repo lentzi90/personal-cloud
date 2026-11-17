@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  template:
+    spec:
+      containers:
+      - name: home-assistant
+        volumeMounts:
+        - name: spot-price
+          mountPath: /config/packages/spot_price.yaml
+          subPath: spot_price.yaml
+          readOnly: true
+      volumes:
+      - name: spot-price
+        configMap:
+          name: home-assistant-spot-price

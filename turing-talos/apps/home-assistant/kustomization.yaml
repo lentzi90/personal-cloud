@@ -13,6 +13,7 @@ resources:
 components:
 - ../../../home-assistant/components/keycloak-sso
 - ../../../home-assistant/components/custom-integrations
+- ../../../home-assistant/components/spot-price
 
 configMapGenerator:
 # Custom integrations to install, see components/custom-integrations.
