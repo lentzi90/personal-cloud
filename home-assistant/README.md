@@ -10,8 +10,11 @@ Location values (`latitude`, `longitude`, `elevation`) are read from
 SSO through Keycloak is described in
 [components/keycloak-sso](components/keycloak-sso/README.md).
 
-The go-e chargers and controller are added with
-[components/goe-charger](components/goe-charger/README.md).
+Custom integrations are installed by one init container, see
+[components/custom-integrations](components/custom-integrations/README.md).
 
-The Solis inverter is added with
-[components/solarman](components/solarman/README.md).
+The go-e chargers and controller are set up as described in
+[goecharger_api2](components/custom-integrations/integrations/goecharger_api2.md).
+
+The Solis inverter is set up as described in
+[solarman](components/custom-integrations/integrations/solarman.md).

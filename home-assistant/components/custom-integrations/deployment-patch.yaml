@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: install-integrations
+        # Install the custom integrations listed in the `enabled` key of the
+        # home-assistant-integrations-enabled ConfigMap (provided by the
+        # overlay) into the persistent /config volume. See the README of this
+        # component.
+        image: docker.io/library/alpine:3.21
+        command:
+        - sh
+        - /integrations/install.sh
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: integrations
+          mountPath: /integrations
+          readOnly: true
+        - name: integrations-enabled
+          mountPath: /integrations-enabled
+          readOnly: true
+      volumes:
+      - name: integrations
+        configMap:
+          name: home-assistant-integrations
+      - name: integrations-enabled
+        configMap:
+          name: home-assistant-integrations-enabled
