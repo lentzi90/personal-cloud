@@ -5,6 +5,7 @@ auth_oidc:
   features:
     # Keycloak has no `groups` scope, the claim comes from a client mapper.
     include_groups_scope: false
+    automatic_user_linking: true
   roles:
     user: homeAssistantUser
     admin: homeAssistantAdmin
