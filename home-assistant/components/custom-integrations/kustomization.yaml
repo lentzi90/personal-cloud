@@ -20,3 +20,4 @@ configMapGenerator:
   - integrations/auth_oidc.env
   - integrations/goecharger_api2.env
   - integrations/solarman.env
+  - integrations/vag_connect.env
