@@ -10,9 +10,6 @@ homeassistant:
   # Environment specific integrations (e.g. SSO) are added as packages.
   packages: !include_dir_named packages
 
-# Home Assistant sits behind the Envoy gateway, which terminates TLS.
-# Trust X-Forwarded-For from the pod network of the cluster.
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-  - 10.244.0.0/16
+# The HTTP integration (reverse proxy trust for the Envoy gateway) is not
+# configured here: since Home Assistant 2026.8 it is managed in the UI and
+# stored in /config/.storage/http. See http-seed.json and the README.

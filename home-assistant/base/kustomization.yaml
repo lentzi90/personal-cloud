@@ -19,6 +19,10 @@ configMapGenerator:
 - name: home-assistant-configuration
   files:
   - configuration.yaml
+# First start only, see the seed-http-config init container.
+- name: home-assistant-http-seed
+  files:
+  - http-seed.json
 
 images:
 - name: ghcr.io/home-assistant/home-assistant
