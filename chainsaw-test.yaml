@@ -979,6 +979,11 @@ spec:
     - podLogs:
         namespace: home-assistant
         selector: app.kubernetes.io/name=home-assistant
+        container: seed-http-config
+        tail: 100
+    - podLogs:
+        namespace: home-assistant
+        selector: app.kubernetes.io/name=home-assistant
         container: home-assistant
         tail: 100
   # OpenCloud and Collabora call each other server-side using the public

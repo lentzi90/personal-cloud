@@ -8,6 +8,31 @@ spec:
     type: Recreate
   template:
     spec:
+      initContainers:
+      - name: seed-http-config
+        # Home Assistant no longer reads the http: block from configuration.yaml
+        # (it is stored in /config/.storage/http). Give a fresh /config volume
+        # the settings needed behind the gateway. An existing file (the live
+        # settings, managed in the UI) is never overwritten.
+        image: docker.io/library/alpine:3.21
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          if [ -f /config/.storage/http ]; then
+            echo "/config/.storage/http exists, not seeding"
+          else
+            mkdir -p /config/.storage
+            cp /http-seed/http-seed.json /config/.storage/http
+            echo "Seeded /config/.storage/http"
+          fi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: http-seed
+          mountPath: /http-seed
+          readOnly: true
       containers:
       - name: home-assistant
         image: ghcr.io/home-assistant/home-assistant
@@ -52,6 +77,9 @@ spec:
       - name: configuration
         configMap:
           name: home-assistant-configuration
+      - name: http-seed
+        configMap:
+          name: home-assistant-http-seed
       - name: secrets
         secret:
           secretName: home-assistant-secrets
