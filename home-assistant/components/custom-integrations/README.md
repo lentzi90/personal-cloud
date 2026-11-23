@@ -40,7 +40,7 @@ components:
 configMapGenerator:
 - name: home-assistant-integrations-enabled
   literals:
-  - enabled=auth_oidc goecharger_api2 solarman
+  - enabled=auth_oidc goecharger_api2 solarman vag_connect
 ```
 
 Do not set `disableNameSuffixHash`. Home Assistant only loads integrations on
@@ -67,3 +67,4 @@ Examples: `home-assistant/overlays/kind/` and `turing-talos/apps/home-assistant/
 | `auth_oidc` | [hass-oidc-auth](https://github.com/christiaangoossens/hass-oidc-auth) | See [keycloak-sso](../keycloak-sso/README.md) |
 | `goecharger_api2` | [ha-goecharger-api2](https://github.com/marq24/ha-goecharger-api2) | [Setup](integrations/goecharger_api2.md) |
 | `solarman` | [ha-solarman](https://github.com/davidrapan/ha-solarman) | [Setup](integrations/solarman.md) |
+| `vag_connect` | [vwgroup-connect-ha](https://github.com/its-me-prash/vwgroup-connect-ha) | [Setup](integrations/vag_connect.md) |

@@ -21,7 +21,7 @@ configMapGenerator:
 # Custom integrations to install, see components/custom-integrations.
 - name: home-assistant-integrations-enabled
   literals:
-  - enabled=auth_oidc goecharger_api2 solarman
+  - enabled=auth_oidc goecharger_api2 solarman vag_connect
 - name: home-assistant-oidc-config
   files:
   - auth_oidc.yaml

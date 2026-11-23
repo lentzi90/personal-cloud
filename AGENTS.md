@@ -34,6 +34,13 @@ The GitHub Actions pipeline (`.github/workflows/pipeline.yaml`) runs on PRs:
 2. Creates a KinD cluster and deploys using Chainsaw tests (`kind-deploy`)
 3. Creates a Talos cluster (in Docker) and runs the same Chainsaw tests (`talos-deploy`). Talos has no default StorageClass and enforces Pod Security `baseline`, so `ci/local-path-provisioner` is installed and namespaces needing privileged pods must be labelled in the `kind` overlay
 
+## Documentation and Commit Messages
+
+Keep docs and commit messages minimal. Do not document where settings are
+stored, or the features and limitations of an integration; that is easy to look
+up and goes stale. Do not mention alternatives considered or implementation
+details in commit messages.
+
 ## Adding or Modifying Applications
 
 - Follow existing patterns: create `base/` and `overlays/` directories

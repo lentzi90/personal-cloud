@@ -28,3 +28,6 @@ The go-e chargers and controller are set up as described in
 
 The Solis inverter is set up as described in
 [solarman](components/custom-integrations/integrations/solarman.md).
+
+The Volkswagen ID.Buzz is set up as described in
+[vag_connect](components/custom-integrations/integrations/vag_connect.md).
