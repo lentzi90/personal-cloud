@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Keep in sync with the versions used by the turing-talos cluster.
-      TALOS_VERSION: v1.14.6
+      TALOS_VERSION: v1.14.7
       KUBERNETES_VERSION: 1.36.4
     steps:
     - name: Checkout
