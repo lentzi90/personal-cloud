@@ -1,0 +1,31 @@
+# Electricity prices for the Energy dashboard, derived from the Nord Pool
+# spot price. The Nord Pool integration itself is added in the UI (area FI,
+# currency EUR) and only provides the plain spot price: no margin, no VAT.
+# The sensors below only add the retailer margin. VAT, transfer fees and
+# electricity tax are not included.
+#
+# Use these sensors with "Use an entity with current price" for grid
+# consumption and return to grid in the Energy dashboard.
+template:
+  - sensor:
+      - name: "Electricity buy price"
+        unique_id: electricity_buy_price
+        unit_of_measurement: "EUR/kWh"
+        state_class: measurement
+        availability: "{{ has_value('sensor.nord_pool_fi_current_price') }}"
+        state: >
+          {# EUR/kWh. Spot price plus the retailer margin. #}
+          {% set margin = 0.0048 %}
+          {% set spot = states('sensor.nord_pool_fi_current_price') | float %}
+          {{ (spot + margin) | round(5) }}
+
+      - name: "Electricity sell price"
+        unique_id: electricity_sell_price
+        unit_of_measurement: "EUR/kWh"
+        state_class: measurement
+        availability: "{{ has_value('sensor.nord_pool_fi_current_price') }}"
+        state: >
+          {# EUR/kWh. Spot price minus the retailer margin. #}
+          {% set margin = 0.0048 %}
+          {% set spot = states('sensor.nord_pool_fi_current_price') | float %}
+          {{ (spot - margin) | round(5) }}
